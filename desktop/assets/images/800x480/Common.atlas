@@ -3,6 +3,20 @@ Common.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+background
+  rotate: false
+  xy: 2, 25
+  size: 800, 480
+  orig: 800, 480
+  offset: 0, 0
+  index: -1
+powerUp_bomb
+  rotate: false
+  xy: 804, 473
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
 starSmall
   rotate: false
   xy: 2, 2

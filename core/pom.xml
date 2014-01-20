@@ -22,7 +22,7 @@
         <dependency>
             <groupId>com.shephertz.app42.gaming</groupId>
             <artifactId>multiplayer-client</artifactId>
-            <version>1.5</version>
+            <version>1.5.2</version>
         </dependency>
 
         <dependency>

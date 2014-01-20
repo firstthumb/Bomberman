@@ -3,6 +3,13 @@ Common.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+background
+  rotate: false
+  xy: 2, 25
+  size: 800, 600
+  orig: 800, 600
+  offset: 0, 0
+  index: -1
 starSmall
   rotate: false
   xy: 2, 2
