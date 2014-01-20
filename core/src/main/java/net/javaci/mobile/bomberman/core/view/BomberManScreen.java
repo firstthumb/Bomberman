@@ -129,4 +129,7 @@ public class BomberManScreen extends AbstractScreen {
         return false;
     }
 
+    protected void log(String message) {
+        System.out.println(getClass() + " : " + message);
+    }
 }

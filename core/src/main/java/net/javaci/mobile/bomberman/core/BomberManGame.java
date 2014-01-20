@@ -3,11 +3,14 @@ package net.javaci.mobile.bomberman.core;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import net.javaci.mobile.bomberman.core.net.NetworkInterface;
 import net.javaci.mobile.bomberman.core.net.appwarp.AppWarpClient;
+import net.javaci.mobile.bomberman.core.view.LobbyScreen;
 import net.javaci.mobile.bomberman.core.view.SplashScreen;
 import net.peakgames.libgdx.stagebuilder.core.AbstractGame;
+import net.peakgames.libgdx.stagebuilder.core.assets.AssetLoaderListener;
 import net.peakgames.libgdx.stagebuilder.core.assets.AssetsInterface;
 import net.peakgames.libgdx.stagebuilder.core.services.LocalizationService;
 
@@ -67,8 +70,8 @@ public class BomberManGame extends AbstractGame {
             @Override
             public void run() {
                 displayLoadingWidget();
-//                switch (screenType) {
-//                    case LOBBY:
+                switch (screenType) {
+                    case PLAY:
 //                        getAssetsInterface().loadAssetsAsync(TestScreen.class.getSimpleName(), new AssetLoaderListener() {
 //                            @Override
 //                            public void onAssetsLoaded() {
@@ -77,10 +80,11 @@ public class BomberManGame extends AbstractGame {
 //                                setScreen(screen, parameters);
 //                            }
 //                        });
-//                        break;
-//                    default:
-//                        break;
-//                }
+                        break;
+
+                    default:
+                        break;
+                }
             }
         });
     }

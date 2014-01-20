@@ -1,18 +1,19 @@
 package net.javaci.mobile.bomberman.core.view;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
-import com.esotericsoftware.tablelayout.Cell;
+import net.javaci.mobile.bomberman.core.BomberManGame;
 import net.javaci.mobile.bomberman.core.mediator.BomberManMediator;
 import net.javaci.mobile.bomberman.core.net.NetworkListenerAdapter;
 import net.javaci.mobile.bomberman.core.net.models.RoomModel;
+import net.javaci.mobile.bomberman.core.util.Log;
 import net.javaci.mobile.bomberman.core.view.widget.GameListWidgetConfig;
 import net.peakgames.libgdx.stagebuilder.core.AbstractGame;
 
@@ -48,7 +49,7 @@ public class LobbyScreen extends BomberManScreen {
 
             @Override
             public void onDisconnected() {
-
+                Log.d("Disconnected");
             }
 
             @Override
@@ -59,7 +60,19 @@ public class LobbyScreen extends BomberManScreen {
 
             @Override
             public void onRoomListRequestFailed() {
+                Log.d("Room list failed");
+            }
 
+            @Override
+            public void onJoinRoomSuccess(String roomId) {
+                Log.d("Joined room successfully");
+                removeLoadingWidget();
+                game.switchScreen(BomberManGame.ScreenType.PLAY, null);
+            }
+
+            @Override
+            public void onJoinRoomFailed() {
+                Log.d("Failed to join room");
             }
         };
     }
@@ -120,7 +133,9 @@ public class LobbyScreen extends BomberManScreen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                System.out.println("Clicked : " + model.getName());
+                log("Join Room : " + model.getName());
+                displayLoadingWidget();
+                game.getClient().joinRoom(model.getId());
             }
         });
 
