@@ -34,10 +34,10 @@ public class LobbyScreen extends BomberManScreen {
 
     public void initialize() {
         gameTable = new Table();
-        ((TextButton)findActor("quitButton")).addListener(new ClickListener() {
+        ((TextButton)findActor("createButton")).addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.exit();
+                createNewGame();
             }
         });
         initializeGameList();
@@ -50,6 +50,7 @@ public class LobbyScreen extends BomberManScreen {
             @Override
             public void onDisconnected() {
                 Log.d("Disconnected");
+                removeLoadingWidget();
             }
 
             @Override
@@ -61,6 +62,7 @@ public class LobbyScreen extends BomberManScreen {
             @Override
             public void onRoomListRequestFailed() {
                 Log.d("Room list failed");
+                removeLoadingWidget();
             }
 
             @Override
@@ -73,6 +75,19 @@ public class LobbyScreen extends BomberManScreen {
             @Override
             public void onJoinRoomFailed() {
                 Log.d("Failed to join room");
+                removeLoadingWidget();
+            }
+
+            @Override
+            public void onRoomCreated(RoomModel room) {
+                Log.d("Created room successfully. Room : " + room.getName());
+                game.getClient().joinRoom(room.getId());
+            }
+
+            @Override
+            public void onCreateRoomFailed() {
+                Log.d("Create room failed");
+                removeLoadingWidget();
             }
         };
     }
@@ -90,6 +105,12 @@ public class LobbyScreen extends BomberManScreen {
     public void dispose() {
         super.dispose();
         game.getClient().removeNetworkListener(networkListenerAdapter);
+    }
+
+    private void createNewGame() {
+        displayLoadingWidget();
+        // TODO : create random room name using player name
+        game.getClient().createRoom("Room");
     }
 
     private void reloadGameListPanel(List<RoomModel> rooms) {
