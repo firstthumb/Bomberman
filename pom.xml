@@ -17,6 +17,10 @@
 	</properties>
 
 	<repositories>
+        <repository>
+            <id>android_dev</id>
+            <url>https://archiva.peakgames.net/archiva/repository/android_dev/</url>
+        </repository>
 		<repository>
 			<id>gdx-nightlies</id>
 			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>

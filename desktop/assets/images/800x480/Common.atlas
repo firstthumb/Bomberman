@@ -1,0 +1,12 @@
+
+Common.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+starSmall
+  rotate: false
+  xy: 2, 2
+  size: 21, 21
+  orig: 21, 21
+  offset: 0, 0
+  index: -1

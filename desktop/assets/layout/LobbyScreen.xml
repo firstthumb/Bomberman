@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<group>
+    <image name="background" x="0" y="0" atlas="Common.atlas" type="background" frame="starSmall"/>
+
+
+    <group name="gameList"></group>
+
+</group>
