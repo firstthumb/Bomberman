@@ -4,6 +4,8 @@ package net.javaci.mobile.bomberman.core;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.math.Vector2;
+import net.javaci.mobile.bomberman.core.net.NetworkInterface;
+import net.javaci.mobile.bomberman.core.net.appwarp.AppWarpClient;
 import net.javaci.mobile.bomberman.core.view.SplashScreen;
 import net.peakgames.libgdx.stagebuilder.core.AbstractGame;
 import net.peakgames.libgdx.stagebuilder.core.assets.AssetsInterface;
@@ -14,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 
 public class BomberManGame extends AbstractGame {
+
+    public NetworkInterface client = new AppWarpClient("Guest1");
 
     public static enum ScreenType {
         SPLASH, PLAY, LOBBY
@@ -97,5 +101,9 @@ public class BomberManGame extends AbstractGame {
 
     private String getScreenResolution() {
         return Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight();
+    }
+
+    public NetworkInterface getClient() {
+        return client;
     }
 }

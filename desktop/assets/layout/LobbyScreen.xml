@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <group>
-    <image name="background" x="0" y="0" atlas="Common.atlas" type="background" frame="starSmall"/>
+    <!--<image name="background" x="0" y="0" atlas="Common.atlas" type="background" frame="starSmall"/>-->
 
+    <label name="title" text="Bomberman" y="450" width="800" wrap="true" align="center" fontName="40pt_title.fnt" fontColor="FFFFFF"/>
 
     <group name="gameList"></group>
+
+    <net.javaci.mobile.bomberman.core.view.widget.GameListWidgetConfig
+            name="gameListPanelWidgetConfiguration"
+            x="250"
+            y="50"
+            width="360"
+            height="315"
+            rowHeight="64"
+            rowWidth="360"/>
 
 </group>

@@ -6,6 +6,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -95,7 +96,7 @@ public class SplashScreen implements Screen {
         loadFonts(assets, assetsKey);
         assets.addAssetConfiguration(assetsKey, Constants.COMMON_ATLAS, TextureAtlas.class);
         assets.addAssetConfiguration(assetsKey, Constants.SKIN_ATLAS, TextureAtlas.class);
-//        assets.addAssetConfiguration(assetsKey, Constants.LOADING_BAR_ATLAS, TextureAtlas.class);
+        assets.addAssetConfiguration(assetsKey, Constants.LOADING_BAR_ATLAS, TextureAtlas.class);
         assets.loadAssetsAsync(assetsKey, new AssetLoaderListener() {
             @Override
             public void onAssetsLoaded() {
@@ -106,7 +107,8 @@ public class SplashScreen implements Screen {
     }
 
     private void loadFonts(AssetsInterface assets, String assetsKey) {
-//        assets.addAssetConfiguration(assetsKey, "20pt.fnt", BitmapFont.class);
+        assets.addAssetConfiguration(assetsKey, "26pt.fnt", BitmapFont.class);
+        assets.addAssetConfiguration(assetsKey, "40pt_title.fnt", BitmapFont.class);
     }
 
     private void loadLogo() {

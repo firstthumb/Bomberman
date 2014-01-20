@@ -202,11 +202,13 @@ public class AppWarpClient implements NetworkInterface {
 
     @Override
     public void disconnect() {
+        log("disconnect");
         warpClient.disconnect();
     }
 
     @Override
     public void listRooms() {
+        log("listRooms");
         warpClient.getRoomWithProperties(roomFilterForNotStartedGames);
 
     }
