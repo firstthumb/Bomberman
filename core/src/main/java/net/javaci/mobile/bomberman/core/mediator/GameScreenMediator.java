@@ -1,18 +1,81 @@
 package net.javaci.mobile.bomberman.core.mediator;
 
 import net.javaci.mobile.bomberman.core.BomberManGame;
+import net.javaci.mobile.bomberman.core.net.NetworkInterface;
+import net.javaci.mobile.bomberman.core.net.NetworkListenerAdapter;
+import net.javaci.mobile.bomberman.core.net.protocol.Command;
+import net.javaci.mobile.bomberman.core.net.protocol.CommandFactory;
+import net.javaci.mobile.bomberman.core.net.protocol.MoveCommand;
+import net.javaci.mobile.bomberman.core.net.protocol.MoveEndCommand;
+import net.javaci.mobile.bomberman.core.server.GameServer;
 import net.javaci.mobile.bomberman.core.view.BomberManScreen;
 import net.javaci.mobile.bomberman.core.view.GameScreen;
 
 public class GameScreenMediator extends BomberManMediator {
 
-    public GameScreenMediator(BomberManGame game) {
+    private GameServer gameServer;
+    private NetworkInterface networkInterface;
+    private CommandFactory commandFactory = new CommandFactory();
+    private GameScreen gameScreen;
+
+    public GameScreenMediator(BomberManGame game, NetworkInterface networkInterface) {
         super(game);
+        this.networkInterface = networkInterface;
+        networkInterface.addNetworkListener(new NetworkListenerAdapter() {
+            @Override
+            public void onMessageReceived(String from, String message) {
+                Command command = commandFactory.createCommand(message);
+                switch (command.getCommand()) {
+                    case Command.MOVE_START:
+                        handleMoveStartCommand((MoveCommand) command);
+                        break;
+                    case Command.MOVE_END:
+                        handleMoveEndCommand((MoveEndCommand) command);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        });
+    }
+
+    private void handleMoveStartCommand(MoveCommand command) {
+        if (BomberManGame.username.equals(command.getFromUser())) {
+            return;
+        }
+        gameScreen.onMoveStart(command.getFromUser(), GameScreen.Direction.valueOf(command.getDirection()));
+    }
+
+    private void handleMoveEndCommand(MoveEndCommand command) {
+        if (BomberManGame.username.equals(command.getFromUser())) {
+            return;
+        }
+        gameScreen.onMoveEnd(command.getFromUser(), GameScreen.Direction.valueOf(command.getDirection()));
+    }
+
+    public void setGameServer(GameServer gameServer) {
+        this.gameServer = gameServer;
     }
 
     @Override
     public BomberManScreen createScreen() {
         this.screen = new GameScreen(this.game, this);
+        this.gameScreen = (GameScreen) screen;
         return screen;
+    }
+
+    public void move(GameScreen.Direction direction) {
+        MoveCommand moveCommand = new MoveCommand();
+        moveCommand.setDirection(direction.toString());
+        moveCommand.setFromUser(BomberManGame.username);
+        networkInterface.sendMessage(moveCommand.serialize());
+    }
+
+    public void moveEnd(GameScreen.Direction direction) {
+        MoveEndCommand moveEndCommand = new MoveEndCommand();
+        moveEndCommand.setDirection(direction.toString());
+        moveEndCommand.setFromUser(BomberManGame.username);
+        networkInterface.sendMessage(moveEndCommand.serialize());
     }
 }

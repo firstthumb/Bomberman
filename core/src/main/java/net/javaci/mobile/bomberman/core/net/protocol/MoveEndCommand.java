@@ -3,13 +3,13 @@ package net.javaci.mobile.bomberman.core.net.protocol;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class MoveCommand extends Command {
+public class MoveEndCommand extends Command {
     private String direction;
     private int x;
     private int y;
 
     public static Command build(JSONObject json) {
-        MoveCommand command = new MoveCommand();
+        MoveEndCommand command = new MoveEndCommand();
         try {
             command.parseCommonFields(json);
             command.direction = json.getString("direction");
@@ -25,10 +25,6 @@ public class MoveCommand extends Command {
 
     public String getDirection() {
         return direction;
-    }
-
-    public void setDirection(String direction) {
-        this.direction = direction;
     }
 
     public int getX() {
@@ -48,6 +44,10 @@ public class MoveCommand extends Command {
 
     @Override
     public int getCommand() {
-        return MOVE_START;
+        return MOVE_END;
+    }
+
+    public void setDirection(String direction) {
+        this.direction = direction;
     }
 }

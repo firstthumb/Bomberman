@@ -7,7 +7,9 @@ import org.json.JSONObject;
 public abstract class Command {
     public static final int CLOCK_SYNC_REQ = 1;
     public static final int CLOCK_SYNC_RES = 2;
-    public static final int MOVE = 3;
+    public static final int MOVE_START = 3;
+    public static final int MOVE_END = 4;
+    public static final int START_GAME = 5;
     protected long timestamp;
     protected String fromUser;
     protected int command;

@@ -14,8 +14,11 @@ public class CommandFactory {
                     return ClockSyncReqCommand.build(json);
                 case Command.CLOCK_SYNC_RES:
                     return ClockSyncResCommand.build(json);
-                case Command.MOVE:
+                case Command.MOVE_START:
                     return MoveCommand.build(json);
+                case Command.MOVE_END:
+                    return MoveEndCommand.build(json);
+
             }
         } catch (JSONException e) {
             e.printStackTrace();

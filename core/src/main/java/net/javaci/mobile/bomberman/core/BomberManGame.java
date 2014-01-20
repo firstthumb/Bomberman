@@ -3,14 +3,12 @@ package net.javaci.mobile.bomberman.core;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
+import net.javaci.mobile.bomberman.core.mediator.GameScreenMediator;
 import net.javaci.mobile.bomberman.core.net.NetworkInterface;
 import net.javaci.mobile.bomberman.core.net.appwarp.AppWarpClient;
-import net.javaci.mobile.bomberman.core.view.LobbyScreen;
 import net.javaci.mobile.bomberman.core.view.SplashScreen;
 import net.peakgames.libgdx.stagebuilder.core.AbstractGame;
-import net.peakgames.libgdx.stagebuilder.core.assets.AssetLoaderListener;
 import net.peakgames.libgdx.stagebuilder.core.assets.AssetsInterface;
 import net.peakgames.libgdx.stagebuilder.core.services.LocalizationService;
 
@@ -20,8 +18,8 @@ import java.util.Map;
 
 public class BomberManGame extends AbstractGame {
 
-    public NetworkInterface client = new AppWarpClient("Guest1");
-
+    public NetworkInterface client = new AppWarpClient(BomberManGame.username);
+    public static String username = "1";
     public static enum ScreenType {
         SPLASH, PLAY, LOBBY
     }
@@ -72,14 +70,8 @@ public class BomberManGame extends AbstractGame {
                 displayLoadingWidget();
                 switch (screenType) {
                     case PLAY:
-//                        getAssetsInterface().loadAssetsAsync(TestScreen.class.getSimpleName(), new AssetLoaderListener() {
-//                            @Override
-//                            public void onAssetsLoaded() {
-//                                TestScreenMediator mediator = new TestScreenMediator(HeartsPlus.this);
-//                                Screen screen = mediator.createScreen();
-//                                setScreen(screen, parameters);
-//                            }
-//                        });
+                        GameScreenMediator mediator = new GameScreenMediator(BomberManGame.this, client);
+                        addScreen(mediator.createScreen());
                         break;
 
                     default:

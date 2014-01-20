@@ -75,7 +75,7 @@ gamePadUpH
   index: -1
 girl1down1
   rotate: false
-  xy: 544, 334
+  xy: 804, 402
   size: 32, 51
   orig: 32, 51
   offset: 0, 0
@@ -89,49 +89,49 @@ girl1down2
   index: -1
 girl1down3
   rotate: false
-  xy: 578, 334
+  xy: 644, 334
   size: 30, 51
   orig: 30, 51
   offset: 0, 0
   index: -1
 girl1left1
   rotate: false
-  xy: 804, 399
+  xy: 708, 331
   size: 28, 54
   orig: 28, 54
   offset: 0, 0
   index: -1
 girl1left2
   rotate: false
-  xy: 642, 332
+  xy: 738, 332
   size: 28, 53
   orig: 28, 53
   offset: 0, 0
   index: -1
 girl1left3
   rotate: false
-  xy: 672, 333
+  xy: 768, 333
   size: 28, 52
   orig: 28, 52
   offset: 0, 0
   index: -1
 girl1right1
   rotate: false
-  xy: 732, 334
+  xy: 65, 112
   size: 28, 51
   orig: 28, 51
   offset: 0, 0
   index: -1
 girl1right2
   rotate: false
-  xy: 702, 333
+  xy: 65, 165
   size: 28, 52
   orig: 28, 52
   offset: 0, 0
   index: -1
 girl1right3
   rotate: false
-  xy: 762, 336
+  xy: 65, 61
   size: 28, 49
   orig: 28, 49
   offset: 0, 0
@@ -145,7 +145,7 @@ girl1up1
   index: -1
 girl1up2
   rotate: false
-  xy: 610, 333
+  xy: 676, 333
   size: 30, 52
   orig: 30, 52
   offset: 0, 0
@@ -253,6 +253,20 @@ greenButtonH
   xy: 804, 903
   size: 193, 84
   orig: 193, 84
+  offset: 0, 0
+  index: -1
+settingIcon
+  rotate: false
+  xy: 544, 337
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+settingIconH
+  rotate: false
+  xy: 594, 337
+  size: 48, 48
+  orig: 48, 48
   offset: 0, 0
   index: -1
 starSmall
