@@ -1,9 +1,7 @@
 package net.javaci.mobile.bomberman.core.view;
 
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -35,6 +33,12 @@ public class LobbyScreen extends BomberManScreen {
 
     public void initialize() {
         gameTable = new Table();
+        ((TextButton)findActor("quitButton")).addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.exit();
+            }
+        });
         initializeGameList();
         networkListenerAdapter = new NetworkListenerAdapter() {
             @Override

@@ -5,14 +5,35 @@ filter: Nearest,Nearest
 repeat: none
 background
   rotate: false
-  xy: 2, 25
+  xy: 2, 170
   size: 800, 600
   orig: 800, 600
   offset: 0, 0
   index: -1
-starSmall
+buttonJoin
   rotate: false
   xy: 2, 2
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+greenButton
+  rotate: false
+  xy: 2, 84
+  size: 193, 84
+  orig: 193, 84
+  offset: 0, 0
+  index: -1
+greenButtonH
+  rotate: false
+  xy: 804, 686
+  size: 193, 84
+  orig: 193, 84
+  offset: 0, 0
+  index: -1
+starSmall
+  rotate: false
+  xy: 197, 147
   size: 21, 21
   orig: 21, 21
   offset: 0, 0

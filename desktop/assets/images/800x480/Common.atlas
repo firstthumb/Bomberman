@@ -10,9 +10,30 @@ background
   orig: 800, 480
   offset: 0, 0
   index: -1
+buttonJoin
+  rotate: false
+  xy: 927, 425
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+greenButton
+  rotate: false
+  xy: 804, 452
+  size: 121, 53
+  orig: 121, 53
+  offset: 0, 0
+  index: -1
+greenButtonH
+  rotate: false
+  xy: 804, 397
+  size: 121, 53
+  orig: 121, 53
+  offset: 0, 0
+  index: -1
 powerUp_bomb
   rotate: false
-  xy: 804, 473
+  xy: 804, 363
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
