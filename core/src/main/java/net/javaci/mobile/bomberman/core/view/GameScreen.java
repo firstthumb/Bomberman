@@ -23,7 +23,7 @@ public class GameScreen extends BomberManScreen {
     public void show() {
         super.show();
         setGamePadListeners();
-        bombermanWidget = new BombermanWidget(getStageBuilder().getAssets().getTextureAtlas("Common.atlas"));
+        bombermanWidget = new BombermanWidget(getStageBuilder().getAssets().getTextureAtlas("Common.atlas"), 2);
         stage.addActor(bombermanWidget);
     }
 

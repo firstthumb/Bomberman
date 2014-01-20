@@ -46,7 +46,6 @@ public class BomberManScreen extends AbstractScreen {
     public void show() {
         super.show();
         mediator.onScreenShowInternal();
-        removeLoadingWidget();
     }
 
     @Override
@@ -108,8 +107,8 @@ public class BomberManScreen extends AbstractScreen {
                 game.getResolutionHelper(),
                 0.5f,
                 true,
-                game.getLocalizationService().getString("loading"),
-                Constants.FONT_23,
+                "loading",
+                Constants.FONT_26,
                 Constants.LOADING_WIDGET_BACKGROUND,
                 Constants.LOADING_WIDGET_BAR,
                 Constants.LOADING_BAR_ATLAS);
@@ -130,4 +129,7 @@ public class BomberManScreen extends AbstractScreen {
         return false;
     }
 
+    protected void log(String message) {
+        System.out.println(getClass() + " : " + message);
+    }
 }

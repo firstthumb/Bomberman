@@ -3,149 +3,261 @@ Common.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+background
+  rotate: false
+  xy: 2, 387
+  size: 800, 600
+  orig: 800, 600
+  offset: 0, 0
+  index: -1
+buttonJoin
+  rotate: false
+  xy: 2, 219
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
 gamePadDown
   rotate: false
-  xy: 206, 51
+  xy: 804, 763
   size: 61, 75
   orig: 61, 75
   offset: 0, 0
   index: -1
 gamePadDownH
   rotate: false
-  xy: 269, 51
+  xy: 2, 64
   size: 61, 75
   orig: 61, 75
   offset: 0, 0
   index: -1
 gamePadLeft
   rotate: false
-  xy: 2, 65
+  xy: 197, 324
   size: 76, 61
   orig: 76, 61
   offset: 0, 0
   index: -1
 gamePadLeftH
   rotate: false
-  xy: 2, 2
+  xy: 804, 840
   size: 76, 61
   orig: 76, 61
   offset: 0, 0
   index: -1
 gamePadRight
   rotate: false
-  xy: 332, 65
+  xy: 275, 324
   size: 75, 61
   orig: 75, 61
   offset: 0, 0
   index: -1
 gamePadRightH
   rotate: false
-  xy: 332, 2
+  xy: 882, 840
   size: 75, 61
   orig: 75, 61
   offset: 0, 0
   index: -1
 gamePadUp
   rotate: false
-  xy: 80, 50
+  xy: 2, 141
   size: 61, 76
   orig: 61, 76
   offset: 0, 0
   index: -1
 gamePadUpH
   rotate: false
-  xy: 143, 50
+  xy: 84, 223
   size: 61, 76
   orig: 61, 76
   offset: 0, 0
   index: -1
 girl1down1
   rotate: false
-  xy: 443, 75
+  xy: 544, 334
   size: 32, 51
   orig: 32, 51
   offset: 0, 0
   index: -1
 girl1down2
   rotate: false
-  xy: 541, 75
+  xy: 993, 850
   size: 29, 51
   orig: 29, 51
   offset: 0, 0
   index: -1
 girl1down3
   rotate: false
-  xy: 477, 75
+  xy: 578, 334
   size: 30, 51
   orig: 30, 51
   offset: 0, 0
   index: -1
 girl1left1
   rotate: false
-  xy: 572, 72
+  xy: 804, 399
   size: 28, 54
   orig: 28, 54
   offset: 0, 0
   index: -1
 girl1left2
   rotate: false
-  xy: 602, 73
+  xy: 642, 332
   size: 28, 53
   orig: 28, 53
   offset: 0, 0
   index: -1
 girl1left3
   rotate: false
-  xy: 632, 74
+  xy: 672, 333
   size: 28, 52
   orig: 28, 52
   offset: 0, 0
   index: -1
 girl1right1
   rotate: false
-  xy: 692, 75
+  xy: 732, 334
   size: 28, 51
   orig: 28, 51
   offset: 0, 0
   index: -1
 girl1right2
   rotate: false
-  xy: 662, 74
+  xy: 702, 333
   size: 28, 52
   orig: 28, 52
   offset: 0, 0
   index: -1
 girl1right3
   rotate: false
-  xy: 722, 77
+  xy: 762, 336
   size: 28, 49
   orig: 28, 49
   offset: 0, 0
   index: -1
 girl1up1
   rotate: false
-  xy: 409, 73
+  xy: 959, 848
   size: 32, 53
   orig: 32, 53
   offset: 0, 0
   index: -1
 girl1up2
   rotate: false
-  xy: 509, 74
+  xy: 610, 333
   size: 30, 52
   orig: 30, 52
   offset: 0, 0
   index: -1
 girl1up3
   rotate: false
-  xy: 409, 17
+  xy: 915, 784
   size: 30, 54
   orig: 30, 54
   offset: 0, 0
   index: -1
+girl2down1
+  rotate: false
+  xy: 147, 239
+  size: 46, 60
+  orig: 46, 60
+  offset: 0, 0
+  index: -1
+girl2down2
+  rotate: false
+  xy: 804, 701
+  size: 46, 60
+  orig: 46, 60
+  offset: 0, 0
+  index: -1
+girl2down3
+  rotate: false
+  xy: 867, 778
+  size: 46, 60
+  orig: 46, 60
+  offset: 0, 0
+  index: -1
+girl2left1
+  rotate: false
+  xy: 2, 2
+  size: 46, 60
+  orig: 46, 60
+  offset: 0, 0
+  index: -1
+girl2left2
+  rotate: false
+  xy: 448, 326
+  size: 46, 59
+  orig: 46, 59
+  offset: 0, 0
+  index: -1
+girl2left3
+  rotate: false
+  xy: 804, 516
+  size: 46, 59
+  orig: 46, 59
+  offset: 0, 0
+  index: -1
+girl2right1
+  rotate: false
+  xy: 352, 325
+  size: 46, 60
+  orig: 46, 60
+  offset: 0, 0
+  index: -1
+girl2right2
+  rotate: false
+  xy: 496, 326
+  size: 46, 59
+  orig: 46, 59
+  offset: 0, 0
+  index: -1
+girl2right3
+  rotate: false
+  xy: 804, 455
+  size: 46, 59
+  orig: 46, 59
+  offset: 0, 0
+  index: -1
+girl2up1
+  rotate: false
+  xy: 804, 639
+  size: 46, 60
+  orig: 46, 60
+  offset: 0, 0
+  index: -1
+girl2up2
+  rotate: false
+  xy: 400, 325
+  size: 46, 60
+  orig: 46, 60
+  offset: 0, 0
+  index: -1
+girl2up3
+  rotate: false
+  xy: 804, 577
+  size: 46, 60
+  orig: 46, 60
+  offset: 0, 0
+  index: -1
+greenButton
+  rotate: false
+  xy: 2, 301
+  size: 193, 84
+  orig: 193, 84
+  offset: 0, 0
+  index: -1
+greenButtonH
+  rotate: false
+  xy: 804, 903
+  size: 193, 84
+  orig: 193, 84
+  offset: 0, 0
+  index: -1
 starSmall
   rotate: false
-  xy: 80, 27
+  xy: 197, 301
   size: 21, 21
   orig: 21, 21
   offset: 0, 0

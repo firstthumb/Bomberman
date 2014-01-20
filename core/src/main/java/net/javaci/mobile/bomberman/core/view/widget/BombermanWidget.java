@@ -20,8 +20,10 @@ public class BombermanWidget extends WidgetGroup {
     private TextureRegion rightStand;
     private TextureRegion currentFrame;
     private float elapsedTime;
+    private int bombermanIndex;
 
-    public BombermanWidget(TextureAtlas atlas) {
+    public BombermanWidget(TextureAtlas atlas, int bombermanIndex) {
+        this.bombermanIndex = bombermanIndex;
         prepareStandingTextures(atlas);
         prepareWalkUpAnimation(atlas);
         prepareWalkDownAnimation(atlas);
@@ -29,42 +31,58 @@ public class BombermanWidget extends WidgetGroup {
         prepareWalkLeftAnimation(atlas);
     }
 
+    private String generateUpImageName(int bombermanIndex, int frameIndex) {
+        return "girl" + bombermanIndex + "up" + frameIndex;
+    }
+
+    private String generateDownImageName(int bombermanIndex, int frameIndex) {
+        return "girl" + bombermanIndex + "down" + frameIndex;
+    }
+
+    private String generateRightImageName(int bombermanIndex, int frameIndex) {
+        return "girl" + bombermanIndex + "right" + frameIndex;
+    }
+
+    private String generateLeftImageName(int bombermanIndex, int frameIndex) {
+        return "girl" + bombermanIndex + "left" + frameIndex;
+    }
+
     private void prepareStandingTextures(TextureAtlas atlas) {
-        upStand = atlas.findRegion("girl1up1");
-        downStand = atlas.findRegion("girl1down1");
-        rightStand = atlas.findRegion("girl1right1");
-        leftStand = atlas.findRegion("girl1left1");
+        upStand = atlas.findRegion(generateUpImageName(this.bombermanIndex, 1));
+        downStand = atlas.findRegion(generateDownImageName(this.bombermanIndex, 1));
+        rightStand = atlas.findRegion(generateRightImageName(this.bombermanIndex, 1));
+        leftStand = atlas.findRegion(generateLeftImageName(this.bombermanIndex, 1));
     }
 
     private void prepareWalkRightAnimation(TextureAtlas atlas) {
         TextureRegion frames[] = new TextureRegion[3];
-        frames[0] = atlas.findRegion("girl1right1");
-        frames[1] = atlas.findRegion("girl1right2");
-        frames[2] = atlas.findRegion("girl1right3");
+        frames[0] = atlas.findRegion(generateRightImageName(this.bombermanIndex, 1));
+        frames[1] = atlas.findRegion(generateRightImageName(this.bombermanIndex, 2));
+        frames[2] = atlas.findRegion(generateRightImageName(this.bombermanIndex, 3));
         walkRightAnimation = new Animation(0.15f, frames);
     }
 
     private void prepareWalkLeftAnimation(TextureAtlas atlas) {
         TextureRegion frames[] = new TextureRegion[3];
-        frames[0] = atlas.findRegion("girl1left1");
-        frames[1] = atlas.findRegion("girl1left2");
-        frames[2] = atlas.findRegion("girl1left3");
+        frames[0] = atlas.findRegion(generateLeftImageName(this.bombermanIndex, 1));
+        frames[1] = atlas.findRegion(generateLeftImageName(this.bombermanIndex, 2));
+        frames[2] = atlas.findRegion(generateLeftImageName(this.bombermanIndex, 3));
         walkLeftAnimation = new Animation(0.15f, frames);
     }
 
     private void prepareWalkUpAnimation(TextureAtlas atlas) {
         TextureRegion frames[] = new TextureRegion[3];
-        frames[0] = atlas.findRegion("girl1up1");
-        frames[1] = atlas.findRegion("girl1up2");
-        frames[2] = atlas.findRegion("girl1up3");
+        frames[0] = atlas.findRegion(generateUpImageName(this.bombermanIndex, 1));
+        frames[1] = atlas.findRegion(generateUpImageName(this.bombermanIndex, 2));
+        frames[2] = atlas.findRegion(generateUpImageName(this.bombermanIndex, 3));
         walkUpAnimation = new Animation(0.15f, frames);
     }
 
     private void prepareWalkDownAnimation(TextureAtlas atlas) {
         TextureRegion frames[] = new TextureRegion[3];
-        frames[0] = atlas.findRegion("girl1down1");
-        frames[1] = atlas.findRegion("girl1down2");
-        frames[2] = atlas.findRegion("girl1down3");
+        frames[0] = atlas.findRegion(generateDownImageName(this.bombermanIndex, 1));
+        frames[1] = atlas.findRegion(generateDownImageName(this.bombermanIndex, 2));
+        frames[2] = atlas.findRegion(generateDownImageName(this.bombermanIndex, 3));
         walkDownAnimation = new Animation(0.15f, frames);
     }
 
