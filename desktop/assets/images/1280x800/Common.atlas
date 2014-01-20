@@ -3,9 +3,149 @@ Common.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-starSmall
+gamePadDown
+  rotate: false
+  xy: 206, 51
+  size: 61, 75
+  orig: 61, 75
+  offset: 0, 0
+  index: -1
+gamePadDownH
+  rotate: false
+  xy: 269, 51
+  size: 61, 75
+  orig: 61, 75
+  offset: 0, 0
+  index: -1
+gamePadLeft
+  rotate: false
+  xy: 2, 65
+  size: 76, 61
+  orig: 76, 61
+  offset: 0, 0
+  index: -1
+gamePadLeftH
   rotate: false
   xy: 2, 2
+  size: 76, 61
+  orig: 76, 61
+  offset: 0, 0
+  index: -1
+gamePadRight
+  rotate: false
+  xy: 332, 65
+  size: 75, 61
+  orig: 75, 61
+  offset: 0, 0
+  index: -1
+gamePadRightH
+  rotate: false
+  xy: 332, 2
+  size: 75, 61
+  orig: 75, 61
+  offset: 0, 0
+  index: -1
+gamePadUp
+  rotate: false
+  xy: 80, 50
+  size: 61, 76
+  orig: 61, 76
+  offset: 0, 0
+  index: -1
+gamePadUpH
+  rotate: false
+  xy: 143, 50
+  size: 61, 76
+  orig: 61, 76
+  offset: 0, 0
+  index: -1
+girl1down1
+  rotate: false
+  xy: 443, 75
+  size: 32, 51
+  orig: 32, 51
+  offset: 0, 0
+  index: -1
+girl1down2
+  rotate: false
+  xy: 541, 75
+  size: 29, 51
+  orig: 29, 51
+  offset: 0, 0
+  index: -1
+girl1down3
+  rotate: false
+  xy: 477, 75
+  size: 30, 51
+  orig: 30, 51
+  offset: 0, 0
+  index: -1
+girl1left1
+  rotate: false
+  xy: 572, 72
+  size: 28, 54
+  orig: 28, 54
+  offset: 0, 0
+  index: -1
+girl1left2
+  rotate: false
+  xy: 602, 73
+  size: 28, 53
+  orig: 28, 53
+  offset: 0, 0
+  index: -1
+girl1left3
+  rotate: false
+  xy: 632, 74
+  size: 28, 52
+  orig: 28, 52
+  offset: 0, 0
+  index: -1
+girl1right1
+  rotate: false
+  xy: 692, 75
+  size: 28, 51
+  orig: 28, 51
+  offset: 0, 0
+  index: -1
+girl1right2
+  rotate: false
+  xy: 662, 74
+  size: 28, 52
+  orig: 28, 52
+  offset: 0, 0
+  index: -1
+girl1right3
+  rotate: false
+  xy: 722, 77
+  size: 28, 49
+  orig: 28, 49
+  offset: 0, 0
+  index: -1
+girl1up1
+  rotate: false
+  xy: 409, 73
+  size: 32, 53
+  orig: 32, 53
+  offset: 0, 0
+  index: -1
+girl1up2
+  rotate: false
+  xy: 509, 74
+  size: 30, 52
+  orig: 30, 52
+  offset: 0, 0
+  index: -1
+girl1up3
+  rotate: false
+  xy: 409, 17
+  size: 30, 54
+  orig: 30, 54
+  offset: 0, 0
+  index: -1
+starSmall
+  rotate: false
+  xy: 80, 27
   size: 21, 21
   orig: 21, 21
   offset: 0, 0

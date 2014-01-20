@@ -6,6 +6,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import net.javaci.mobile.bomberman.core.BomberManGame;
 import net.javaci.mobile.bomberman.core.Constants;
+import net.javaci.mobile.bomberman.core.mediator.GameScreenMediator;
 import net.javaci.mobile.bomberman.core.mediator.LobbyScreenMediator;
 import net.peakgames.libgdx.stagebuilder.core.AbstractGame;
 import net.peakgames.libgdx.stagebuilder.core.assets.AssetLoaderListener;
@@ -60,7 +62,9 @@ public class SplashScreen implements Screen {
             percentage = Interpolation.swing.apply(percentage);
 
             if (elapsedTime > ANIMATION_DURATION) {
-                LobbyScreenMediator mediator = new LobbyScreenMediator(this.game);
+                //LobbyScreenMediator mediator = new LobbyScreenMediator(this.game);
+                //game.setScreen(mediator.createScreen());
+                GameScreenMediator mediator = new GameScreenMediator(this.game);
                 game.setScreen(mediator.createScreen());
                 percentage = 1;
             }
@@ -106,7 +110,7 @@ public class SplashScreen implements Screen {
     }
 
     private void loadFonts(AssetsInterface assets, String assetsKey) {
-//        assets.addAssetConfiguration(assetsKey, "20pt.fnt", BitmapFont.class);
+        assets.addAssetConfiguration(assetsKey, "26pt.fnt", BitmapFont.class);
     }
 
     private void loadLogo() {
