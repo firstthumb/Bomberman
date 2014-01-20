@@ -30,6 +30,7 @@ public class GameScreen extends BomberManScreen {
     public void show() {
         super.show();
         setGamePadListeners();
+        // TODO: user join notification
         playerWidgets.put("1", new BombermanWidget(getStageBuilder().getAssets().getTextureAtlas("Common.atlas"), 1));
         playerWidgets.put("2", new BombermanWidget(getStageBuilder().getAssets().getTextureAtlas("Common.atlas"), 2));
         stage.addActor(playerWidgets.get("1"));

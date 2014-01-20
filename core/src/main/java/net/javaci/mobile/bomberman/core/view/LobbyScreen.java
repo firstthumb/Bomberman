@@ -11,8 +11,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import net.javaci.mobile.bomberman.core.BomberManGame;
 import net.javaci.mobile.bomberman.core.mediator.BomberManMediator;
+import net.javaci.mobile.bomberman.core.mediator.LobbyScreenMediator;
 import net.javaci.mobile.bomberman.core.net.NetworkListenerAdapter;
 import net.javaci.mobile.bomberman.core.net.models.RoomModel;
+import net.javaci.mobile.bomberman.core.session.UserSession;
 import net.javaci.mobile.bomberman.core.util.Log;
 import net.javaci.mobile.bomberman.core.view.widget.GameListWidgetConfig;
 import net.peakgames.libgdx.stagebuilder.core.AbstractGame;
@@ -24,9 +26,12 @@ public class LobbyScreen extends BomberManScreen {
     private Table gameTable;
     private GameListWidgetConfig config;
     private NetworkListenerAdapter networkListenerAdapter;
+    private LobbyScreenMediator lobbyScreenMediator;
 
     public LobbyScreen(AbstractGame game, BomberManMediator mediator) {
         super(game, mediator);
+
+        this.lobbyScreenMediator = ((LobbyScreenMediator)mediator);
 
         config = (GameListWidgetConfig)findActor("gameListPanelWidgetConfiguration");
         initialize();
@@ -44,6 +49,8 @@ public class LobbyScreen extends BomberManScreen {
         networkListenerAdapter = new NetworkListenerAdapter() {
             @Override
             public void onConnected() {
+                updateUserInfo();
+
                 game.getClient().listRooms();
             }
 
@@ -110,7 +117,7 @@ public class LobbyScreen extends BomberManScreen {
     private void createNewGame() {
         displayLoadingWidget();
         // TODO : create random room name using player name
-        game.getClient().createRoom("Room");
+        game.getClient().createRoom(UserSession.getInstance().getUsername() + "_Room");
     }
 
     private void reloadGameListPanel(List<RoomModel> rooms) {
@@ -161,5 +168,9 @@ public class LobbyScreen extends BomberManScreen {
         });
 
         return group;
+    }
+
+    public void updateUserInfo() {
+        ((Label)findActor("usernameLabel")).setText(UserSession.getInstance().getUsername());
     }
 }

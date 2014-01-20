@@ -1,6 +1,8 @@
 package net.javaci.mobile.bomberman.core.mediator;
 
 import net.javaci.mobile.bomberman.core.BomberManGame;
+import net.javaci.mobile.bomberman.core.session.UserSession;
+import net.javaci.mobile.bomberman.core.util.Log;
 import net.javaci.mobile.bomberman.core.view.BomberManScreen;
 import net.javaci.mobile.bomberman.core.view.LobbyScreen;
 
