@@ -8,14 +8,15 @@ import net.javaci.mobile.bomberman.core.net.protocol.ClockSyncResCommand;
 import net.javaci.mobile.bomberman.core.net.protocol.Command;
 import net.javaci.mobile.bomberman.core.net.protocol.CommandFactory;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Synchronizer {
+    public static final int MAX_NUMBER_OF_SYNC_MESSAGES = 21;
     private AppWarpClient appWarpClient;
     private CommandFactory commandFactory;
-    private Map<String, Long> clockDiffs = Collections.synchronizedMap(new HashMap<String, Long>());
+    private Map<String, Integer> clockDiffs = Collections.synchronizedMap(new HashMap<String, Integer>());
+    private Map<String, Integer> syncMessageCountPerUser = Collections.synchronizedMap(new HashMap<String, Integer>());
+    private Map<String, List<Integer>> collectedClockDiffsPerUser = Collections.synchronizedMap(new HashMap<String, List<Integer>>());
     private Map<String, ClockSyncReqCommand> waitingSyncRequests = Collections.synchronizedMap(new HashMap<String, ClockSyncReqCommand>());
 
     public Synchronizer(AppWarpClient appWarpClient, final CommandFactory commandFactory) {
@@ -57,12 +58,39 @@ public class Synchronizer {
 
     private void handleClockSyncResponse(ClockSyncResCommand command) {
         log("Clock sync res. received : " + command);
+        String targetUser = command.getFromUser();
         long now = System.currentTimeMillis();
         long roundTripTime = now - command.getInitialTimestamp();
         System.out.println("Round Trip Time : " + roundTripTime);
         long peerClock = command.getTimestamp() + roundTripTime / 2;
-        clockDiffs.put(command.getFromUser(), (now - peerClock));
-        log("Clock diffs " + clockDiffs);
+        int diff = (int)(now - peerClock);
+        List<Integer> list = this.collectedClockDiffsPerUser.get(targetUser);
+        if (list == null) {
+            list = new ArrayList<Integer>();
+            this.collectedClockDiffsPerUser.put(targetUser, list);
+        }
+        list.add(diff);
+
+        int count = 0;
+        if (this.syncMessageCountPerUser.containsKey(targetUser)) {
+            count = this.syncMessageCountPerUser.get(targetUser);
+        }
+        count = count + 1;
+        this.syncMessageCountPerUser.put(targetUser, count);
+        if (count < MAX_NUMBER_OF_SYNC_MESSAGES) {
+            startSyncClocksWithPlayer(targetUser);
+        } else {
+            calculateAverageClockDiff(targetUser);
+        }
+    }
+
+    private void calculateAverageClockDiff(String targetUser) {
+        //calculate average diff
+        List<Integer> list = this.collectedClockDiffsPerUser.get(targetUser);
+        Collections.sort(list);
+        Integer clockDiff = list.get((list.size() / 2 + 1));
+        log("Average clock diff for user " + targetUser + " is " + clockDiff);
+        this.clockDiffs.put(targetUser, clockDiff);
     }
 
     private void startSyncClocksWithPlayer(String playerName) {
