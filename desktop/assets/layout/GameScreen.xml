@@ -8,4 +8,6 @@
         <button name="gamePadRightButton" x="85" y="50" atlas="Common.atlas" frameUp="gamePadRight" frameDown="gamePadRightH"/>
         <button name="gamePadLeftButton" x="0" y="50" atlas="Common.atlas" frameUp="gamePadLeft" frameDown="gamePadLeftH"/>
     </group>
+
+    <button name="startGameButton" x="200" y="350" atlas="Common.atlas" frameUp="gamePadLeft" frameDown="gamePadLeftH"/>
 </group>

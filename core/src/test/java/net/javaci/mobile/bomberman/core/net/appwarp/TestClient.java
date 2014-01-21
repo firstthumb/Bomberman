@@ -1,7 +1,6 @@
 package net.javaci.mobile.bomberman.core.net.appwarp;
 
 
-import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 import net.javaci.mobile.bomberman.core.Synchronizer;
 import net.javaci.mobile.bomberman.core.net.NetworkListenerAdapter;
 import net.javaci.mobile.bomberman.core.net.models.RoomModel;
@@ -45,9 +44,34 @@ public class TestClient {
             handleSendMessageToCommand(command);
         } else if (command.startsWith("send_message")) {
             handleSendMessageCommand(command);
+        } else if (command.startsWith("clear_rooms")) {
+            handleClearRooms();
         } else {
             log("Undefined command '" + command + "'");
         }
+    }
+
+    private void handleClearRooms() {
+        warpClient.addNetworkListener(new NetworkListenerAdapter() {
+            @Override
+            public void onRoomListReceived(List<RoomModel> rooms) {
+                log("Room list : ");
+                for (RoomModel room : rooms) {
+                    warpClient.deleteRoom(room.getId());
+                }
+            }
+
+            @Override
+            public void onRoomDeleted(String roomId) {
+                log("Room deleted : " + roomId);
+            }
+
+            @Override
+            public void onDisconnected() {
+                warpClient.removeNetworkListener(this);
+            }
+        });
+        warpClient.listRooms();
     }
 
     private void handleSendMessageCommand(String command) {

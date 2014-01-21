@@ -3,11 +3,9 @@ package net.javaci.mobile.bomberman.core.mediator;
 import net.javaci.mobile.bomberman.core.BomberManGame;
 import net.javaci.mobile.bomberman.core.net.NetworkInterface;
 import net.javaci.mobile.bomberman.core.net.NetworkListenerAdapter;
-import net.javaci.mobile.bomberman.core.net.protocol.Command;
-import net.javaci.mobile.bomberman.core.net.protocol.CommandFactory;
-import net.javaci.mobile.bomberman.core.net.protocol.MoveCommand;
-import net.javaci.mobile.bomberman.core.net.protocol.MoveEndCommand;
+import net.javaci.mobile.bomberman.core.net.protocol.*;
 import net.javaci.mobile.bomberman.core.server.GameServer;
+import net.javaci.mobile.bomberman.core.util.Log;
 import net.javaci.mobile.bomberman.core.view.BomberManScreen;
 import net.javaci.mobile.bomberman.core.view.GameScreen;
 
@@ -25,7 +23,14 @@ public class GameScreenMediator extends BomberManMediator {
             @Override
             public void onMessageReceived(String from, String message) {
                 Command command = commandFactory.createCommand(message);
+                if (command == null) {
+                    Log.d("Waiting split message");
+                    return;
+                }
                 switch (command.getCommand()) {
+                    case Command.CREATE_GAME:
+                        handleCreateGameCommand((CreateGameCommand)command);
+                        break;
                     case Command.MOVE_START:
                         handleMoveStartCommand((MoveCommand) command);
                         break;
@@ -38,6 +43,14 @@ public class GameScreenMediator extends BomberManMediator {
                 }
             }
         });
+    }
+
+    private void handleCreateGameCommand(CreateGameCommand command) {
+        if (BomberManGame.username.equals(command.getFromUser())) {
+            return;
+        }
+
+        gameScreen.onCreateGame(command.getLabyrinthModel(), command.getGhostModels());
     }
 
     private void handleMoveStartCommand(MoveCommand command) {

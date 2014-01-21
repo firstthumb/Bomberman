@@ -1,15 +1,18 @@
 package net.javaci.mobile.bomberman.core;
 
+import net.javaci.mobile.bomberman.core.models.GhostModel;
 import net.javaci.mobile.bomberman.core.models.LabyrinthModel;
 import net.javaci.mobile.bomberman.core.models.PlayerModel;
 import net.javaci.mobile.bomberman.core.view.GameScreen;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class World {
     private Map<String, PlayerModel> playerModels = new HashMap<String, PlayerModel>();
     private LabyrinthModel labyrinthModel;
+    private Map<Integer, GhostModel> ghostModels = new HashMap<Integer, GhostModel>();
 
     public void setLabyrinthModel(LabyrinthModel labyrinthModel) {
         this.labyrinthModel = labyrinthModel;
@@ -81,11 +84,29 @@ public class World {
         }
     }
 
+    public void addGhostModels(List<GhostModel> ghostModels) {
+        for (GhostModel ghostModel : ghostModels) {
+            this.ghostModels.put(ghostModel.getId(), ghostModel);
+        }
+    }
+
+    public void addGhostModel(GhostModel ghostModel) {
+        ghostModels.put(ghostModel.getId(), ghostModel);
+    }
+
+    public Map<Integer, GhostModel> getGhostModels() {
+        return ghostModels;
+    }
+
     public void addPlayerModel(PlayerModel playerModel) {
         playerModels.put(playerModel.getPlayerName(), playerModel);
     }
 
     public PlayerModel getPlayerModel(String playerName) {
         return this.playerModels.get("playerModel");
+    }
+
+    public LabyrinthModel getLabyrinthModel() {
+        return labyrinthModel;
     }
 }

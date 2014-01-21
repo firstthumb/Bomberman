@@ -10,9 +10,12 @@ public abstract class Command {
     public static final int MOVE_START = 3;
     public static final int MOVE_END = 4;
     public static final int START_GAME = 5;
+    public static final int CREATE_GAME = 6;
     protected long timestamp;
     protected String fromUser;
     protected int command;
+
+    public static final int MAX_MESSAGE_LENGTH = 200;
 
     protected void parseCommonFields(JSONObject json) throws JSONException {
         this.timestamp = json.getLong("t");
@@ -32,6 +35,20 @@ public abstract class Command {
             e.printStackTrace();
         }
         return json.toString();
+    }
+
+    public String[] splitMessage(String message) {
+        if (message.length() > MAX_MESSAGE_LENGTH) {
+            int id = (int)(Math.random()*1000);
+            String[] messages = new String[(int)Math.ceil((double)message.length()/MAX_MESSAGE_LENGTH)];
+            for (int i=0; i<messages.length; i++) {
+                messages[i] = "split#" + id + "#" + messages.length + "#" + i + "#" + message.substring(i*MAX_MESSAGE_LENGTH, Math.min((i+1)*MAX_MESSAGE_LENGTH, message.length()));
+            }
+
+            return messages;
+        }
+
+        return new String[] {message};
     }
 
     protected abstract void serializeCustomFields(JSONObject json) throws JSONException;
