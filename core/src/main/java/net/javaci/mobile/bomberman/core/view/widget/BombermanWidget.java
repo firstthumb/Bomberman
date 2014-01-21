@@ -6,10 +6,10 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import net.javaci.mobile.bomberman.core.models.PlayerModel;
 
 public class BombermanWidget extends WidgetGroup {
-    private static final float SPEED = 40f; //10 pixels seconds.
-    private State state = State.STANDING_DOWN;
+    private PlayerModel playerModel;
     private Animation walkUpAnimation;
     private Animation walkDownAnimation;
     private Animation walkLeftAnimation;
@@ -22,8 +22,9 @@ public class BombermanWidget extends WidgetGroup {
     private float elapsedTime;
     private int bombermanIndex;
 
-    public BombermanWidget(TextureAtlas atlas, int bombermanIndex) {
+    public BombermanWidget(TextureAtlas atlas, int bombermanIndex, PlayerModel playerModel) {
         this.bombermanIndex = bombermanIndex;
+        this.playerModel = playerModel;
         prepareStandingTextures(atlas);
         prepareWalkUpAnimation(atlas);
         prepareWalkDownAnimation(atlas);
@@ -92,22 +93,18 @@ public class BombermanWidget extends WidgetGroup {
         float deltaTime = Gdx.graphics.getDeltaTime();
         elapsedTime += deltaTime;
 
-        switch (state) {
+        switch (playerModel.getState()) {
             case WALKING_UP:
                 currentFrame = walkUpAnimation.getKeyFrame(elapsedTime, true);
-                setY(getY() + deltaTime * SPEED);
                 break;
             case WALKING_DOWN:
                 currentFrame = walkDownAnimation.getKeyFrame(elapsedTime, true);
-                setY(getY() - deltaTime * SPEED);
                 break;
             case WALKING_RIGHT:
                 currentFrame = walkRightAnimation.getKeyFrame(elapsedTime, true);
-                setX(getX() + deltaTime * SPEED);
                 break;
             case WALKING_LEFT:
                 currentFrame = walkLeftAnimation.getKeyFrame(elapsedTime, true);
-                setX(getX() - deltaTime * SPEED);
                 break;
             case STANDING_UP:
                 currentFrame = upStand;
@@ -125,47 +122,6 @@ public class BombermanWidget extends WidgetGroup {
                 break;
         }
 
-        batch.draw(currentFrame, getX(), getY());
-    }
-
-    public void moveUp() {
-        state = State.WALKING_UP;
-    }
-
-    public void moveDown() {
-        state = State.WALKING_DOWN;
-    }
-
-    public void moveRight() {
-        state = State.WALKING_RIGHT;
-    }
-
-    public void moveLeft() {
-        state = State.WALKING_LEFT;
-    }
-
-    public void stop() {
-        switch (state) {
-            case WALKING_DOWN:
-                state = State.STANDING_DOWN;
-                break;
-            case WALKING_UP:
-                state = State.STANDING_UP;
-                break;
-            case WALKING_LEFT:
-                state = State.STANDING_LEFT;
-                break;
-            case WALKING_RIGHT:
-                state = State.STANDING_RIGHT;
-                break;
-            default:
-                state = State.STANDING_DOWN;
-                break;
-        }
-
-    }
-
-    enum State {
-        STANDING_UP, STANDING_DOWN, STANDING_RIGHT, STANDING_LEFT, WALKING_UP, WALKING_DOWN, WALKING_LEFT, WALKING_RIGHT
+        batch.draw(currentFrame, playerModel.getX(), playerModel.getY());
     }
 }

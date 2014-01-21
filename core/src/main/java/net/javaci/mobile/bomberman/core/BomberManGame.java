@@ -29,7 +29,6 @@ public class BomberManGame extends AbstractGame {
     @Override
     public List<Vector2> getSupportedResolutions() {
         List<Vector2> supportedScreenResolutions = new LinkedList<Vector2>();
-        supportedScreenResolutions.add(new Vector2(800, 480));
         supportedScreenResolutions.add(new Vector2(1280, 800));
         return supportedScreenResolutions;
     }

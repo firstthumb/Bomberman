@@ -1,25 +1,24 @@
 package net.javaci.mobile.bomberman.core.view;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import net.javaci.mobile.bomberman.core.BomberManGame;
+import net.javaci.mobile.bomberman.core.World;
 import net.javaci.mobile.bomberman.core.mediator.BomberManMediator;
 import net.javaci.mobile.bomberman.core.mediator.GameScreenMediator;
+import net.javaci.mobile.bomberman.core.models.LabyrinthModel;
+import net.javaci.mobile.bomberman.core.models.PlayerModel;
+import net.javaci.mobile.bomberman.core.session.UserSession;
 import net.javaci.mobile.bomberman.core.view.widget.BombermanWidget;
+import net.javaci.mobile.bomberman.core.view.widget.LabyrinthWidget;
 import net.peakgames.libgdx.stagebuilder.core.AbstractGame;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class GameScreen extends BomberManScreen {
 
-    Map<String, BombermanWidget> playerWidgets = new HashMap<String, BombermanWidget>();
+    private World world = new World();
     private GameScreenMediator gameScreenMediator;
-
-    public static enum Direction {
-        UP, DOWN, RIGHT, LEFT
-    }
 
     public GameScreen(AbstractGame game, BomberManMediator mediator) {
         super(game, mediator);
@@ -29,15 +28,34 @@ public class GameScreen extends BomberManScreen {
     @Override
     public void show() {
         super.show();
-        setGamePadListeners();
+        LabyrinthModel labyrinthModel = new LabyrinthModel();
+        world.setLabyrinthModel(labyrinthModel);
+
+        PlayerModel playerModel = new PlayerModel();
+        playerModel.setPlayerName(UserSession.getInstance().getUsername());
+        world.addPlayerModel(playerModel);
         // TODO: user join notification
-        playerWidgets.put("1", new BombermanWidget(getStageBuilder().getAssets().getTextureAtlas("Common.atlas"), 1));
-        playerWidgets.put("2", new BombermanWidget(getStageBuilder().getAssets().getTextureAtlas("Common.atlas"), 2));
-        stage.addActor(playerWidgets.get("1"));
-        stage.addActor(playerWidgets.get("2"));
+
+        BombermanWidget bombermanWidget = new BombermanWidget(getStageBuilder().getAssets().getTextureAtlas("Common.atlas"), 1, playerModel);
+        stage.addActor(bombermanWidget);
+
+        LabyrinthWidget labyrinthWidget = new LabyrinthWidget(labyrinthModel, getStageBuilder().getResolutionHelper(), getStageBuilder().getAssets());
+        stage.addActor(labyrinthWidget);
+
+        prepareGamePad();
     }
 
-    private void setGamePadListeners() {
+    @Override
+    public void render(float delta) {
+        super.render(delta);
+        world.update(delta);
+    }
+
+    private void prepareGamePad() {
+        Actor gamePad = findActor("gamePad");
+        gamePad.remove();
+        stage.addActor(gamePad);
+
         findButton("gamePadUpButton").addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -95,29 +113,18 @@ public class GameScreen extends BomberManScreen {
         if (BomberManGame.username.equals(username)) {
             gameScreenMediator.move(direction);
         }
-        switch (direction) {
-            case UP:
-                playerWidgets.get(username).moveUp();
-                break;
-            case DOWN:
-                playerWidgets.get(username).moveDown();
-                break;
-            case LEFT:
-                playerWidgets.get(username).moveLeft();
-                break;
-            case RIGHT:
-                playerWidgets.get(username).moveRight();
-                break;
-            default:
-                break;
-        }
+        world.movePlayer(username, direction);
     }
 
     public void onMoveEnd(String username, Direction direction) {
         if (BomberManGame.username.equals(username)) {
             gameScreenMediator.moveEnd(direction);
         }
-        playerWidgets.get(username).stop();
+        world.stopPlayer(username);
+    }
+
+    public static enum Direction {
+        UP, DOWN, RIGHT, LEFT
     }
 
 
