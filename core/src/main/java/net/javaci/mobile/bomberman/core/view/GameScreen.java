@@ -48,7 +48,7 @@ public class GameScreen extends BomberManScreen {
 
         PlayerModel playerModel = new PlayerModel();
         playerModel.setPlayerName(UserSession.getInstance().getUsername());
-        //playerModel.setPosition(labyrinthWidget.getPlayerInitialPosition(1));
+        playerModel.setPosition(labyrinthWidget.getPlayerInitialPosition(1));
         world.addPlayerModel(playerModel);
         // TODO: user join notification
 
