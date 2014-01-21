@@ -1,10 +1,12 @@
 package net.javaci.mobile.bomberman.core.mediator;
 
 import net.javaci.mobile.bomberman.core.BomberManGame;
+import net.javaci.mobile.bomberman.core.models.BombModel;
 import net.javaci.mobile.bomberman.core.net.NetworkInterface;
 import net.javaci.mobile.bomberman.core.net.NetworkListenerAdapter;
 import net.javaci.mobile.bomberman.core.net.protocol.*;
 import net.javaci.mobile.bomberman.core.server.GameServer;
+import net.javaci.mobile.bomberman.core.session.UserSession;
 import net.javaci.mobile.bomberman.core.util.Log;
 import net.javaci.mobile.bomberman.core.view.BomberManScreen;
 import net.javaci.mobile.bomberman.core.view.GameScreen;
@@ -82,13 +84,25 @@ public class GameScreenMediator extends BomberManMediator {
         MoveCommand moveCommand = new MoveCommand();
         moveCommand.setDirection(direction.toString());
         moveCommand.setFromUser(BomberManGame.username);
-        networkInterface.sendMessage(moveCommand.serialize());
+        //networkInterface.sendMessage(moveCommand.serialize());
     }
 
     public void moveEnd(GameScreen.Direction direction) {
         MoveEndCommand moveEndCommand = new MoveEndCommand();
         moveEndCommand.setDirection(direction.toString());
         moveEndCommand.setFromUser(BomberManGame.username);
-        networkInterface.sendMessage(moveEndCommand.serialize());
+        //networkInterface.sendMessage(moveEndCommand.serialize());
+    }
+
+    public void onBombButtonClicked() {
+        //TODO check if player can drop bomb.
+        BombModel bombModel = gameScreen.getWorld().playerDroppedBomb(UserSession.getInstance().getUsername());
+        bombModel.addBombListener(new BombModel.BombListener() {
+            @Override
+            public void onBombExploded(BombModel bombModel) {
+                gameScreen.renderBombExplosion(bombModel);
+            }
+        });
+        gameScreen.addBombToScreen(bombModel);
     }
 }

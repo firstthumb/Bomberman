@@ -1,20 +1,26 @@
 package net.javaci.mobile.bomberman.core.view;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import net.javaci.mobile.bomberman.core.BomberManGame;
 import net.javaci.mobile.bomberman.core.World;
 import net.javaci.mobile.bomberman.core.mediator.BomberManMediator;
 import net.javaci.mobile.bomberman.core.mediator.GameScreenMediator;
+import net.javaci.mobile.bomberman.core.models.BombModel;
 import net.javaci.mobile.bomberman.core.models.GhostModel;
 import net.javaci.mobile.bomberman.core.models.LabyrinthModel;
 import net.javaci.mobile.bomberman.core.models.PlayerModel;
 import net.javaci.mobile.bomberman.core.server.GameServer;
 import net.javaci.mobile.bomberman.core.session.UserSession;
-import net.javaci.mobile.bomberman.core.view.widget.BombermanWidget;
-import net.javaci.mobile.bomberman.core.view.widget.GhostWidget;
-import net.javaci.mobile.bomberman.core.view.widget.LabyrinthWidget;
+import net.javaci.mobile.bomberman.core.view.widget.*;
 import net.peakgames.libgdx.stagebuilder.core.AbstractGame;
 
 import java.util.List;
@@ -37,6 +43,7 @@ public class GameScreen extends BomberManScreen {
 
     public void initializeGame() {
         world.setResolutionHelper(getStageBuilder().getResolutionHelper());
+        world.setAssetsInterface(getStageBuilder().getAssets());
         labyrinthModel.generateBricks();
 
         PlayerModel playerModel = new PlayerModel();
@@ -60,7 +67,8 @@ public class GameScreen extends BomberManScreen {
     @Override
     public void show() {
         super.show();
-
+        addBackground();
+        
         if (UserSession.getInstance().isOwnerRoom()) {
             initializeGame();
             gameServer = new GameServer(world);
@@ -71,6 +79,31 @@ public class GameScreen extends BomberManScreen {
         }
 
         prepareGamePad();
+
+        prepareBombButton();
+    }
+
+    private void prepareBombButton() {
+        Button bombButton = findButton("bombButton");
+        bombButton.remove();
+        stage.addActor(bombButton);
+        bombButton.setWidth(bombButton.getWidth() * 2f);
+        bombButton.setHeight(bombButton.getHeight() * 2f);
+        Color color = bombButton.getColor();
+        color.a = 0.5f;
+        bombButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                gameScreenMediator.onBombButtonClicked();
+            }
+        });
+    }
+
+    private void addBackground() {
+        Image bg = new Image(createBgTexture());
+        bg.setPosition(0, 0);
+        bg.setSize(getStageBuilder().getResolutionHelper().getScreenWidth(), getStageBuilder().getResolutionHelper().getScreenHeight());
+        stage.getRoot().addActorAt(0, bg);
     }
 
     @Override
@@ -177,8 +210,42 @@ public class GameScreen extends BomberManScreen {
         }
     }
 
+    public void addBombToScreen(BombModel bombModel) {
+        BombWidget bombWidget = new BombWidget(getStageBuilder().getAssets().getTextureAtlas("Common.atlas"), bombModel);
+        stage.addActor(bombWidget);
+    }
+
+    public void renderBombExplosion(BombModel bombModel) {
+        List<Vector2> cellIndexes = world.calculateBombExplosionCells(bombModel);
+        List<Vector2> coords = world.convertCellIndexToScreenCoordinates(cellIndexes);
+
+        for (Vector2 pos : coords) {
+            ExplosionWidget explosionWidget = new ExplosionWidget(getStageBuilder().getAssets().getTextureAtlas("Common.atlas"));
+            explosionWidget.setX(pos.x);
+            explosionWidget.setY(pos.y);
+            stage.addActor(explosionWidget);
+        }
+
+        for (Vector2 cell : cellIndexes) {
+            labyrinthModel.getGrid()[(int)cell.x][(int)cell.y] = LabyrinthModel.EMPTY;
+        }
+    }
+
     public static enum Direction {
         UP, DOWN, RIGHT, LEFT
+    }
+
+    public World getWorld() {
+        return this.world;
+    }
+
+    private Texture createBgTexture() {
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.valueOf("787878"));
+        pixmap.fill();
+        Texture texture = new Texture(pixmap); // TODO dispose texture
+        pixmap.dispose();
+        return texture;
     }
 
 
