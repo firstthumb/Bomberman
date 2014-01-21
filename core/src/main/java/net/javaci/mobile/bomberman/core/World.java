@@ -3,6 +3,7 @@ package net.javaci.mobile.bomberman.core;
 import net.javaci.mobile.bomberman.core.models.LabyrinthModel;
 import net.javaci.mobile.bomberman.core.models.PlayerModel;
 import net.javaci.mobile.bomberman.core.view.GameScreen;
+import net.peakgames.libgdx.stagebuilder.core.assets.ResolutionHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,6 +11,7 @@ import java.util.Map;
 public class World {
     private Map<String, PlayerModel> playerModels = new HashMap<String, PlayerModel>();
     private LabyrinthModel labyrinthModel;
+    private ResolutionHelper resolutionHelper;
 
     public void setLabyrinthModel(LabyrinthModel labyrinthModel) {
         this.labyrinthModel = labyrinthModel;
@@ -29,20 +31,59 @@ public class World {
         float x = playerModel.getX();
         float y = playerModel.getY();
         float speed = playerModel.getSpeed();
-        switch (playerModel.getState()) {
-            case WALKING_UP:
-                playerModel.setY(y + deltaTime * speed);
-                break;
-            case WALKING_DOWN:
-                playerModel.setY(y - deltaTime * speed);
-                break;
-            case WALKING_RIGHT:
-                playerModel.setX(x + deltaTime * speed);
-                break;
-            case WALKING_LEFT:
-                playerModel.setX(x - deltaTime * speed);
-                break;
+        boolean playerCanMove = checkPlayerCanMove(playerModel);
+        if (playerCanMove) {
+            switch (playerModel.getState()) {
+                case WALKING_UP:
+                    playerModel.setY(y + deltaTime * speed);
+                    break;
+                case WALKING_DOWN:
+                    playerModel.setY(y - deltaTime * speed);
+                    break;
+                case WALKING_RIGHT:
+                    playerModel.setX(x + deltaTime * speed);
+                    break;
+                case WALKING_LEFT:
+                    playerModel.setX(x - deltaTime * speed);
+                    break;
+            }
         }
+    }
+
+    private boolean checkPlayerCanMove(PlayerModel playerModel) {
+        byte[][] grid = labyrinthModel.getGrid();
+        float unitWidth = resolutionHelper.getGameAreaBounds().x / (float) LabyrinthModel.NUM_COLS;
+        float unitHeight = resolutionHelper.getGameAreaBounds().y / (float) LabyrinthModel.NUM_ROWS;
+
+        switch (playerModel.getState()) {
+            case WALKING_UP: {
+                float x = playerModel.getOriginX();
+                float y = playerModel.getY() + playerModel.getHeight();
+                return isGridPositionEmpty(grid, unitWidth, unitHeight, x, y);
+            }
+            case WALKING_DOWN: {
+                float x = playerModel.getOriginX();
+                float y = playerModel.getY();
+                return isGridPositionEmpty(grid, unitWidth, unitHeight, x, y);
+            }
+            case WALKING_RIGHT: {
+                float x = playerModel.getX() + playerModel.getWidth();
+                float y = playerModel.getOriginY();
+                return isGridPositionEmpty(grid, unitWidth, unitHeight, x, y);
+            }
+            case WALKING_LEFT:{
+                float x = playerModel.getX();
+                float y = playerModel.getOriginY();
+                return isGridPositionEmpty(grid, unitWidth, unitHeight, x, y);
+            }
+        }
+        return true;
+    }
+
+    private boolean isGridPositionEmpty(byte[][] grid, float unitWidth, float unitHeight, float x, float y) {
+        int gridX = (int) ((x - resolutionHelper.getGameAreaPosition().x) / unitWidth);
+        int gridY = (int) ((y - resolutionHelper.getGameAreaPosition().y) / unitHeight);
+        return grid[gridX][gridY] == LabyrinthModel.EMPTY;
     }
 
     public void movePlayer(String playerName, GameScreen.Direction direction) {
@@ -87,5 +128,9 @@ public class World {
 
     public PlayerModel getPlayerModel(String playerName) {
         return this.playerModels.get("playerModel");
+    }
+
+    public void setResolutionHelper(ResolutionHelper resolutionHelper) {
+        this.resolutionHelper = resolutionHelper;
     }
 }

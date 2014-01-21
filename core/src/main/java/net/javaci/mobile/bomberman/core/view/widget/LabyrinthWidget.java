@@ -17,6 +17,8 @@ public class LabyrinthWidget extends Actor {
     private Vector2 gameAreaPosition;
     private TextureRegion wall;
     private TextureRegion brick;
+    private int numCols;
+    private int numRows;
 
     public LabyrinthWidget(LabyrinthModel labyrinthModel, ResolutionHelper resolutionHelper, AssetsInterface assets) {
         this.labyrinthModel = labyrinthModel;
@@ -24,6 +26,8 @@ public class LabyrinthWidget extends Actor {
         this.assets = assets;
         this.gameAreaBounds = resolutionHelper.getGameAreaBounds();
         this.gameAreaPosition = resolutionHelper.getGameAreaPosition();
+        this.numCols = labyrinthModel.getGrid().length;
+        this.numRows =  labyrinthModel.getGrid()[0].length;
         TextureAtlas atlas = assets.getTextureAtlas("Common.atlas");
         wall = atlas.findRegion("wall");
         brick = atlas.findRegion("brick");
@@ -32,17 +36,15 @@ public class LabyrinthWidget extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
-        float numCols = 21;
-        float numRows = 13;
         float width = gameAreaBounds.x / numCols;
         float height = gameAreaBounds.y / numRows;
-        drawWalls(batch, numCols, numRows, width, height);
+        drawWalls(batch, width, height);
     }
 
-    private void drawWalls(Batch batch, float numCols, float numRows, float width, float height) {
-        for (int i = 0; i < labyrinthModel.getGrid().length; i++) {
+    private void drawWalls(Batch batch, float width, float height) {
+        for (int i = 0; i < numCols; i++) {
             float x = width * i + gameAreaPosition.x;
-            for (int j = 0; j < labyrinthModel.getGrid()[i].length; j++) {
+            for (int j = 0; j < numRows; j++) {
                 float y = j * height + gameAreaPosition.y;
                 if (labyrinthModel.getGrid()[i][j] == LabyrinthModel.WALL) {
                     batch.draw(wall, x, y, width, height);
@@ -51,6 +53,27 @@ public class LabyrinthWidget extends Actor {
                 }
             }
         }
+    }
+
+    public Vector2 getPlayerInitialPosition(int playerIndex) {
+        float width = gameAreaBounds.x / numCols;
+        float height = gameAreaBounds.y / numRows;
+        Vector2 position = new Vector2();
+        switch (playerIndex) {
+            case 1:
+                position.set(gameAreaPosition.x + width, gameAreaPosition.y + height);
+                break;
+            case 2:
+                //TODO position.set(gameAreaPosition.x + width, gameAreaPosition.y + height);
+                break;
+            case 3:
+                //TODO position.set(gameAreaPosition.x + width, gameAreaPosition.y + height);
+                break;
+            case 4:
+                //TODO position.set(gameAreaPosition.x + width, gameAreaPosition.y + height);
+                break;
+        }
+        return position;
     }
 
 }

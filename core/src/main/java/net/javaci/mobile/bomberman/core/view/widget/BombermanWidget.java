@@ -30,6 +30,8 @@ public class BombermanWidget extends WidgetGroup {
         prepareWalkDownAnimation(atlas);
         prepareWalkRightAnimation(atlas);
         prepareWalkLeftAnimation(atlas);
+        this.playerModel.setWidth(downStand.getRegionWidth());
+        this.playerModel.setHeight(downStand.getRegionHeight());
     }
 
     private String generateUpImageName(int bombermanIndex, int frameIndex) {
@@ -121,7 +123,6 @@ public class BombermanWidget extends WidgetGroup {
             default:
                 break;
         }
-
         batch.draw(currentFrame, playerModel.getX(), playerModel.getY());
     }
 }

@@ -29,17 +29,19 @@ public class GameScreen extends BomberManScreen {
     public void show() {
         super.show();
         LabyrinthModel labyrinthModel = new LabyrinthModel();
+        world.setResolutionHelper(getStageBuilder().getResolutionHelper());
         world.setLabyrinthModel(labyrinthModel);
+        LabyrinthWidget labyrinthWidget = new LabyrinthWidget(labyrinthModel, getStageBuilder().getResolutionHelper(), getStageBuilder().getAssets());
 
         PlayerModel playerModel = new PlayerModel();
         playerModel.setPlayerName(UserSession.getInstance().getUsername());
+        playerModel.setPosition(labyrinthWidget.getPlayerInitialPosition(1));
         world.addPlayerModel(playerModel);
         // TODO: user join notification
 
         BombermanWidget bombermanWidget = new BombermanWidget(getStageBuilder().getAssets().getTextureAtlas("Common.atlas"), 1, playerModel);
         stage.addActor(bombermanWidget);
 
-        LabyrinthWidget labyrinthWidget = new LabyrinthWidget(labyrinthModel, getStageBuilder().getResolutionHelper(), getStageBuilder().getAssets());
         stage.addActor(labyrinthWidget);
 
         prepareGamePad();
