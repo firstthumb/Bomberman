@@ -21,6 +21,9 @@ public class GhostWidget extends Actor {
         this.ghostModel = model;
         prepareWalkAnimation(atlas);
         prepareDeadAnimation(atlas);
+
+        this.ghostModel.setWidth(walkAnimation.getKeyFrame(0).getRegionWidth());
+        this.ghostModel.setHeight(walkAnimation.getKeyFrame(0).getRegionHeight());
     }
 
     private void prepareDeadAnimation(TextureAtlas atlas) {
@@ -55,7 +58,14 @@ public class GhostWidget extends Actor {
         elapsedTime += deltaTime;
 
         switch (ghostModel.getState()) {
-            case WALKING:
+            case STANDING_UP:
+            case STANDING_DOWN:
+            case STANDING_RIGHT:
+            case STANDING_LEFT:
+            case WALKING_UP:
+            case WALKING_DOWN:
+            case WALKING_RIGHT:
+            case WALKING_LEFT:
                 currentFrame = walkAnimation.getKeyFrame(elapsedTime, true);
                 break;
             case DEAD:
@@ -65,6 +75,6 @@ public class GhostWidget extends Actor {
                 break;
         }
 
-        batch.draw(currentFrame, ghostModel.getX(), ghostModel.getY(), currentFrame.getRegionWidth()*3, currentFrame.getRegionHeight()*3);
+        batch.draw(currentFrame, ghostModel.getX(), ghostModel.getY(), currentFrame.getRegionWidth(), currentFrame.getRegionHeight());
     }
 }

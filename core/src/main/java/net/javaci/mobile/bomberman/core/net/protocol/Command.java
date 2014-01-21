@@ -11,6 +11,7 @@ public abstract class Command {
     public static final int MOVE_END = 4;
     public static final int START_GAME = 5;
     public static final int CREATE_GAME = 6;
+    public static final int MOVE_GHOST = 7;
     protected long timestamp;
     protected String fromUser;
     protected int command;
