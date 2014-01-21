@@ -41,16 +41,20 @@ public class GameScreen extends BomberManScreen {
 
         PlayerModel playerModel = new PlayerModel();
         playerModel.setPlayerName(UserSession.getInstance().getUsername());
-        playerModel.setPosition(labyrinthWidget.getPlayerInitialPosition(1));
+        //playerModel.setPosition(labyrinthWidget.getPlayerInitialPosition(1));
         world.addPlayerModel(playerModel);
         // TODO: user join notification
 
         BombermanWidget bombermanWidget = new BombermanWidget(getStageBuilder().getAssets().getTextureAtlas("Common.atlas"), 1, playerModel);
         stage.addActor(bombermanWidget);
 
-
-
         GhostModel ghostModel = GhostModel.createGhostModel();
+        ghostModel.setListener(new GhostModel.GhostListener() {
+            @Override
+            public void onStop() {
+                gameServer.moveGhost(1);
+            }
+        });
         world.addGhostModel(ghostModel);
 
         GhostWidget ghostWidget = new GhostWidget(getStageBuilder().getAssets().getTextureAtlas("Common.atlas"), ghostModel);
@@ -175,6 +179,10 @@ public class GameScreen extends BomberManScreen {
             GhostWidget ghostWidget = new GhostWidget(getStageBuilder().getAssets().getTextureAtlas("Common.atlas"), ghostModel);
             stage.addActor(ghostWidget);
         }
+    }
+
+    public void onMoveGhost(int ghostId, int gridX, int gridY, String direction, int distance) {
+        world.moveGhost(ghostId, gridX, gridY, Direction.valueOf(direction), distance);
     }
 
     public static enum Direction {

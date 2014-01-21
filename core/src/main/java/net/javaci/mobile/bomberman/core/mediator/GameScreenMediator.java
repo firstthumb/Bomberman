@@ -37,12 +37,19 @@ public class GameScreenMediator extends BomberManMediator {
                     case Command.MOVE_END:
                         handleMoveEndCommand((MoveEndCommand) command);
                         break;
+                    case Command.MOVE_GHOST:
+                        handleMoveGhostCommand((MoveGhostCommand) command);
+                        break;
 
                     default:
                         break;
                 }
             }
         });
+    }
+
+    private void handleMoveGhostCommand(MoveGhostCommand command) {
+        gameScreen.onMoveGhost(command.getId(), command.getGridX(), command.getGridY(), command.getDirection(), command.getDistance());
     }
 
     private void handleCreateGameCommand(CreateGameCommand command) {

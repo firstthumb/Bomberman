@@ -1,6 +1,12 @@
 package net.javaci.mobile.bomberman.core.models;
 
-public class GhostModel {
+public class GhostModel extends GameObjectModel {
+    public interface GhostListener {
+        public void onStop();
+    }
+
+    private GhostListener listener;
+
     private static int ID = 1;
 
     // http://strategywiki.org/wiki/Bomberman/How_to_play
@@ -18,7 +24,7 @@ public class GhostModel {
     }
 
     public static enum State {
-        WALKING, DEAD
+        STANDING_UP, STANDING_DOWN, STANDING_RIGHT, STANDING_LEFT, WALKING_UP, WALKING_DOWN, WALKING_RIGHT, WALKING_LEFT, DEAD
     }
 
     public static GhostModel createGhostModel() {
@@ -27,10 +33,12 @@ public class GhostModel {
 
     private int id;
     private float speed = 60f;
-    private float x;
-    private float y;
+    private int targetGridX;
+    private int targetGridY;
+    private int gridX;
+    private int gridY;
     private Type type = Type.BALLOOM;
-    private State state = State.WALKING;
+    private State state = State.STANDING_DOWN;
 
     public GhostModel(int id) {
         this.id = id;
@@ -52,22 +60,6 @@ public class GhostModel {
         this.speed = speed;
     }
 
-    public float getX() {
-        return x;
-    }
-
-    public void setX(float x) {
-        this.x = x;
-    }
-
-    public float getY() {
-        return y;
-    }
-
-    public void setY(float y) {
-        this.y = y;
-    }
-
     public Type getType() {
         return type;
     }
@@ -82,5 +74,53 @@ public class GhostModel {
 
     public void setState(State state) {
         this.state = state;
+    }
+
+    public float getOriginX() {
+        return this.x + this.width * 0.5f;
+    }
+
+    public float getOriginY() {
+        return this.y + this.height * 0.5f;
+    }
+
+    public int getTargetGridX() {
+        return targetGridX;
+    }
+
+    public void setTargetGridX(int targetGridX) {
+        this.targetGridX = targetGridX;
+    }
+
+    public int getTargetGridY() {
+        return targetGridY;
+    }
+
+    public void setTargetGridY(int targetGridY) {
+        this.targetGridY = targetGridY;
+    }
+
+    public int getGridX() {
+        return gridX;
+    }
+
+    public void setGridX(int gridX) {
+        this.gridX = gridX;
+    }
+
+    public int getGridY() {
+        return gridY;
+    }
+
+    public void setGridY(int gridY) {
+        this.gridY = gridY;
+    }
+
+    public void setListener(GhostListener listener) {
+        this.listener = listener;
+    }
+
+    public GhostListener getListener() {
+        return listener;
     }
 }
