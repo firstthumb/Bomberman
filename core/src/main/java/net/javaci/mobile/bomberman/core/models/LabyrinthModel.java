@@ -21,10 +21,10 @@ public class LabyrinthModel {
                 }
             }
         }
-        generateBricks();
+//        generateBricks();
     }
 
-    private void generateBricks() {
+    public void generateBricks() {
         int numBricks = 0;
         Random random = new Random(System.currentTimeMillis());
         while (numBricks < INITIAL_BRICK_COUNT) {
@@ -44,5 +44,9 @@ public class LabyrinthModel {
 
     public byte[][] getGrid() {
         return grid;
+    }
+
+    public void setGrid(byte[][] grid) {
+        this.grid = grid;
     }
 }

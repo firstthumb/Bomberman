@@ -82,12 +82,14 @@ public class LobbyScreen extends BomberManScreen {
             @Override
             public void onJoinRoomFailed() {
                 Log.d("Failed to join room");
+                UserSession.getInstance().setRoom(null);
                 removeLoadingWidget();
             }
 
             @Override
             public void onRoomCreated(RoomModel room) {
                 Log.d("Created room successfully. Room : " + room.getName());
+                UserSession.getInstance().setRoom(room);
                 game.getClient().joinRoom(room.getId());
             }
 
@@ -118,6 +120,12 @@ public class LobbyScreen extends BomberManScreen {
         displayLoadingWidget();
         // TODO : create random room name using player name
         game.getClient().createRoom(UserSession.getInstance().getUsername() + "_Room");
+    }
+
+    private void joinGame(RoomModel model) {
+        displayLoadingWidget();
+        UserSession.getInstance().setRoom(model);
+        game.getClient().joinRoom(model.getId());
     }
 
     private void reloadGameListPanel(List<RoomModel> rooms) {
@@ -162,8 +170,7 @@ public class LobbyScreen extends BomberManScreen {
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
                 log("Join Room : " + model.getName());
-                displayLoadingWidget();
-                game.getClient().joinRoom(model.getId());
+                joinGame(model);
             }
         });
 

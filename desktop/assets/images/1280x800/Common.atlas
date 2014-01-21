@@ -80,6 +80,48 @@ gamePadUpH
   orig: 61, 76
   offset: 0, 0
   index: -1
+ghost1dead1
+  rotate: false
+  xy: 799, 523
+  size: 18, 17
+  orig: 18, 17
+  offset: 0, 0
+  index: -1
+ghost1dead2
+  rotate: false
+  xy: 827, 548
+  size: 14, 15
+  orig: 14, 15
+  offset: 0, 0
+  index: -1
+ghost1dead3
+  rotate: false
+  xy: 640, 477
+  size: 8, 10
+  orig: 8, 10
+  offset: 0, 0
+  index: -1
+ghost1move1
+  rotate: false
+  xy: 84, 408
+  size: 18, 17
+  orig: 18, 17
+  offset: 0, 0
+  index: -1
+ghost1move2
+  rotate: false
+  xy: 50, 6
+  size: 18, 16
+  orig: 18, 16
+  offset: 0, 0
+  index: -1
+ghost1move3
+  rotate: false
+  xy: 852, 574
+  size: 20, 15
+  orig: 20, 15
+  offset: 0, 0
+  index: -1
 girl1down1
   rotate: false
   xy: 223, 426

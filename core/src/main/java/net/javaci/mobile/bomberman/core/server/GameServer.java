@@ -1,20 +1,27 @@
 package net.javaci.mobile.bomberman.core.server;
 
+import net.javaci.mobile.bomberman.core.World;
 import net.javaci.mobile.bomberman.core.mediator.GameScreenMediator;
+import net.javaci.mobile.bomberman.core.models.GhostModel;
 import net.javaci.mobile.bomberman.core.net.NetworkInterface;
 import net.javaci.mobile.bomberman.core.net.NetworkListenerAdapter;
 import net.javaci.mobile.bomberman.core.net.appwarp.AppWarpClient;
-import net.javaci.mobile.bomberman.core.net.protocol.Command;
-import net.javaci.mobile.bomberman.core.net.protocol.CommandFactory;
-import net.javaci.mobile.bomberman.core.net.protocol.MoveCommand;
-import net.javaci.mobile.bomberman.core.net.protocol.StartGameCommand;
+import net.javaci.mobile.bomberman.core.net.protocol.*;
+import net.javaci.mobile.bomberman.core.session.UserSession;
+
+import java.util.ArrayList;
 
 public class GameServer {
     private NetworkInterface networkInterface;
     private GameScreenMediator gameScreenMediator;
     private CommandFactory commandFactory = new CommandFactory();
+    private World world;
 
-    public void initialize(AppWarpClient networkInterface, GameScreenMediator gameScreenMediator) {
+    public GameServer(World world) {
+        this.world = world;
+    }
+
+    public void initialize(NetworkInterface networkInterface, GameScreenMediator gameScreenMediator) {
         this.networkInterface = networkInterface;
         this.gameScreenMediator = gameScreenMediator;
 
@@ -22,12 +29,14 @@ public class GameServer {
             @Override
             public void onMessageReceived(String from, String message) {
                 Command command = commandFactory.createCommand(message);
-                switch (command.getCommand()) {
-                    case Command.MOVE_START:
-                        handleStartMoveCommand((MoveCommand) command);
-                        break;
-                    default:
-                        break;
+                if (command != null) {
+                    switch (command.getCommand()) {
+                        case Command.MOVE_START:
+                            handleStartMoveCommand((MoveCommand) command);
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         });
@@ -42,5 +51,14 @@ public class GameServer {
         networkInterface.sendMessage(startGameCommand.serialize());
     }
 
-
+    public void createGame() {
+        CreateGameCommand createGameCommand = new CreateGameCommand();
+        createGameCommand.setFromUser(UserSession.getInstance().getUsername());
+        createGameCommand.setGhostModels(new ArrayList<GhostModel>(world.getGhostModels().values()));
+        createGameCommand.setLabyrinthModel(world.getLabyrinthModel());
+        String serializedMessage = createGameCommand.serialize();
+        for (String message : createGameCommand.splitMessage(serializedMessage)) {
+            networkInterface.sendMessage(message);
+        }
+    }
 }
