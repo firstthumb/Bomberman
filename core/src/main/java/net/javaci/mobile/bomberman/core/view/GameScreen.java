@@ -63,7 +63,7 @@ public class GameScreen extends BomberManScreen {
 
 
         for (int i=0; i<gameModel.numGhosts; i++) {
-            final GhostModel ghostModel = GhostModel.createGhostModel();
+            final GhostModel ghostModel = GhostModel.createGhostModel(Math.random() > 0.5f ? GhostModel.Type.BALLOOM : GhostModel.Type.MINVO);
             ghostModel.setWidth(world.getGridWidth());
             ghostModel.setHeight(world.getGridHeight());
             ghostModel.setListener(new GhostModel.GhostListener() {
@@ -223,6 +223,17 @@ public class GameScreen extends BomberManScreen {
                 onMoveEnd(BomberManGame.username, Direction.LEFT);
             }
         });
+    }
+
+    public void onOpponentDropBomb(int id, int gridX, int gridY, String owner) {
+        BombModel bombModel = world.dropBomb(id, gridX, gridY, owner);
+        bombModel.addBombListener(new BombModel.BombListener() {
+            @Override
+            public void onBombExploded(BombModel bombModel) {
+                renderBombExplosion(bombModel);
+            }
+        });
+        addBombToScreen(bombModel);
     }
 
     public void onMoveStart(String username, Direction direction) {

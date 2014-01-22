@@ -27,4 +27,19 @@ public class GhostMovement {
     public void setDistance(int distance) {
         this.distance = distance;
     }
+
+    public boolean movable(GhostModel ghostModel, byte[][] grid) {
+        switch (direction) {
+            case UP:
+                return grid[ghostModel.getGridX()][ghostModel.getGridY() + 1] == LabyrinthModel.EMPTY;
+            case DOWN:
+                return grid[ghostModel.getGridX()][ghostModel.getGridY() - 1] == LabyrinthModel.EMPTY;
+            case RIGHT:
+                return grid[ghostModel.getGridX() + 1][ghostModel.getGridY()] == LabyrinthModel.EMPTY;
+            case LEFT:
+                return grid[ghostModel.getGridX() - 1][ghostModel.getGridY()] == LabyrinthModel.EMPTY;
+        }
+
+        return false;
+    }
 }
