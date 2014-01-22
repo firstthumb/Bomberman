@@ -5,16 +5,16 @@ import org.json.JSONObject;
 
 public class MoveCommand extends Command {
     private String direction;
-    private int x;
-    private int y;
+    private int gridX;
+    private int gridY;
 
     public static Command build(JSONObject json) {
         MoveCommand command = new MoveCommand();
         try {
             command.parseCommonFields(json);
             command.direction = json.getString("direction");
-            command.x = json.getInt("x");
-            command.y = json.getInt("y");
+            command.gridX = json.getInt("gridX");
+            command.gridY = json.getInt("gridY");
         } catch (JSONException e) {
             e.printStackTrace();
             return new UndefinedCommand(json.toString());
@@ -31,18 +31,26 @@ public class MoveCommand extends Command {
         this.direction = direction;
     }
 
-    public int getX() {
-        return x;
+    public int getGridX() {
+        return gridX;
     }
 
-    public int getY() {
-        return y;
+    public void setGridX(int gridX) {
+        this.gridX = gridX;
+    }
+
+    public int getGridY() {
+        return gridY;
+    }
+
+    public void setGridY(int gridY) {
+        this.gridY = gridY;
     }
 
     @Override
     protected void serializeCustomFields(JSONObject json) throws JSONException {
-        json.put("x", x);
-        json.put("y", y);
+        json.put("gridX", gridX);
+        json.put("gridY", gridY);
         json.put("direction", direction);
     }
 

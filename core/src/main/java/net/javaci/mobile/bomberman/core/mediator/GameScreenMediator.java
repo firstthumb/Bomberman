@@ -1,6 +1,7 @@
 package net.javaci.mobile.bomberman.core.mediator;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import net.javaci.mobile.bomberman.core.BomberManGame;
 import net.javaci.mobile.bomberman.core.models.BombModel;
 import net.javaci.mobile.bomberman.core.net.NetworkInterface;
@@ -102,17 +103,17 @@ public class GameScreenMediator extends BomberManMediator {
             return;
         }
 
-        BombModel found = null;
-        for (BombModel bombModel : gameScreen.getWorld().getBombList()) {
-            if (bombModel.getId() == command.getId()) {
-                found = bombModel;
-                break;
-            }
-        }
-
-        if (found != null) {
-            gameScreen.getWorld().getBombList().remove(found);
-        }
+//        BombModel found = null;
+//        for (BombModel bombModel : gameScreen.getWorld().getBombList()) {
+//            if (bombModel.getId() == command.getId()) {
+//                found = bombModel;
+//                break;
+//            }
+//        }
+//
+//        if (found != null) {
+//            gameScreen.getWorld().getBombList().remove(found);
+//        }
     }
 
     private void handleDropBombCommand(DropBombCommand command) {
@@ -145,7 +146,7 @@ public class GameScreenMediator extends BomberManMediator {
     }
 
     private void handleCreateGameCommand(CreateGameCommand command) {
-        if (BomberManGame.username.equals(command.getFromUser())) {
+        if (UserSession.getInstance().getUsername().equals(command.getFromUser())) {
             return;
         }
 
@@ -153,16 +154,17 @@ public class GameScreenMediator extends BomberManMediator {
     }
 
     private void handleMoveStartCommand(MoveCommand command) {
-        if (BomberManGame.username.equals(command.getFromUser())) {
+        if (UserSession.getInstance().getUsername().equals(command.getFromUser())) {
             return;
         }
         gameScreen.onMoveStart(command.getFromUser(), GameScreen.Direction.valueOf(command.getDirection()));
     }
 
     private void handleMoveEndCommand(MoveEndCommand command) {
-        if (BomberManGame.username.equals(command.getFromUser())) {
+        if (UserSession.getInstance().getUsername().equals(command.getFromUser())) {
             return;
         }
+        gameScreen.getWorld().setPlayerTargetPosition(command.getFromUser(), command.getGridX(), command.getGridY());
         gameScreen.onMoveEnd(command.getFromUser(), GameScreen.Direction.valueOf(command.getDirection()));
     }
 
@@ -180,15 +182,21 @@ public class GameScreenMediator extends BomberManMediator {
     public void move(GameScreen.Direction direction) {
         MoveCommand moveCommand = new MoveCommand();
         moveCommand.setDirection(direction.toString());
-        moveCommand.setFromUser(BomberManGame.username);
-        //networkInterface.sendMessage(moveCommand.serialize());
+        moveCommand.setFromUser(UserSession.getInstance().getUsername());
+        Vector2 positionGrid = gameScreen.getWorld().getPlayerGridPosition(UserSession.getInstance().getUsername());
+        moveCommand.setGridX((int)positionGrid.x);
+        moveCommand.setGridY((int)positionGrid.y);
+        networkInterface.sendMessage(moveCommand.serialize());
     }
 
     public void moveEnd(GameScreen.Direction direction) {
         MoveEndCommand moveEndCommand = new MoveEndCommand();
         moveEndCommand.setDirection(direction.toString());
-        moveEndCommand.setFromUser(BomberManGame.username);
-        //networkInterface.sendMessage(moveEndCommand.serialize());
+        moveEndCommand.setFromUser(UserSession.getInstance().getUsername());
+        Vector2 targetPosition = gameScreen.getWorld().getTargetGridPosition(UserSession.getInstance().getUsername());
+        moveEndCommand.setGridX((int)targetPosition.x);
+        moveEndCommand.setGridY((int)targetPosition.y);
+        networkInterface.sendMessage(moveEndCommand.serialize());
     }
 
     public void onBombButtonClicked() {

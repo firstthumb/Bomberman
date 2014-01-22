@@ -24,6 +24,7 @@ public class World implements BombModel.BombListener {
     private AssetsInterface assetsInterface;
     private float gridWidth;
     private float gridHeight;
+    private Vector2 vector = new Vector2(0, 0);
 
 
     public void initialize(LabyrinthModel labyrinthModel, ResolutionHelper resolutionHelper, AssetsInterface assets) {
@@ -61,8 +62,18 @@ public class World implements BombModel.BombListener {
         }
     }
 
+    public Vector2 getPlayerGridPosition(String playerName) {
+        PlayerModel playerModel = playerModels.get(playerName);
+
+        if (playerModel != null) {
+            return new Vector2(getGridX(playerModel.getOriginX()), getGridY(playerModel.getOriginY()));
+        }
+
+        return null;
+    }
+
     private void updateGhostModel(GhostModel ghostModel, float deltaTime) {
-        float speed = ghostModel.getSpeed();
+        float speed = ghostModel.getSpeed() * resolutionHelper.getSizeMultiplier();
         boolean ghostCanMove = checkGhostCanMove(ghostModel);
         if (ghostCanMove) {
             switch (ghostModel.getState()) {
@@ -120,7 +131,7 @@ public class World implements BombModel.BombListener {
     private void updatePlayerModel(PlayerModel playerModel, float deltaTime) {
         float x = playerModel.getX();
         float y = playerModel.getY();
-        float speed = playerModel.getSpeed();
+        float speed = playerModel.getSpeed() * resolutionHelper.getSizeMultiplier();
         boolean playerCanMove = checkPlayerCanMove(playerModel);
         if (playerCanMove) {
             switch (playerModel.getState()) {
@@ -128,12 +139,9 @@ public class World implements BombModel.BombListener {
                     playerModel.setY(y + deltaTime * speed);
                     break;
                 case STOPPING_UP: {
-                    int gridY = getGridY(playerModel.getOriginY());
-                    float centerGridY = getGridOriginY(gridY);
-                    if (playerModel.getOriginY() > centerGridY) {
-                        playerModel.setTargetGridY(clamp(1, (gridY + 1), LabyrinthModel.NUM_ROWS - 2));
-                    } else {
-                        playerModel.setTargetGridY(gridY);
+                    if (playerModel.getPlayerName().equals(UserSession.getInstance().getUsername())) {
+                        Vector2 targetPosition = getTargetGridPosition(playerModel);
+                        playerModel.setTargetGridY((int)targetPosition.y);
                     }
                     if (playerModel.getTargetGridY() >= 0) {
                         float diff = getGridOriginY(playerModel.getTargetGridY()) - playerModel.getOriginY();
@@ -151,12 +159,9 @@ public class World implements BombModel.BombListener {
                     playerModel.setY(y - deltaTime * speed);
                     break;
                 case STOPPING_DOWN: {
-                    int gridY = getGridY(playerModel.getOriginY());
-                    float centerGridY = getGridOriginY(gridY);
-                    if (playerModel.getOriginY() < centerGridY) {
-                        playerModel.setTargetGridY(Math.max((gridY - 1), 1));
-                    } else {
-                        playerModel.setTargetGridY(gridY);
+                    if (playerModel.getPlayerName().equals(UserSession.getInstance().getUsername())) {
+                        Vector2 targetPosition = getTargetGridPosition(playerModel);
+                        playerModel.setTargetGridY((int)targetPosition.y);
                     }
                     if (playerModel.getTargetGridY() >= 0) {
                         float diff = playerModel.getOriginY() - getGridOriginY(playerModel.getTargetGridY());
@@ -174,12 +179,9 @@ public class World implements BombModel.BombListener {
                     playerModel.setX(x + deltaTime * speed);
                     break;
                 case STOPPING_RIGHT: {
-                    int gridX = getGridX(playerModel.getOriginX());
-                    float centerGridX = getGridOriginX(gridX);
-                    if (playerModel.getOriginX() > centerGridX) {
-                        playerModel.setTargetGridX(clamp(1, (gridX + 1), LabyrinthModel.NUM_COLS - 2));
-                    } else {
-                        playerModel.setTargetGridX(gridX);
+                    if (playerModel.getPlayerName().equals(UserSession.getInstance().getUsername())) {
+                        Vector2 targetPosition = getTargetGridPosition(playerModel);
+                        playerModel.setTargetGridX((int) targetPosition.x);
                     }
                     if (playerModel.getTargetGridX() >= 0) {
                         float diff = getGridOriginX(playerModel.getTargetGridX()) - playerModel.getOriginX();
@@ -197,12 +199,9 @@ public class World implements BombModel.BombListener {
                     playerModel.setX(x - deltaTime * speed);
                     break;
                 case STOPPING_LEFT:{
-                    int gridX = getGridX(playerModel.getOriginX());
-                    float centerGridX = getGridOriginX(gridX);
-                    if (playerModel.getOriginX() < centerGridX) {
-                        playerModel.setTargetGridX(clamp(1, (gridX - 1), LabyrinthModel.NUM_COLS - 2));
-                    } else {
-                        playerModel.setTargetGridX(gridX);
+                    if (playerModel.getPlayerName().equals(UserSession.getInstance().getUsername())) {
+                        Vector2 targetPosition = getTargetGridPosition(playerModel);
+                        playerModel.setTargetGridX((int)targetPosition.x);
                     }
                     if (playerModel.getTargetGridX() >= 0) {
                         float diff = playerModel.getOriginX() - getGridOriginX(playerModel.getTargetGridX());
@@ -233,6 +232,65 @@ public class World implements BombModel.BombListener {
                     break;
             }
         }
+    }
+
+    public Vector2 getTargetGridPosition(String playerName) {
+        return getTargetGridPosition(playerModels.get(playerName));
+    }
+
+    public Vector2 getTargetGridPosition(PlayerModel playerModel) {
+        switch (playerModel.getState()) {
+            case WALKING_UP:
+            case STOPPING_UP: {
+                int gridY = getGridY(playerModel.getOriginY());
+                float centerGridY = getGridOriginY(gridY);
+                if (playerModel.getOriginY() > centerGridY) {
+                    gridY = clamp(1, (gridY + 1), LabyrinthModel.NUM_ROWS - 2);
+                }
+                vector.set(getGridX(playerModel.getOriginX()), gridY);
+                return vector;
+            }
+            case WALKING_DOWN:
+            case STOPPING_DOWN: {
+                int gridY = getGridY(playerModel.getOriginY());
+                float centerGridY = getGridOriginY(gridY);
+                if (playerModel.getOriginY() < centerGridY) {
+                    gridY = Math.max((gridY - 1), 1);
+                }
+                vector.set(getGridX(playerModel.getOriginX()), gridY);
+                return vector;
+            }
+
+            case WALKING_RIGHT:
+            case STOPPING_RIGHT: {
+                int gridX = getGridX(playerModel.getOriginX());
+                float centerGridX = getGridOriginX(gridX);
+                if (playerModel.getOriginX() > centerGridX) {
+                    gridX = clamp(1, (gridX + 1), LabyrinthModel.NUM_COLS - 2);
+                }
+                vector.set(gridX, getGridY(playerModel.getOriginY()));
+                return vector;
+            }
+
+            case WALKING_LEFT:
+            case STOPPING_LEFT: {
+                int gridX = getGridX(playerModel.getOriginX());
+                float centerGridX = getGridOriginX(gridX);
+                if (playerModel.getOriginX() < centerGridX) {
+                    gridX = clamp(1, (gridX - 1), LabyrinthModel.NUM_COLS - 2);
+                }
+                vector.set(gridX, getGridY(playerModel.getOriginY()));
+                return vector;
+            }
+        }
+
+        return null;
+    }
+
+    public void setPlayerTargetPosition(String playerName, int gridX, int gridY) {
+        PlayerModel playerModel = playerModels.get(playerName);
+        playerModel.setTargetGridX(gridX);
+        playerModel.setTargetGridY(gridY);
     }
 
     private float getGridOriginX(int gridX) {
@@ -384,7 +442,7 @@ public class World implements BombModel.BombListener {
 
     public void movePlayer(String playerName, GameScreen.Direction direction) {
         PlayerModel player = playerModels.get(playerName);
-        if (isMoving(player)) {
+        if (playerName.equals(UserSession.getInstance().getUsername()) && isMoving(player)) {
             return;
         }
         switch (direction) {
@@ -431,6 +489,8 @@ public class World implements BombModel.BombListener {
 
     public void addGhostModels(List<GhostModel> ghostModels) {
         for (GhostModel ghostModel : ghostModels) {
+            ghostModel.setX(getX(ghostModel.getGridX()));
+            ghostModel.setY(getY(ghostModel.getGridY()));
             this.ghostModels.put(ghostModel.getId(), ghostModel);
         }
     }
@@ -470,10 +530,6 @@ public class World implements BombModel.BombListener {
 
     public void addPlayerModel(PlayerModel playerModel) {
         playerModels.put(playerModel.getPlayerName(), playerModel);
-    }
-
-    public PlayerModel getPlayerModel(String playerName) {
-        return this.playerModels.get("playerModel");
     }
 
     public LabyrinthModel getLabyrinthModel() {
@@ -622,5 +678,9 @@ public class World implements BombModel.BombListener {
             }
         }
         return max + 1;
+    }
+
+    public Vector2 getVector() {
+        return vector;
     }
 }

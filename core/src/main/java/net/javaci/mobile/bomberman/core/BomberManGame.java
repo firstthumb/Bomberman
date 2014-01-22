@@ -20,7 +20,6 @@ import java.util.Map;
 public class BomberManGame extends AbstractGame {
 
     public NetworkInterface client = new AppWarpClient(UserSession.getInstance().getUsername());
-    public static String username = UserSession.getInstance().getUsername();
 
     public static enum ScreenType {
         SPLASH, PLAY, LOBBY

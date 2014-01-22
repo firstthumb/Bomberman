@@ -22,8 +22,8 @@ public class CreateGameCommand extends Command {
             for (int i=0; i<jsonArray.length(); i++) {
                 JSONObject jsonObject = (JSONObject)jsonArray.get(i);
                 GhostModel ghostModel = new GhostModel(jsonObject.getInt("id"));
-                ghostModel.setX(jsonObject.getInt("x"));
-                ghostModel.setY(jsonObject.getInt("y"));
+                ghostModel.setGridX(jsonObject.getInt("gridX"));
+                ghostModel.setGridY(jsonObject.getInt("gridY"));
                 ghostModel.setType(GhostModel.Type.valueOf(jsonObject.getString("type")));
                 command.ghostModels.add(ghostModel);
             }
@@ -50,8 +50,8 @@ public class CreateGameCommand extends Command {
         for (GhostModel ghostModel : ghostModels) {
             JSONObject object = new JSONObject();
             object.put("id", ghostModel.getId());
-            object.put("x", ghostModel.getX());
-            object.put("y", ghostModel.getY());
+            object.put("gridX", ghostModel.getGridX());
+            object.put("gridY", ghostModel.getGridY());
             object.put("type", ghostModel.getType());
             jsonArray.put(object);
         }

@@ -176,52 +176,52 @@ public class GameScreen extends BomberManScreen {
         findButton("gamePadUpButton").addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                onMoveStart(BomberManGame.username, Direction.UP);
+                onMoveStart(UserSession.getInstance().getUsername(), Direction.UP);
                 return true;
             }
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                onMoveEnd(BomberManGame.username, Direction.UP);
+                onMoveEnd(UserSession.getInstance().getUsername(), Direction.UP);
             }
         });
 
         findButton("gamePadDownButton").addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                onMoveStart(BomberManGame.username, Direction.DOWN);
+                onMoveStart(UserSession.getInstance().getUsername(), Direction.DOWN);
                 return true;
             }
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                onMoveEnd(BomberManGame.username, Direction.DOWN);
+                onMoveEnd(UserSession.getInstance().getUsername(), Direction.DOWN);
             }
         });
 
         findButton("gamePadRightButton").addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                onMoveStart(BomberManGame.username, Direction.RIGHT);
+                onMoveStart(UserSession.getInstance().getUsername(), Direction.RIGHT);
                 return true;
             }
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                onMoveEnd(BomberManGame.username, Direction.RIGHT);
+                onMoveEnd(UserSession.getInstance().getUsername(), Direction.RIGHT);
             }
         });
 
         findButton("gamePadLeftButton").addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                onMoveStart(BomberManGame.username, Direction.LEFT);
+                onMoveStart(UserSession.getInstance().getUsername(), Direction.LEFT);
                 return true;
             }
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                onMoveEnd(BomberManGame.username, Direction.LEFT);
+                onMoveEnd(UserSession.getInstance().getUsername(), Direction.LEFT);
             }
         });
     }
@@ -238,14 +238,14 @@ public class GameScreen extends BomberManScreen {
     }
 
     public void onMoveStart(String username, Direction direction) {
-        if (BomberManGame.username.equals(username)) {
+        if (UserSession.getInstance().getUsername().equals(username)) {
             gameScreenMediator.move(direction);
         }
         world.movePlayer(username, direction);
     }
 
     public void onMoveEnd(String username, Direction direction) {
-        if (BomberManGame.username.equals(username)) {
+        if (UserSession.getInstance().getUsername().equals(username)) {
             gameScreenMediator.moveEnd(direction);
         }
         world.stopPlayer(username);
