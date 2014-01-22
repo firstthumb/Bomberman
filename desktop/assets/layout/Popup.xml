@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<group>
+
+    <image name="background" atlas="Common.atlas" type="background" frame="popupSmallBg" />
+
+    <label name="infoLabel" text="" x="0" y="440" align="center" fontName="26pt.fnt" fontColor="ffffff" />
+
+</group>

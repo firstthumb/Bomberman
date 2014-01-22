@@ -10,6 +10,7 @@ import net.javaci.mobile.bomberman.core.net.protocol.*;
 import net.javaci.mobile.bomberman.core.session.UserSession;
 import net.javaci.mobile.bomberman.core.view.GameScreen;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -20,14 +21,14 @@ import java.util.concurrent.TimeUnit;
 public class GameServer {
     private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
 
-    private static int WAIT_MOVE_GHOST_IN_SECOND = 2;
+    private static int WAIT_MOVE_GHOST_IN_SECOND = 5;
     private static Map<Integer, GhostMovement> ghostMovements = new HashMap<Integer, GhostMovement>();
 
     static {
-        ghostMovements.put(0, new GhostMovement(GameScreen.Direction.RIGHT, 2));
-        ghostMovements.put(1, new GhostMovement(GameScreen.Direction.LEFT, 2));
-        ghostMovements.put(2, new GhostMovement(GameScreen.Direction.UP, 2));
-        ghostMovements.put(3, new GhostMovement(GameScreen.Direction.DOWN, 2));
+        ghostMovements.put(0, new GhostMovement(GameScreen.Direction.RIGHT, 10));
+        ghostMovements.put(1, new GhostMovement(GameScreen.Direction.LEFT, 20));
+        ghostMovements.put(2, new GhostMovement(GameScreen.Direction.UP, 10));
+        ghostMovements.put(3, new GhostMovement(GameScreen.Direction.DOWN, 10));
     }
 
     private int ghostMoveIndex = 0;
@@ -69,29 +70,25 @@ public class GameServer {
     public void startGame() {
         StartGameCommand startGameCommand = new StartGameCommand();
         networkInterface.sendMessage(startGameCommand.serialize());
+
+        for (GhostModel ghostModel : world.getGhostModels().values()) {
+            moveGhost(ghostModel.getId());
+        }
     }
 
     public void createGame() {
-//        CreateGameCommand createGameCommand = new CreateGameCommand();
-//        createGameCommand.setFromUser(UserSession.getInstance().getUsername());
-//        createGameCommand.setGhostModels(new ArrayList<GhostModel>(world.getGhostModels().values()));
-//        createGameCommand.setLabyrinthModel(world.getLabyrinthModel());
-//        String serializedMessage = createGameCommand.serialize();
-//        for (String message : createGameCommand.splitMessage(serializedMessage)) {
-//            networkInterface.sendMessage(message);
-//        }
+        CreateGameCommand createGameCommand = new CreateGameCommand();
+        createGameCommand.setFromUser(UserSession.getInstance().getUsername());
+        createGameCommand.setGhostModels(new ArrayList<GhostModel>(world.getGhostModels().values()));
+        createGameCommand.setLabyrinthModel(world.getLabyrinthModel());
+        String serializedMessage = createGameCommand.serialize();
+        for (String message : createGameCommand.splitMessage(serializedMessage)) {
+            networkInterface.sendMessage(message);
+        }
 
-        GhostMovement movement = getGhostMovement();
-
-        MoveGhostCommand command = new MoveGhostCommand();
-        command.setFromUser(UserSession.getInstance().getUsername());
-        command.setId(1);
-        command.setGridX(1);
-        command.setGridY(1);
-        command.setDirection(movement.getDirection().toString());
-        command.setDistance(movement.getDistance());
-        networkInterface.sendMessage(command.serialize());
+        startGame();
     }
+
     public void moveGhost(final int ghostId) {
         executorService.schedule(new Runnable() {
             @Override
@@ -105,7 +102,7 @@ public class GameServer {
 
                 MoveGhostCommand command = new MoveGhostCommand();
                 command.setFromUser(UserSession.getInstance().getUsername());
-                command.setId(1);
+                command.setId(ghostId);
                 command.setGridX(ghostModel.getGridX());
                 command.setGridY(ghostModel.getGridY());
                 command.setDirection(movement.getDirection().toString());

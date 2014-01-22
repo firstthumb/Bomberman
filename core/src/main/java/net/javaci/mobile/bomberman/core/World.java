@@ -13,10 +13,8 @@ import net.peakgames.libgdx.stagebuilder.core.assets.AssetsInterface;
 import net.peakgames.libgdx.stagebuilder.core.assets.ResolutionHelper;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public class World implements BombModel.BombListener {
     private Map<String, PlayerModel> playerModels = new HashMap<String, PlayerModel>();
@@ -294,6 +292,31 @@ public class World implements BombModel.BombListener {
         for (GhostModel ghostModel : ghostModels) {
             this.ghostModels.put(ghostModel.getId(), ghostModel);
         }
+    }
+
+    public void putGhostEmptyPlace(GhostModel ghostModel) {
+        Random rand = new Random();
+        int randX, randY;
+        do {
+            randX = rand.nextInt(LabyrinthModel.NUM_COLS - 4) + 2;
+            randY = rand.nextInt(LabyrinthModel.NUM_ROWS - 4) + 2;
+        } while (labyrinthModel.getGrid()[randX][randY] != LabyrinthModel.EMPTY);
+
+        ghostModel.setX(getX(randX));
+        ghostModel.setY(getY(randY));
+
+        ghostModel.setGridX(randX);
+        ghostModel.setGridY(randY);
+    }
+
+    public float getX(int gridX) {
+        float unitWidth = resolutionHelper.getGameAreaBounds().x / (float) LabyrinthModel.NUM_COLS;
+        return unitWidth * gridX + resolutionHelper.getGameAreaPosition().x;
+    }
+
+    public float getY(int gridY) {
+        float unitHeight = resolutionHelper.getGameAreaBounds().y / (float) LabyrinthModel.NUM_ROWS;
+        return unitHeight * gridY + resolutionHelper.getGameAreaPosition().y;
     }
 
     public void addGhostModel(GhostModel ghostModel) {

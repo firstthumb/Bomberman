@@ -2,6 +2,7 @@ package net.javaci.mobile.bomberman.core.mediator;
 
 import com.badlogic.gdx.Gdx;
 import net.javaci.mobile.bomberman.core.BomberManGame;
+import net.javaci.mobile.bomberman.core.GameFactory;
 import net.javaci.mobile.bomberman.core.models.BombModel;
 import net.javaci.mobile.bomberman.core.net.NetworkInterface;
 import net.javaci.mobile.bomberman.core.net.NetworkListenerAdapter;
@@ -20,6 +21,7 @@ public class GameScreenMediator extends BomberManMediator {
     private CommandFactory commandFactory = new CommandFactory();
     private GameScreen gameScreen;
     private RoomModel room;
+    private int level = 1;
 
     public GameScreenMediator(BomberManGame game, NetworkInterface networkInterface) {
         super(game);
@@ -176,5 +178,13 @@ public class GameScreenMediator extends BomberManMediator {
 
     public void setRoom(RoomModel room) {
         this.room = room;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 }

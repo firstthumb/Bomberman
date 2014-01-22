@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import net.javaci.mobile.bomberman.core.BomberManGame;
+import net.javaci.mobile.bomberman.core.GameFactory;
 import net.javaci.mobile.bomberman.core.World;
 import net.javaci.mobile.bomberman.core.mediator.BomberManMediator;
 import net.javaci.mobile.bomberman.core.mediator.GameScreenMediator;
@@ -53,7 +54,9 @@ public class GameScreen extends BomberManScreen {
     }
 
     public void initializeGameOnServer() {
-        labyrinthModel.generateBricks();
+        GameFactory.GameModel gameModel = GameFactory.getGameModel(gameScreenMediator.getLevel());
+
+        labyrinthModel.generateBricks(gameModel.numBricks);
 
         PlayerModel playerModel = new PlayerModel();
         playerModel.setPlayerName(UserSession.getInstance().getUsername());
@@ -64,17 +67,20 @@ public class GameScreen extends BomberManScreen {
         BombermanWidget bombermanWidget = new BombermanWidget(getStageBuilder().getAssets().getTextureAtlas("Common.atlas"), 1, playerModel);
         stage.addActor(bombermanWidget);
 
-        GhostModel ghostModel = GhostModel.createGhostModel();
-        ghostModel.setListener(new GhostModel.GhostListener() {
-            @Override
-            public void onStop() {
-                gameServer.moveGhost(1);
-            }
-        });
-        world.addGhostModel(ghostModel);
+        for (int i=0; i<gameModel.numGhosts; i++) {
+            final GhostModel ghostModel = GhostModel.createGhostModel();
+            ghostModel.setListener(new GhostModel.GhostListener() {
+                @Override
+                public void onStop() {
+                    gameServer.moveGhost(ghostModel.getId());
+                }
+            });
+            world.putGhostEmptyPlace(ghostModel);
+            world.addGhostModel(ghostModel);
 
-        GhostWidget ghostWidget = new GhostWidget(getStageBuilder().getAssets().getTextureAtlas("Common.atlas"), ghostModel);
-        stage.addActor(ghostWidget);
+            GhostWidget ghostWidget = new GhostWidget(getStageBuilder().getAssets().getTextureAtlas("Common.atlas"), ghostModel);
+            stage.addActor(ghostWidget);
+        }
     }
 
     @Override
@@ -269,6 +275,8 @@ public class GameScreen extends BomberManScreen {
     public void onOwnerLeft() {
         game.backToPreviousScreen();
         // TODO : Show popup information
+
+        displayInfoPopup("Game Owner left");
     }
 
     public void onGameFinished() {

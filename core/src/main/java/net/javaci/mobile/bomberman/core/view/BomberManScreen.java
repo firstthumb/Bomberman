@@ -3,8 +3,10 @@ package net.javaci.mobile.bomberman.core.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import net.javaci.mobile.bomberman.core.BomberManGame;
 import net.javaci.mobile.bomberman.core.Constants;
 import net.javaci.mobile.bomberman.core.mediator.BomberManMediator;
@@ -17,6 +19,7 @@ public class BomberManScreen extends AbstractScreen {
     protected BomberManGame game;
     protected BomberManMediator mediator;
     private LoadingWidget loadingWidget;
+    private Group infoPopup;
 
 
     public BomberManScreen(AbstractGame game, BomberManMediator mediator) {
@@ -117,6 +120,22 @@ public class BomberManScreen extends AbstractScreen {
         }
         loadingWidget.show();
         stage.addActor(loadingWidget);
+    }
+
+    public void displayInfoPopup(String message) {
+        try {
+            if (infoPopup != null) {
+                infoPopup.setVisible(false);
+                infoPopup.remove();
+                infoPopup = null;
+            }
+
+            infoPopup = getStageBuilder().buildGroup("Popup.xml");
+            ((Label)infoPopup.findActor("infoLabel")).setText(message);
+            stage.addActor(infoPopup);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void displayLoadingWidget() {

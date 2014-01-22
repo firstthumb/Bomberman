@@ -5,7 +5,6 @@ import java.util.Random;
 public class LabyrinthModel {
     public static final int NUM_COLS = 21;
     public static final int NUM_ROWS = 13;
-    public static final int INITIAL_BRICK_COUNT = 60;
     public static byte EMPTY = 0;
     public static byte WALL = 1;
     public static byte BRICK = 2;
@@ -24,10 +23,10 @@ public class LabyrinthModel {
 //        generateBricks();
     }
 
-    public void generateBricks() {
+    public void generateBricks(int totalBrick) {
         int numBricks = 0;
         Random random = new Random(System.currentTimeMillis());
-        while (numBricks < INITIAL_BRICK_COUNT) {
+        while (numBricks < totalBrick) {
             int x = random.nextInt(NUM_COLS - 1) + 1;
             int y = random.nextInt(NUM_ROWS - 1) + 1;
             if (grid[x][y] == EMPTY) {
