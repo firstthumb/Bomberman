@@ -282,8 +282,13 @@ public class World implements BombModel.BombListener {
                 vector.set(gridX, getGridY(playerModel.getOriginY()));
                 return vector;
             }
+            case STANDING_UP:
+            case STANDING_DOWN:
+            case STANDING_LEFT:
+            case STANDING_RIGHT:
+                vector.set(getGridX(playerModel.getOriginX()), getGridY(playerModel.getOriginY()));
+                return vector;
         }
-
         return null;
     }
 

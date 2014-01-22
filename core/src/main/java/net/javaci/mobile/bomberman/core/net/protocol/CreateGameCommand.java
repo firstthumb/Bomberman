@@ -12,7 +12,7 @@ import java.util.List;
 public class CreateGameCommand extends Command {
 
     private List<GhostModel> ghostModels = new ArrayList<GhostModel>();
-    private LabyrinthModel labyrinthModel = new LabyrinthModel();
+    private byte [][] grid;
 
     public static Command build(JSONObject json) {
         CreateGameCommand command = new CreateGameCommand();
@@ -36,7 +36,7 @@ public class CreateGameCommand extends Command {
                     grid[i][j] = (byte)gridRowArray.getInt(j);
                 }
             }
-            command.labyrinthModel.setGrid(grid);
+            command.grid = grid;
         } catch (JSONException e) {
             e.printStackTrace();
             return new UndefinedCommand(json.toString());
@@ -58,8 +58,7 @@ public class CreateGameCommand extends Command {
         json.put("ghosts", jsonArray);
 
         JSONArray gridArray = new JSONArray();
-        if (labyrinthModel != null) {
-            byte[][] grid = labyrinthModel.getGrid();
+        if (grid != null) {
             for (int i=0; i<grid.length; i++) {
                 JSONArray gridRowArray = new JSONArray();
                 for (int j=0; j<grid[i].length; j++) {
@@ -79,16 +78,16 @@ public class CreateGameCommand extends Command {
         return ghostModels;
     }
 
-    public LabyrinthModel getLabyrinthModel() {
-        return labyrinthModel;
-    }
-
-    public void setLabyrinthModel(LabyrinthModel labyrinthModel) {
-        this.labyrinthModel = labyrinthModel;
+    public byte[][] getGrid() {
+        return grid;
     }
 
     @Override
     public int getCommand() {
         return CREATE_GAME;
+    }
+
+    public void setGrid(byte[][] grid) {
+        this.grid = grid;
     }
 }

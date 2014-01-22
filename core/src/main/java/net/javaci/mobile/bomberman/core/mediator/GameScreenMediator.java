@@ -150,7 +150,7 @@ public class GameScreenMediator extends BomberManMediator {
             return;
         }
 
-        gameScreen.onCreateGame(command.getLabyrinthModel(), command.getGhostModels());
+        gameScreen.onCreateGame(command.getGrid(), command.getGhostModels());
     }
 
     private void handleMoveStartCommand(MoveCommand command) {

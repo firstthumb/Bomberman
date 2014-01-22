@@ -97,7 +97,7 @@ public class GameServer {
         CreateGameCommand createGameCommand = new CreateGameCommand();
         createGameCommand.setFromUser(UserSession.getInstance().getUsername());
         createGameCommand.setGhostModels(new ArrayList<GhostModel>(world.getGhostModels().values()));
-        createGameCommand.setLabyrinthModel(world.getLabyrinthModel());
+        createGameCommand.setGrid(world.getLabyrinthModel().getGrid());
         String serializedMessage = createGameCommand.serialize();
         for (String message : createGameCommand.splitMessage(serializedMessage)) {
             networkInterface.sendMessage(message);

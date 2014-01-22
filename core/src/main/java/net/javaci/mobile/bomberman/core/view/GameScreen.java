@@ -251,8 +251,9 @@ public class GameScreen extends BomberManScreen {
         world.stopPlayer(username);
     }
 
-    public void onCreateGame(LabyrinthModel labyrinthModel, List<GhostModel> ghostModels) {
+    public void onCreateGame(byte[][] grid, List<GhostModel> ghostModels) {
         findActor("beforeGamePanel").remove();
+        labyrinthModel.setGrid(grid);
         world.initialize(labyrinthModel, getStageBuilder().getResolutionHelper(), getStageBuilder().getAssets());
 
         LabyrinthWidget labyrinthWidget = new LabyrinthWidget(world.getLabyrinthModel(), getStageBuilder().getResolutionHelper(), getStageBuilder().getAssets());
