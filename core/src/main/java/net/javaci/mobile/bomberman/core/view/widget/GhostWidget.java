@@ -21,9 +21,6 @@ public class GhostWidget extends Actor {
         this.ghostModel = model;
         prepareWalkAnimation(atlas);
         prepareDeadAnimation(atlas);
-
-        this.ghostModel.setWidth(walkAnimation.getKeyFrame(0).getRegionWidth());
-        this.ghostModel.setHeight(walkAnimation.getKeyFrame(0).getRegionHeight());
     }
 
     private void prepareDeadAnimation(TextureAtlas atlas) {

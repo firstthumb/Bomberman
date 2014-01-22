@@ -30,8 +30,6 @@ public class BombermanWidget extends WidgetGroup {
         prepareWalkDownAnimation(atlas);
         prepareWalkRightAnimation(atlas);
         prepareWalkLeftAnimation(atlas);
-        this.playerModel.setWidth(downStand.getRegionWidth());
-        this.playerModel.setHeight(downStand.getRegionHeight());
     }
 
     private String generateUpImageName(int bombermanIndex, int frameIndex) {
@@ -97,15 +95,19 @@ public class BombermanWidget extends WidgetGroup {
 
         switch (playerModel.getState()) {
             case WALKING_UP:
+            case STOPPING_UP:
                 currentFrame = walkUpAnimation.getKeyFrame(elapsedTime, true);
                 break;
             case WALKING_DOWN:
+            case STOPPING_DOWN:
                 currentFrame = walkDownAnimation.getKeyFrame(elapsedTime, true);
                 break;
             case WALKING_RIGHT:
+            case STOPPING_RIGHT:
                 currentFrame = walkRightAnimation.getKeyFrame(elapsedTime, true);
                 break;
             case WALKING_LEFT:
+            case STOPPING_LEFT:
                 currentFrame = walkLeftAnimation.getKeyFrame(elapsedTime, true);
                 break;
             case STANDING_UP:
@@ -123,6 +125,9 @@ public class BombermanWidget extends WidgetGroup {
             default:
                 break;
         }
-        batch.draw(currentFrame, playerModel.getX(), playerModel.getY());
+        batch.draw(
+                currentFrame,
+                playerModel.getX() + (playerModel.getWidth() - currentFrame.getRegionWidth()) * 0.5f,
+                playerModel.getY() + (playerModel.getHeight() - currentFrame.getRegionHeight()) * 0.5f);
     }
 }

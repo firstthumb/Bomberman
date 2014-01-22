@@ -6,6 +6,24 @@ public class PlayerModel extends GameObjectModel {
     private float speed = 100f;
     private String playerName;
     private State state = State.STANDING_DOWN;
+    private int targetGridX = -1;
+    private int targetGridY = -1;
+
+    public int getTargetGridY() {
+        return targetGridY;
+    }
+
+    public void setTargetGridY(int targetGridY) {
+        this.targetGridY = targetGridY;
+    }
+
+    public int getTargetGridX() {
+        return targetGridX;
+    }
+
+    public void setTargetGridX(int targetGridX) {
+        this.targetGridX = targetGridX;
+    }
 
     public float getSpeed() {
         return speed;
@@ -45,6 +63,8 @@ public class PlayerModel extends GameObjectModel {
     }
 
     public static enum State {
-        STANDING_UP, STANDING_DOWN, STANDING_RIGHT, STANDING_LEFT, WALKING_UP, WALKING_DOWN, WALKING_RIGHT, WALKING_LEFT
+        STANDING_UP, STANDING_DOWN, STANDING_RIGHT, STANDING_LEFT,
+        WALKING_UP, WALKING_DOWN, WALKING_RIGHT, WALKING_LEFT,
+        STOPPING_UP, STOPPING_DOWN, STOPPING_RIGHT, STOPPING_LEFT
     }
 }

@@ -19,8 +19,6 @@ public class BombWidget extends Actor {
         this.atlas = atlas;
         this.bombModel = bombModel;
         prepareBombAnimationBeforeExplosion();
-        this.bombModel.setWidth(bombAnimationBeforeExplosion.getKeyFrame(0).getRegionWidth());
-        this.bombModel.setHeight(bombAnimationBeforeExplosion.getKeyFrame(0).getRegionHeight());
     }
 
     private void prepareBombAnimationBeforeExplosion() {

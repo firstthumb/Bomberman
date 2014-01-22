@@ -46,9 +46,7 @@ public class GameScreen extends BomberManScreen {
 
     public void initializeDefaultGameBoard() {
         labyrinthModel = new LabyrinthModel();
-        world.setLabyrinthModel(labyrinthModel);
-        world.setResolutionHelper(getStageBuilder().getResolutionHelper());
-        world.setAssetsInterface(getStageBuilder().getAssets());
+        world.initialize(labyrinthModel, getStageBuilder().getResolutionHelper(), getStageBuilder().getAssets());
         labyrinthWidget = new LabyrinthWidget(labyrinthModel, getStageBuilder().getResolutionHelper(), getStageBuilder().getAssets());
         stage.addActor(labyrinthWidget);
     }
@@ -61,6 +59,8 @@ public class GameScreen extends BomberManScreen {
         PlayerModel playerModel = new PlayerModel();
         playerModel.setPlayerName(UserSession.getInstance().getUsername());
         playerModel.setPosition(labyrinthWidget.getPlayerInitialPosition(1));
+        playerModel.setWidth(world.getGridWidth());
+        playerModel.setHeight(world.getGridHeight());
         world.addPlayerModel(playerModel);
         // TODO: user join notification
 
@@ -69,6 +69,8 @@ public class GameScreen extends BomberManScreen {
 
         for (int i=0; i<gameModel.numGhosts; i++) {
             final GhostModel ghostModel = GhostModel.createGhostModel();
+            ghostModel.setWidth(world.getGridWidth());
+            ghostModel.setHeight(world.getGridHeight());
             ghostModel.setListener(new GhostModel.GhostListener() {
                 @Override
                 public void onStop() {
@@ -216,7 +218,7 @@ public class GameScreen extends BomberManScreen {
     }
 
     public void onCreateGame(LabyrinthModel labyrinthModel, List<GhostModel> ghostModels) {
-        world.setLabyrinthModel(labyrinthModel);
+        world.initialize(labyrinthModel, getStageBuilder().getResolutionHelper(), getStageBuilder().getAssets());
 
         LabyrinthWidget labyrinthWidget = new LabyrinthWidget(world.getLabyrinthModel(), getStageBuilder().getResolutionHelper(), getStageBuilder().getAssets());
         stage.addActor(labyrinthWidget);
@@ -224,6 +226,8 @@ public class GameScreen extends BomberManScreen {
         world.addGhostModels(ghostModels);
 
         for (GhostModel ghostModel : world.getGhostModels().values()) {
+            ghostModel.setWidth(world.getGridWidth());
+            ghostModel.setHeight(world.getGridHeight());
             GhostWidget ghostWidget = new GhostWidget(getStageBuilder().getAssets().getTextureAtlas("Common.atlas"), ghostModel);
             stage.addActor(ghostWidget);
         }

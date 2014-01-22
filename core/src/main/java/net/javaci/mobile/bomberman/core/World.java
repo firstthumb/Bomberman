@@ -21,9 +21,15 @@ public class World implements BombModel.BombListener {
     private Map<Integer, GhostModel> ghostModels = new HashMap<Integer, GhostModel>();
     private List<BombModel> bombList = new ArrayList<BombModel>();
     private AssetsInterface assetsInterface;
+    private float gridWidth;
+    private float gridHeight;
 
-    public void setLabyrinthModel(LabyrinthModel labyrinthModel) {
+    public void initialize(LabyrinthModel labyrinthModel, ResolutionHelper resolutionHelper, AssetsInterface assets) {
         this.labyrinthModel = labyrinthModel;
+        this.resolutionHelper = resolutionHelper;
+        this.assetsInterface = assets;
+        this.gridWidth = resolutionHelper.getGameAreaBounds().x / (float) LabyrinthModel.NUM_COLS;
+        this.gridHeight = resolutionHelper.getGameAreaBounds().y / (float) LabyrinthModel.NUM_ROWS;
     }
 
     public void update(float deltaTime) {
@@ -101,50 +107,155 @@ public class World implements BombModel.BombListener {
                 case WALKING_UP:
                     playerModel.setY(y + deltaTime * speed);
                     break;
+                case STOPPING_UP: {
+                    int gridY = getGridY(playerModel.getOriginY());
+                    float centerGridY = getGridOriginY(gridY);
+                    if (playerModel.getOriginY() > centerGridY) {
+                        playerModel.setTargetGridY(clamp(1, (gridY + 1), LabyrinthModel.NUM_ROWS - 2));
+                    } else {
+                        playerModel.setTargetGridY(gridY);
+                    }
+                    if (playerModel.getTargetGridY() >= 0) {
+                        float diff = getGridOriginY(playerModel.getTargetGridY()) - playerModel.getOriginY();
+                        float distance = deltaTime * speed;
+                        if (distance >= diff) {
+                            distance = diff;
+                            playerModel.setTargetGridY(-1);
+                            playerModel.setState(PlayerModel.State.STANDING_UP);
+                        }
+                        playerModel.setY(playerModel.getY() + distance);
+                    }
+                    break;
+                }
                 case WALKING_DOWN:
                     playerModel.setY(y - deltaTime * speed);
                     break;
+                case STOPPING_DOWN: {
+                    int gridY = getGridY(playerModel.getOriginY());
+                    float centerGridY = getGridOriginY(gridY);
+                    if (playerModel.getOriginY() < centerGridY) {
+                        playerModel.setTargetGridY(Math.max((gridY - 1), 1));
+                    } else {
+                        playerModel.setTargetGridY(gridY);
+                    }
+                    if (playerModel.getTargetGridY() >= 0) {
+                        float diff = playerModel.getOriginY() - getGridOriginY(playerModel.getTargetGridY());
+                        float distance = deltaTime * speed;
+                        if (distance >= diff) {
+                            distance = diff;
+                            playerModel.setTargetGridY(-1);
+                            playerModel.setState(PlayerModel.State.STANDING_DOWN);
+                        }
+                        playerModel.setY(playerModel.getY() - distance);
+                    }
+                    break;
+                }
                 case WALKING_RIGHT:
                     playerModel.setX(x + deltaTime * speed);
                     break;
+                case STOPPING_RIGHT: {
+                    int gridX = getGridX(playerModel.getOriginX());
+                    float centerGridX = getGridOriginX(gridX);
+                    if (playerModel.getOriginX() > centerGridX) {
+                        playerModel.setTargetGridX(clamp(1, (gridX + 1), LabyrinthModel.NUM_COLS - 2));
+                    } else {
+                        playerModel.setTargetGridX(gridX);
+                    }
+                    if (playerModel.getTargetGridX() >= 0) {
+                        float diff = getGridOriginX(playerModel.getTargetGridX()) - playerModel.getOriginX();
+                        float distance = deltaTime * speed;
+                        if (distance >= diff) {
+                            distance = diff;
+                            playerModel.setTargetGridX(-1);
+                            playerModel.setState(PlayerModel.State.STANDING_RIGHT);
+                        }
+                        playerModel.setX(playerModel.getX() + distance);
+                    }
+                    break;
+                }
                 case WALKING_LEFT:
                     playerModel.setX(x - deltaTime * speed);
+                    break;
+                case STOPPING_LEFT:{
+                    int gridX = getGridX(playerModel.getOriginX());
+                    float centerGridX = getGridOriginX(gridX);
+                    if (playerModel.getOriginX() < centerGridX) {
+                        playerModel.setTargetGridX(clamp(1, (gridX - 1), LabyrinthModel.NUM_COLS - 2));
+                    } else {
+                        playerModel.setTargetGridX(gridX);
+                    }
+                    if (playerModel.getTargetGridX() >= 0) {
+                        float diff = playerModel.getOriginX() - getGridOriginX(playerModel.getTargetGridX());
+                        float distance = deltaTime * speed;
+                        if (distance >= diff) {
+                            distance = diff;
+                            playerModel.setTargetGridX(-1);
+                            playerModel.setState(PlayerModel.State.STANDING_LEFT);
+                        }
+                        playerModel.setX(playerModel.getX() - distance);
+                    }
+                    break;
+                }
+            }
+        }  else {
+            switch (playerModel.getState()) {
+                case STOPPING_UP:
+                    playerModel.setState(PlayerModel.State.STANDING_UP);
+                    break;
+                case STOPPING_DOWN:
+                    playerModel.setState(PlayerModel.State.STANDING_DOWN);
+                    break;
+                case STOPPING_RIGHT:
+                    playerModel.setState(PlayerModel.State.STANDING_RIGHT);
+                    break;
+                case STOPPING_LEFT:
+                    playerModel.setState(PlayerModel.State.STANDING_LEFT);
                     break;
             }
         }
     }
 
+    private float getGridOriginX(int gridX) {
+        return gridWidth * gridX + gridWidth * 0.5f + resolutionHelper.getGameAreaPosition().x;
+    }
+
+    private float getGridOriginY(int gridY) {
+        return gridHeight * gridY + gridHeight * 0.5f + resolutionHelper.getGameAreaPosition().y;
+    }
+
     private boolean checkPlayerCanMove(PlayerModel playerModel) {
         byte[][] grid = labyrinthModel.getGrid();
-        float unitWidth = resolutionHelper.getGameAreaBounds().x / (float) LabyrinthModel.NUM_COLS;
-        float unitHeight = resolutionHelper.getGameAreaBounds().y / (float) LabyrinthModel.NUM_ROWS;
-
         switch (playerModel.getState()) {
-            case WALKING_UP: {
-                float x = playerModel.getOriginX();
-                float y = playerModel.getY() + playerModel.getHeight();
-                return isGridPositionEmpty(grid, unitWidth, unitHeight, x, y);
+            case WALKING_UP:
+            case STOPPING_UP:{
+                int gridX = getGridX(playerModel.getOriginX());
+                int gridY = getGridY(playerModel.getY() + playerModel.getHeight() + 1);
+                return isGridPositionEmpty(grid, gridX, gridY);
             }
-            case WALKING_DOWN: {
-                float x = playerModel.getOriginX();
-                float y = playerModel.getY();
-                return isGridPositionEmpty(grid, unitWidth, unitHeight, x, y);
+            case WALKING_DOWN:
+            case STOPPING_DOWN:{
+                int gridX = getGridX(playerModel.getOriginX());
+                int gridY = getGridY(playerModel.getY() -  1);
+                return isGridPositionEmpty(grid, gridX, gridY);
             }
-            case WALKING_RIGHT: {
-                float x = playerModel.getX() + playerModel.getWidth();
-                float y = playerModel.getOriginY();
-                return isGridPositionEmpty(grid, unitWidth, unitHeight, x, y);
+            case WALKING_RIGHT:
+            case STOPPING_RIGHT:{
+                int gridX = getGridX(playerModel.getX() + playerModel.getWidth() + 1);
+                int gridY = getGridY(playerModel.getOriginY());
+                return isGridPositionEmpty(grid, gridX, gridY);
             }
-            case WALKING_LEFT:{
-                float x = playerModel.getX();
-                float y = playerModel.getOriginY();
-                return isGridPositionEmpty(grid, unitWidth, unitHeight, x, y);
+            case WALKING_LEFT:
+            case STOPPING_LEFT:{
+                int gridX = getGridX(playerModel.getX() - 1);
+                int gridY = getGridY(playerModel.getOriginY());
+                return isGridPositionEmpty(grid, gridX, gridY);
             }
         }
         return true;
     }
 
     private boolean checkGhostCanMove(GhostModel ghostModel) {
+        /*
         byte[][] grid = labyrinthModel.getGrid();
         float unitWidth = resolutionHelper.getGameAreaBounds().x / (float) LabyrinthModel.NUM_COLS;
         float unitHeight = resolutionHelper.getGameAreaBounds().y / (float) LabyrinthModel.NUM_ROWS;
@@ -171,23 +282,23 @@ public class World implements BombModel.BombListener {
                 return isGridPositionEmpty(grid, unitWidth, unitHeight, x, y);
             }
         }
+        */
         return true;
     }
 
-    private boolean isGridPositionEmpty(byte[][] grid, float unitWidth, float unitHeight, float x, float y) {
-        int gridX = (int) ((x - resolutionHelper.getGameAreaPosition().x) / unitWidth);
-        int gridY = (int) ((y - resolutionHelper.getGameAreaPosition().y) / unitHeight);
+    private boolean isGridPositionEmpty(byte[][] grid, int gridX, int gridY) {
+        if (gridX >= LabyrinthModel.NUM_COLS || gridY >= LabyrinthModel.NUM_ROWS || gridX<0 || gridY <0){
+            return false;
+        }
         return grid[gridX][gridY] == LabyrinthModel.EMPTY;
     }
 
     public int getGridX(float x) {
-        float unitWidth = resolutionHelper.getGameAreaBounds().x / (float) LabyrinthModel.NUM_COLS;
-        return (int) Math.round((double)Math.round(x - resolutionHelper.getGameAreaPosition().x) / Math.round(unitWidth));
+        return (int) ((x - resolutionHelper.getGameAreaPosition().x) / gridWidth);
     }
 
     public int getGridY(float y) {
-        float unitHeight = resolutionHelper.getGameAreaBounds().y / (float) LabyrinthModel.NUM_ROWS;
-        return (int) Math.round((double)Math.round(y - resolutionHelper.getGameAreaPosition().y) / Math.round(unitHeight));
+        return (int) ((y - resolutionHelper.getGameAreaPosition().y) / gridHeight);
     }
 
     public void moveGhost(int ghostId, int gridX, int gridY, GameScreen.Direction direction, int distance) {
@@ -256,6 +367,9 @@ public class World implements BombModel.BombListener {
 
     public void movePlayer(String playerName, GameScreen.Direction direction) {
         PlayerModel player = playerModels.get(playerName);
+        if (isMoving(player)) {
+            return;
+        }
         switch (direction) {
             case UP:
                 player.setState(PlayerModel.State.WALKING_UP);
@@ -272,20 +386,28 @@ public class World implements BombModel.BombListener {
         }
     }
 
+    private boolean isMoving(PlayerModel playerModel) {
+        PlayerModel.State state = playerModel.getState();
+        return ! (state == PlayerModel.State.STANDING_DOWN ||
+                state == PlayerModel.State.STANDING_LEFT ||
+                state == PlayerModel.State.STANDING_RIGHT ||
+                state == PlayerModel.State.STANDING_UP);
+    }
+
     public void stopPlayer(String playerName) {
         PlayerModel player = playerModels.get(playerName);
         switch (player.getState()) {
             case WALKING_UP:
-                player.setState(PlayerModel.State.STANDING_UP);
+                player.setState(PlayerModel.State.STOPPING_UP);
                 break;
             case WALKING_DOWN:
-                player.setState(PlayerModel.State.STANDING_DOWN);
+                player.setState(PlayerModel.State.STOPPING_DOWN);
                 break;
             case WALKING_RIGHT:
-                player.setState(PlayerModel.State.STANDING_RIGHT);
+                player.setState(PlayerModel.State.STOPPING_RIGHT);
                 break;
             case WALKING_LEFT:
-                player.setState(PlayerModel.State.STANDING_LEFT);
+                player.setState(PlayerModel.State.STOPPING_LEFT);
                 break;
         }
     }
@@ -337,10 +459,6 @@ public class World implements BombModel.BombListener {
         return this.playerModels.get("playerModel");
     }
 
-    public void setResolutionHelper(ResolutionHelper resolutionHelper) {
-        this.resolutionHelper = resolutionHelper;
-    }
-
     public LabyrinthModel getLabyrinthModel() {
         return labyrinthModel;
     }
@@ -349,6 +467,8 @@ public class World implements BombModel.BombListener {
 
         PlayerModel playerModel = playerModels.get(username);
         BombModel bombModel = new BombModel();
+        bombModel.setWidth(this.gridWidth);
+        bombModel.setHeight(this.gridHeight);
         bombModel.setOwner(username);
         bombModel.setRemainingSeconds(5);
 
@@ -375,10 +495,6 @@ public class World implements BombModel.BombListener {
     public void onBombExploded(BombModel bombModel) {
         this.bombList.remove(bombModel);
         System.out.println("There are " + bombList.size() + " bombs on screen.");
-    }
-
-    public void setAssetsInterface(AssetsInterface assetsInterface) {
-        this.assetsInterface = assetsInterface;
     }
 
     public List<Vector2> calculateBombExplosionCells(BombModel bombModel) {
@@ -444,5 +560,17 @@ public class World implements BombModel.BombListener {
             return true;
         }
         return false;
+    }
+
+    public float getGridHeight() {
+        return gridHeight;
+    }
+
+    public float getGridWidth() {
+        return gridWidth;
+    }
+
+    private int clamp(int min, int value, int max) {
+        return Math.max(min, Math.min(max, value));
     }
 }
