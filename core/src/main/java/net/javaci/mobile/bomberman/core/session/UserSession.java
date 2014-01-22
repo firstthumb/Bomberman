@@ -57,4 +57,8 @@ public class UserSession {
 
         return false;
     }
+
+    public boolean isServer() {
+        return isOwnerRoom();
+    }
 }

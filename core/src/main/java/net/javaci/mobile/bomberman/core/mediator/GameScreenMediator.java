@@ -1,9 +1,11 @@
 package net.javaci.mobile.bomberman.core.mediator;
 
+import com.badlogic.gdx.Gdx;
 import net.javaci.mobile.bomberman.core.BomberManGame;
 import net.javaci.mobile.bomberman.core.models.BombModel;
 import net.javaci.mobile.bomberman.core.net.NetworkInterface;
 import net.javaci.mobile.bomberman.core.net.NetworkListenerAdapter;
+import net.javaci.mobile.bomberman.core.net.models.RoomModel;
 import net.javaci.mobile.bomberman.core.net.protocol.*;
 import net.javaci.mobile.bomberman.core.server.GameServer;
 import net.javaci.mobile.bomberman.core.session.UserSession;
@@ -17,6 +19,7 @@ public class GameScreenMediator extends BomberManMediator {
     private NetworkInterface networkInterface;
     private CommandFactory commandFactory = new CommandFactory();
     private GameScreen gameScreen;
+    private RoomModel room;
 
     public GameScreenMediator(BomberManGame game, NetworkInterface networkInterface) {
         super(game);
@@ -42,12 +45,46 @@ public class GameScreenMediator extends BomberManMediator {
                     case Command.MOVE_GHOST:
                         handleMoveGhostCommand((MoveGhostCommand) command);
                         break;
+                    case Command.GAME_END:
+                        handleGameEndCommand((GameEndCommand) command);
 
                     default:
                         break;
                 }
             }
+
+            @Override
+            public void onPlayerLeftRoom(RoomModel room, String playerName) {
+                super.onPlayerLeftRoom(room, playerName);
+                if (GameScreenMediator.this.room.equals(room) && !playerName.equals(UserSession.getInstance().getUsername())) {
+                    GameScreenMediator.this.onPlayerLeftRoom(playerName);
+                }
+            }
+
+            @Override
+            public void onPlayerJoinedRoom(RoomModel room, String playerName) {
+                super.onPlayerJoinedRoom(room, playerName);
+                if (GameScreenMediator.this.room.equals(room) && !playerName.equals(UserSession.getInstance().getUsername())) {
+                    GameScreenMediator.this.onPlayerJoinedRoom(playerName);
+                }
+            }
         });
+    }
+
+    private void handleGameEndCommand(GameEndCommand command) {
+        networkInterface.leaveRoom(room.getId());
+
+        if (command.getReason() == GameEndCommand.GameEndReason.OWNER_LEFT) {
+            Gdx.app.postRunnable(new Runnable() {
+                @Override
+                public void run() {
+                    gameScreen.onOwnerLeft();
+                }
+            });
+        }
+        else {
+            gameScreen.onGameFinished();
+        }
     }
 
     private void handleMoveGhostCommand(MoveGhostCommand command) {
@@ -111,5 +148,33 @@ public class GameScreenMediator extends BomberManMediator {
             }
         });
         gameScreen.addBombToScreen(bombModel);
+    }
+
+    public void onPlayerLeftRoom(String playerName) {
+        if (playerName != null && playerName.equals(room.getOwner())) {
+            onGameOwnerLeft();
+        }
+        else {
+            // TODO : remove player character from stage
+        }
+    }
+
+    public void onPlayerJoinedRoom(String playerName) {
+
+    }
+
+    private void onGameOwnerLeft() {
+        GameEndCommand gameEndCommand = new GameEndCommand();
+        gameEndCommand.setFromUser(UserSession.getInstance().getUsername());
+        gameEndCommand.setReason(GameEndCommand.GameEndReason.OWNER_LEFT);
+        networkInterface.sendMessage(gameEndCommand.serialize());
+    }
+
+    public RoomModel getRoom() {
+        return room;
+    }
+
+    public void setRoom(RoomModel room) {
+        this.room = room;
     }
 }

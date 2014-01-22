@@ -18,8 +18,10 @@ import net.javaci.mobile.bomberman.core.models.BombModel;
 import net.javaci.mobile.bomberman.core.models.GhostModel;
 import net.javaci.mobile.bomberman.core.models.LabyrinthModel;
 import net.javaci.mobile.bomberman.core.models.PlayerModel;
+import net.javaci.mobile.bomberman.core.net.models.RoomModel;
 import net.javaci.mobile.bomberman.core.server.GameServer;
 import net.javaci.mobile.bomberman.core.session.UserSession;
+import net.javaci.mobile.bomberman.core.util.Log;
 import net.javaci.mobile.bomberman.core.view.widget.*;
 import net.peakgames.libgdx.stagebuilder.core.AbstractGame;
 
@@ -31,19 +33,26 @@ public class GameScreen extends BomberManScreen {
     private World world = new World();
     private GameScreenMediator gameScreenMediator;
     private GameServer gameServer;
-    private LabyrinthModel labyrinthModel = new LabyrinthModel();
+    private LabyrinthModel labyrinthModel;
     private LabyrinthWidget labyrinthWidget;
+
     public GameScreen(AbstractGame game, BomberManMediator mediator) {
         super(game, mediator);
         this.gameScreenMediator = (GameScreenMediator) mediator;
-        this.world.setLabyrinthModel(labyrinthModel);
+        this.gameScreenMediator.setRoom(UserSession.getInstance().getRoom());
+        initializeDefaultGameBoard();
+    }
+
+    public void initializeDefaultGameBoard() {
+        labyrinthModel = new LabyrinthModel();
+        world.setLabyrinthModel(labyrinthModel);
+        world.setResolutionHelper(getStageBuilder().getResolutionHelper());
+        world.setAssetsInterface(getStageBuilder().getAssets());
         labyrinthWidget = new LabyrinthWidget(labyrinthModel, getStageBuilder().getResolutionHelper(), getStageBuilder().getAssets());
         stage.addActor(labyrinthWidget);
     }
 
-    public void initializeGame() {
-        world.setResolutionHelper(getStageBuilder().getResolutionHelper());
-        world.setAssetsInterface(getStageBuilder().getAssets());
+    public void initializeGameOnServer() {
         labyrinthModel.generateBricks();
 
         PlayerModel playerModel = new PlayerModel();
@@ -73,8 +82,8 @@ public class GameScreen extends BomberManScreen {
         super.show();
         addBackground();
         
-        if (UserSession.getInstance().isOwnerRoom()) {
-            initializeGame();
+        if (UserSession.getInstance().isServer()) {
+            initializeGameOnServer();
             gameServer = new GameServer(world);
             gameServer.initialize(game.getClient(), gameScreenMediator);
         }
@@ -257,5 +266,21 @@ public class GameScreen extends BomberManScreen {
         world.moveGhost(ghostId, gridX, gridY, Direction.valueOf(direction), distance);
     }
 
+    public void onOwnerLeft() {
+        game.backToPreviousScreen();
+        // TODO : Show popup information
+    }
 
+    public void onGameFinished() {
+        Log.d("Game finished");
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        RoomModel roomModel = UserSession.getInstance().getRoom();
+        if (roomModel != null) {
+            game.getClient().leaveRoom(roomModel.getId());
+        }
+    }
 }

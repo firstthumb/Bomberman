@@ -247,7 +247,7 @@ public class World implements BombModel.BombListener {
     }
 
     private void callGhostStopListener(GhostModel ghostModel) {
-        if (UserSession.getInstance().isOwnerRoom()) {
+        if (UserSession.getInstance().isServer()) {
             if (ghostModel.getListener() != null) {
                 ghostModel.getListener().onStop();
             }

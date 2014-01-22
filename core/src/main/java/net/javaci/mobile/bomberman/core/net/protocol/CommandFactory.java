@@ -56,6 +56,8 @@ public class CommandFactory {
                     return CreateGameCommand.build(json);
                 case Command.MOVE_GHOST:
                     return MoveGhostCommand.build(json);
+                case Command.GAME_END:
+                    return GameEndCommand.build(json);
 
             }
         } catch (JSONException e) {
