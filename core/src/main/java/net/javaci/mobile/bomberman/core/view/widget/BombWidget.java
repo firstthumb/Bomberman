@@ -41,7 +41,12 @@ public class BombWidget extends Actor {
             float deltaTime = Gdx.graphics.getDeltaTime();
             elapsedTime += deltaTime;
             TextureRegion currentFrame = bombAnimationBeforeExplosion.getKeyFrame(elapsedTime, true);
-            batch.draw(currentFrame, bombModel.getX(), bombModel.getY(), currentFrame.getRegionWidth(), currentFrame.getRegionHeight());
+
+            batch.draw(
+                    currentFrame,
+                    bombModel.getX() + (bombModel.getWidth() - currentFrame.getRegionWidth()) * 0.5f,
+                    bombModel.getY() + (bombModel.getHeight() - currentFrame.getRegionHeight()) * 0.5f);
+
         }
     }
 

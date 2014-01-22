@@ -10,6 +10,7 @@ public class PlayerModel extends GameObjectModel {
     private int targetGridY = -1;
     //oyunu kuran 1, oyuna ilk katilan oyuncu 2, ikinci katilan 3, son katilan 4 degerini alir.
     private int gameIndex;
+    private int lifeCount = 3;
 
     public int getGameIndex() {
         return gameIndex;
@@ -72,9 +73,28 @@ public class PlayerModel extends GameObjectModel {
         return this.y + this.height * 0.5f;
     }
 
+    public void decrementLifeCount() {
+        this.lifeCount = this.lifeCount - 1;
+        System.out.println("Decrement Life : " + this);
+    }
+
+    public int getLifeCount() {
+        return this.lifeCount;
+    }
+
     public static enum State {
         STANDING_UP, STANDING_DOWN, STANDING_RIGHT, STANDING_LEFT,
         WALKING_UP, WALKING_DOWN, WALKING_RIGHT, WALKING_LEFT,
         STOPPING_UP, STOPPING_DOWN, STOPPING_RIGHT, STOPPING_LEFT
+    }
+
+    @Override
+    public String toString() {
+        return "PlayerModel{" +
+                "playerName='" + playerName + '\'' +
+                ", state=" + state +
+                ", lifeCount=" + lifeCount +
+                ", gameIndex=" + gameIndex +
+                '}';
     }
 }

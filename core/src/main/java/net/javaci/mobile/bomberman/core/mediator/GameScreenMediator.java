@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import net.javaci.mobile.bomberman.core.BomberManGame;
 import net.javaci.mobile.bomberman.core.models.BombModel;
+import net.javaci.mobile.bomberman.core.models.PlayerModel;
 import net.javaci.mobile.bomberman.core.net.NetworkInterface;
 import net.javaci.mobile.bomberman.core.net.NetworkListenerAdapter;
 import net.javaci.mobile.bomberman.core.net.models.RoomModel;
@@ -13,6 +14,8 @@ import net.javaci.mobile.bomberman.core.session.UserSession;
 import net.javaci.mobile.bomberman.core.util.Log;
 import net.javaci.mobile.bomberman.core.view.BomberManScreen;
 import net.javaci.mobile.bomberman.core.view.GameScreen;
+
+import java.util.List;
 
 public class GameScreenMediator extends BomberManMediator {
 
@@ -99,29 +102,31 @@ public class GameScreenMediator extends BomberManMediator {
     }
 
     private void handleExplodeBombCommand(ExplodeBombCommand command) {
-        if (command.getFromUser().equals(UserSession.getInstance().getUsername())) {
-            return;
+        List<String> explodedPlayers = command.getExplodedPlayers();
+        if (explodedPlayers != null) {
+            for (String explodedPlayer : explodedPlayers) {
+                PlayerModel playerModel = gameScreen.getWorld().getPlayerModel(explodedPlayer);
+                Vector2 playerInitialPosition = gameScreen.getLabyrinthWidget().getPlayerInitialPosition(playerModel.getGameIndex());
+                gameScreen.getWorld().respawnPlayerAndDecrementLife(explodedPlayer, playerInitialPosition);
+            }
         }
-
-//        BombModel found = null;
-//        for (BombModel bombModel : gameScreen.getWorld().getBombList()) {
-//            if (bombModel.getId() == command.getId()) {
-//                found = bombModel;
-//                break;
-//            }
-//        }
-//
-//        if (found != null) {
-//            gameScreen.getWorld().getBombList().remove(found);
-//        }
     }
 
     private void handleDropBombCommand(DropBombCommand command) {
         if (command.getFromUser().equals(UserSession.getInstance().getUsername())) {
             return;
         }
-
-        gameScreen.onOpponentDropBomb(command.getId(), command.getGridX(), command.getGridY(), command.getFromUser());
+        BombModel bombModel = gameScreen.getWorld().dropBomb(command.getId(), command.getGridX(), command.getGridY(), command.getFromUser());
+        bombModel.addBombListener(new BombModel.BombListener() {
+            @Override
+            public void onBombExploded(BombModel bombModel) {
+                if (UserSession.getInstance().isServer()) {
+                    gameServer.sendBombExplosion(bombModel, gameScreen.getWorld());
+                }
+                gameScreen.renderBombExplosion(bombModel);
+            }
+        });
+        gameScreen.onOpponentDropBomb(bombModel);
     }
 
     private void handleGameEndCommand(GameEndCommand command) {
@@ -206,7 +211,7 @@ public class GameScreenMediator extends BomberManMediator {
             @Override
             public void onBombExploded(BombModel bombModel) {
                 if (UserSession.getInstance().isServer()) {
-                    gameServer.sendBombExplosion(bombModel);
+                    gameServer.sendBombExplosion(bombModel, gameScreen.getWorld());
                 }
                 gameScreen.renderBombExplosion(bombModel);
             }

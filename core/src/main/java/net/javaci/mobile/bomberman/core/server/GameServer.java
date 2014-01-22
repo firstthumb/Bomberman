@@ -13,10 +13,7 @@ import net.javaci.mobile.bomberman.core.session.UserSession;
 import net.javaci.mobile.bomberman.core.util.Log;
 import net.javaci.mobile.bomberman.core.view.GameScreen;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -138,12 +135,14 @@ public class GameServer {
         return ghostMovements.get(rand.nextInt(ghostMovements.size()));
     }
 
-    public void sendBombExplosion(BombModel bombModel) {
+    public void sendBombExplosion(BombModel bombModel, World world) {
         ExplodeBombCommand explodeBombCommand = new ExplodeBombCommand();
         explodeBombCommand.setFromUser(UserSession.getInstance().getUsername());
         explodeBombCommand.setId(bombModel.getId());
         explodeBombCommand.setGridX(bombModel.getGridX());
         explodeBombCommand.setGridY(bombModel.getGridY());
+        List<String> explodedPlayers = world.getExplodedPlayerNames(bombModel);
+        explodeBombCommand.setExplodedPlayers(explodedPlayers);
         networkInterface.sendMessage(explodeBombCommand.serialize());
     }
 }

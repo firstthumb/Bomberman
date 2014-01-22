@@ -1,6 +1,5 @@
 package net.javaci.mobile.bomberman.core;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import net.javaci.mobile.bomberman.core.models.BombModel;
 import net.javaci.mobile.bomberman.core.models.GhostModel;
@@ -543,8 +542,10 @@ public class World implements BombModel.BombListener {
 
     public BombModel dropBomb(int id, int gridX, int gridY, String owner) {
         BombModel bombModel = new BombModel(id);
-        bombModel.setX(getX(gridX));
-        bombModel.setY(getY(gridY));
+        bombModel.setX(gridX * gridWidth + resolutionHelper.getGameAreaPosition().x);
+        bombModel.setY(gridY * gridHeight + resolutionHelper.getGameAreaPosition().y);
+        bombModel.setWidth(this.gridWidth);
+        bombModel.setHeight(this.gridHeight);
         bombModel.setGridX(gridX);
         bombModel.setGridY(gridY);
         bombModel.setOwner(owner);
@@ -570,12 +571,6 @@ public class World implements BombModel.BombListener {
 
         bombModel.setX(gridX * unitWidth + resolutionHelper.getGameAreaPosition().x);
         bombModel.setY(gridY * unitHeight + resolutionHelper.getGameAreaPosition().y);
-        //Center bomb
-        TextureRegion bombTexture = this.assetsInterface.getTextureAtlas("Common.atlas").findRegion("bomb1");
-        float xOffSet = (unitWidth - bombTexture.getRegionWidth()) * 0.5f;
-        float yOffSet = (unitHeight - bombTexture.getRegionHeight()) * 0.5f;
-        bombModel.setX(bombModel.getX() + xOffSet);
-        bombModel.setY(bombModel.getY() + yOffSet);
         bombModel.setGridX(getGridX(bombModel.getOriginX()));
         bombModel.setGridY(getGridY(bombModel.getOriginY()));
 
@@ -587,7 +582,23 @@ public class World implements BombModel.BombListener {
     @Override
     public void onBombExploded(BombModel bombModel) {
         this.bombList.remove(bombModel);
-        System.out.println("There are " + bombList.size() + " bombs on screen.");
+    }
+
+    public List<String> getExplodedPlayerNames(BombModel bombModel) {
+        List<String> result = new ArrayList<String>();
+        List<Vector2> explodedCells = calculateBombExplosionCells(bombModel);
+        if (explodedCells != null) {
+            for (Vector2 cell : explodedCells) {
+                for (PlayerModel playerModel : playerModels.values()) {
+                    int playerGridX = getGridX(playerModel.getOriginX());
+                    int playerGridY = getGridY(playerModel.getOriginY());
+                    if ((int)cell.x == playerGridX && (int)cell.y == playerGridY) {
+                        result.add(playerModel.getPlayerName());
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     public List<BombModel> getBombList() {
@@ -687,5 +698,16 @@ public class World implements BombModel.BombListener {
 
     public Vector2 getVector() {
         return vector;
+    }
+
+    public void respawnPlayerAndDecrementLife(String explodedPlayer, Vector2 playerInitialPosition) {
+        PlayerModel playerModel = playerModels.get(explodedPlayer);
+        playerModel.decrementLifeCount();
+        playerModel.setPosition(playerInitialPosition);
+
+    }
+
+    public PlayerModel getPlayerModel(String playerName) {
+        return this.playerModels.get(playerName);
     }
 }

@@ -12,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import net.javaci.mobile.bomberman.core.BomberManGame;
 import net.javaci.mobile.bomberman.core.GameFactory;
 import net.javaci.mobile.bomberman.core.World;
 import net.javaci.mobile.bomberman.core.mediator.BomberManMediator;
@@ -37,6 +36,11 @@ public class GameScreen extends BomberManScreen {
     private GameScreenMediator gameScreenMediator;
     private GameServer gameServer;
     private LabyrinthModel labyrinthModel;
+
+    public LabyrinthWidget getLabyrinthWidget() {
+        return labyrinthWidget;
+    }
+
     private LabyrinthWidget labyrinthWidget;
 
     public GameScreen(AbstractGame game, BomberManMediator mediator) {
@@ -226,14 +230,7 @@ public class GameScreen extends BomberManScreen {
         });
     }
 
-    public void onOpponentDropBomb(int id, int gridX, int gridY, String owner) {
-        BombModel bombModel = world.dropBomb(id, gridX, gridY, owner);
-        bombModel.addBombListener(new BombModel.BombListener() {
-            @Override
-            public void onBombExploded(BombModel bombModel) {
-                renderBombExplosion(bombModel);
-            }
-        });
+    public void onOpponentDropBomb(BombModel bombModel) {
         addBombToScreen(bombModel);
     }
 
