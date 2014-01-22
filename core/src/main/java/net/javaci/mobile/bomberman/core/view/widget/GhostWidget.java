@@ -72,6 +72,9 @@ public class GhostWidget extends Actor {
                 break;
         }
 
-        batch.draw(currentFrame, ghostModel.getX(), ghostModel.getY(), currentFrame.getRegionWidth(), currentFrame.getRegionHeight());
+        batch.draw(
+                currentFrame,
+                ghostModel.getX() + (ghostModel.getWidth() - currentFrame.getRegionWidth()) * 0.5f,
+                ghostModel.getY() + (ghostModel.getHeight() - currentFrame.getRegionHeight()) * 0.5f);
     }
 }

@@ -60,36 +60,54 @@ public class World implements BombModel.BombListener {
     }
 
     private void updateGhostModel(GhostModel ghostModel, float deltaTime) {
-        float x = ghostModel.getX();
-        float y = ghostModel.getY();
         float speed = ghostModel.getSpeed();
         boolean ghostCanMove = checkGhostCanMove(ghostModel);
         if (ghostCanMove) {
             switch (ghostModel.getState()) {
                 case WALKING_UP:
-                    ghostModel.setY(y + deltaTime * speed);
+                    if (ghostModel.getTargetGridY() >= 0) {
+                        float diff = getGridOriginY(ghostModel.getTargetGridY()) - ghostModel.getOriginY();
+                        float distance = deltaTime * speed;
+                        if (distance >= diff) {
+                            distance = diff;
+                            stopGhost(ghostModel.getId());
+                        }
+                        ghostModel.setY(ghostModel.getY() + distance);
+                    }
                     break;
                 case WALKING_DOWN:
-                    ghostModel.setY(y - deltaTime * speed);
+                    if (ghostModel.getTargetGridY() >= 0) {
+                        float diff = ghostModel.getOriginY() - getGridOriginY(ghostModel.getTargetGridY());
+                        float distance = deltaTime * speed;
+                        if (distance >= diff) {
+                            distance = diff;
+                            stopGhost(ghostModel.getId());
+                        }
+                        ghostModel.setY(ghostModel.getY() - distance);
+                    }
                     break;
                 case WALKING_RIGHT:
-                    ghostModel.setX(x + deltaTime * speed);
+                    if (ghostModel.getTargetGridX() >= 0) {
+                        float diff = getGridOriginX(ghostModel.getTargetGridX()) - ghostModel.getOriginX();
+                        float distance = deltaTime * speed;
+                        if (distance >= diff) {
+                            distance = diff;
+                            stopGhost(ghostModel.getId());
+                        }
+                        ghostModel.setX(ghostModel.getX() + distance);
+                    }
                     break;
                 case WALKING_LEFT:
-                    ghostModel.setX(x - deltaTime * speed);
+                    if (ghostModel.getTargetGridX() >= 0) {
+                        float diff = ghostModel.getOriginX() - getGridOriginX(ghostModel.getTargetGridX());
+                        float distance = deltaTime * speed;
+                        if (distance >= diff) {
+                            distance = diff;
+                            stopGhost(ghostModel.getId());
+                        }
+                        ghostModel.setX(ghostModel.getX() - distance);
+                    }
                     break;
-            }
-
-            int gridX = getGridX(ghostModel.getX());
-            int gridY = getGridY(ghostModel.getY());
-            ghostModel.setGridX(gridX);
-            ghostModel.setGridY(gridY);
-            if (ghostModel.getTargetGridX() == gridX && ghostModel.getTargetGridY() == gridY) {
-                stopGhost(ghostModel.getId());
-                ghostModel.setTargetGridX(0);
-                ghostModel.setTargetGridY(0);
-                ghostModel.setX(getX(gridX));
-                ghostModel.setY(getY(gridY));
             }
         }
         else {
@@ -255,34 +273,30 @@ public class World implements BombModel.BombListener {
     }
 
     private boolean checkGhostCanMove(GhostModel ghostModel) {
-        /*
         byte[][] grid = labyrinthModel.getGrid();
-        float unitWidth = resolutionHelper.getGameAreaBounds().x / (float) LabyrinthModel.NUM_COLS;
-        float unitHeight = resolutionHelper.getGameAreaBounds().y / (float) LabyrinthModel.NUM_ROWS;
 
         switch (ghostModel.getState()) {
             case WALKING_UP: {
-                float x = ghostModel.getOriginX();
-                float y = ghostModel.getY() + ghostModel.getHeight();
-                return isGridPositionEmpty(grid, unitWidth, unitHeight, x, y);
+                int gridX = getGridX(ghostModel.getOriginX());
+                int gridY = getGridY(ghostModel.getY() + ghostModel.getHeight() + 1);
+                return isGridPositionEmpty(grid, gridX, gridY);
             }
             case WALKING_DOWN: {
-                float x = ghostModel.getOriginX();
-                float y = ghostModel.getY();
-                return isGridPositionEmpty(grid, unitWidth, unitHeight, x, y);
+                int gridX = getGridX(ghostModel.getOriginX());
+                int gridY = getGridY(ghostModel.getY() -  1);
+                return isGridPositionEmpty(grid, gridX, gridY);
             }
             case WALKING_RIGHT: {
-                float x = ghostModel.getX() + ghostModel.getWidth();
-                float y = ghostModel.getOriginY();
-                return isGridPositionEmpty(grid, unitWidth, unitHeight, x, y);
+                int gridX = getGridX(ghostModel.getX() + ghostModel.getWidth() + 1);
+                int gridY = getGridY(ghostModel.getOriginY());
+                return isGridPositionEmpty(grid, gridX, gridY);
             }
             case WALKING_LEFT:{
-                float x = ghostModel.getX();
-                float y = ghostModel.getOriginY();
-                return isGridPositionEmpty(grid, unitWidth, unitHeight, x, y);
+                int gridX = getGridX(ghostModel.getX() - 1);
+                int gridY = getGridY(ghostModel.getOriginY());
+                return isGridPositionEmpty(grid, gridX, gridY);
             }
         }
-        */
         return true;
     }
 
@@ -308,35 +322,36 @@ public class World implements BombModel.BombListener {
             return;
         }
 
-        float unitWidth = resolutionHelper.getGameAreaBounds().x / (float) LabyrinthModel.NUM_COLS;
-        float unitHeight = resolutionHelper.getGameAreaBounds().y / (float) LabyrinthModel.NUM_ROWS;
-
-        model.setX(resolutionHelper.getGameAreaPosition().x + unitWidth * gridX);
-        model.setY(resolutionHelper.getGameAreaPosition().y + unitHeight * gridY);
-        model.setTargetGridX(gridX);
-        model.setTargetGridY(gridY);
         switch (direction) {
             case UP:
                 model.setState(GhostModel.State.WALKING_UP);
+                model.setTargetGridX(gridX);
                 model.setTargetGridY(gridY + distance);
                 break;
             case DOWN:
                 model.setState(GhostModel.State.WALKING_DOWN);
+                model.setTargetGridX(gridX);
                 model.setTargetGridY(gridY - distance);
                 break;
             case RIGHT:
                 model.setState(GhostModel.State.WALKING_RIGHT);
                 model.setTargetGridX(gridX + distance);
+                model.setTargetGridY(gridY);
                 break;
             case LEFT:
                 model.setState(GhostModel.State.WALKING_LEFT);
                 model.setTargetGridX(gridX - distance);
+                model.setTargetGridY(gridY);
                 break;
         }
     }
 
     public void stopGhost(int ghostId) {
         GhostModel ghost = ghostModels.get(ghostId);
+        ghost.setGridX(getGridX(ghost.getOriginX()));
+        ghost.setGridY(getGridY(ghost.getOriginY()));
+        ghost.setTargetGridX(-1);
+        ghost.setTargetGridY(-1);
         switch (ghost.getState()) {
             case WALKING_UP:
                 ghost.setState(GhostModel.State.STANDING_UP);

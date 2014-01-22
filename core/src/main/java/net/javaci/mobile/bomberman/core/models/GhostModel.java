@@ -32,9 +32,9 @@ public class GhostModel extends GameObjectModel {
     }
 
     private int id;
-    private float speed = 60f;
-    private int targetGridX;
-    private int targetGridY;
+    private float speed = 100f;
+    private int targetGridX = -1;
+    private int targetGridY = -1;
     private int gridX;
     private int gridY;
     private Type type = Type.BALLOOM;

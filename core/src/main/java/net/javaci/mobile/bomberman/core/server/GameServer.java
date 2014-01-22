@@ -1,5 +1,6 @@
 package net.javaci.mobile.bomberman.core.server;
 
+import net.javaci.mobile.bomberman.core.GameFactory;
 import net.javaci.mobile.bomberman.core.World;
 import net.javaci.mobile.bomberman.core.mediator.GameScreenMediator;
 import net.javaci.mobile.bomberman.core.models.GhostModel;
@@ -8,30 +9,39 @@ import net.javaci.mobile.bomberman.core.net.NetworkInterface;
 import net.javaci.mobile.bomberman.core.net.NetworkListenerAdapter;
 import net.javaci.mobile.bomberman.core.net.protocol.*;
 import net.javaci.mobile.bomberman.core.session.UserSession;
+import net.javaci.mobile.bomberman.core.util.Log;
 import net.javaci.mobile.bomberman.core.view.GameScreen;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class GameServer {
-    private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
+    private ScheduledExecutorService executorService;
 
     private static int WAIT_MOVE_GHOST_IN_SECOND = 5;
     private static Map<Integer, GhostMovement> ghostMovements = new HashMap<Integer, GhostMovement>();
 
     static {
-        ghostMovements.put(0, new GhostMovement(GameScreen.Direction.RIGHT, 10));
-        ghostMovements.put(1, new GhostMovement(GameScreen.Direction.LEFT, 20));
-        ghostMovements.put(2, new GhostMovement(GameScreen.Direction.UP, 10));
-        ghostMovements.put(3, new GhostMovement(GameScreen.Direction.DOWN, 10));
+        ghostMovements.put(0, new GhostMovement(GameScreen.Direction.RIGHT, 8));
+        ghostMovements.put(1, new GhostMovement(GameScreen.Direction.LEFT, 5));
+        ghostMovements.put(2, new GhostMovement(GameScreen.Direction.UP, 2));
+        ghostMovements.put(3, new GhostMovement(GameScreen.Direction.LEFT, 7));
+        ghostMovements.put(4, new GhostMovement(GameScreen.Direction.RIGHT, 3));
+        ghostMovements.put(5, new GhostMovement(GameScreen.Direction.UP, 10));
+        ghostMovements.put(6, new GhostMovement(GameScreen.Direction.RIGHT, 11));
+        ghostMovements.put(7, new GhostMovement(GameScreen.Direction.LEFT, 3));
+        ghostMovements.put(8, new GhostMovement(GameScreen.Direction.UP, 4));
+        ghostMovements.put(9, new GhostMovement(GameScreen.Direction.DOWN, 6));
+        ghostMovements.put(10, new GhostMovement(GameScreen.Direction.RIGHT, 8));
     }
 
-    private int ghostMoveIndex = 0;
+    private Random rand = new Random();
 
     private NetworkInterface networkInterface;
     private GameScreenMediator gameScreenMediator;
@@ -61,6 +71,9 @@ public class GameServer {
                 }
             }
         });
+
+        GameFactory.GameModel gameModel = GameFactory.getGameModel(gameScreenMediator.getLevel());
+        executorService = Executors.newScheduledThreadPool(gameModel.numGhosts);
     }
 
     private void handleStartMoveCommand(MoveCommand command) {
@@ -98,7 +111,14 @@ public class GameServer {
                     return;
                 }
 
-                GhostMovement movement = getGhostMovement();
+                int numTry = 3;
+                GhostMovement movement;
+                do {
+                    movement = getGhostMovement();
+                    numTry--;
+                } while (numTry > 0 && movement != null && !movement.movable(ghostModel, world.getLabyrinthModel().getGrid()));
+
+                Log.e("Movable  : " + movement.movable(ghostModel, world.getLabyrinthModel().getGrid()));
 
                 MoveGhostCommand command = new MoveGhostCommand();
                 command.setFromUser(UserSession.getInstance().getUsername());
@@ -113,14 +133,6 @@ public class GameServer {
     }
 
     private GhostMovement getGhostMovement() {
-        GhostMovement movement = ghostMovements.get(ghostMoveIndex++);
-        if (movement == null) {
-            ghostMoveIndex = 0;
-            return getGhostMovement();
-        }
-
-        return movement;
+        return ghostMovements.get(rand.nextInt(ghostMovements.size()));
     }
-
-
 }
