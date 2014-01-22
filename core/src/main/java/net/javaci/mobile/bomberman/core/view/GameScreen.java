@@ -102,6 +102,7 @@ public class GameScreen extends BomberManScreen {
             initializeGameOnServer();
             gameServer = new GameServer(world);
             gameServer.initialize(game.getClient(), gameScreenMediator);
+            gameScreenMediator.setGameServer(gameServer);
         }
         else {
             // TODO : wait server response to create game screen
