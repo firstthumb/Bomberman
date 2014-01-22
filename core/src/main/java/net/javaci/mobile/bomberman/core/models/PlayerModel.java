@@ -8,6 +8,16 @@ public class PlayerModel extends GameObjectModel {
     private State state = State.STANDING_DOWN;
     private int targetGridX = -1;
     private int targetGridY = -1;
+    //oyunu kuran 1, oyuna ilk katilan oyuncu 2, ikinci katilan 3, son katilan 4 degerini alir.
+    private int gameIndex;
+
+    public int getGameIndex() {
+        return gameIndex;
+    }
+
+    public void setGameIndex(int gameIndex) {
+        this.gameIndex = gameIndex;
+    }
 
     public int getTargetGridY() {
         return targetGridY;

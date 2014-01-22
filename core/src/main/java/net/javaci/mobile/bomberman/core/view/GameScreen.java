@@ -5,10 +5,12 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import net.javaci.mobile.bomberman.core.BomberManGame;
 import net.javaci.mobile.bomberman.core.GameFactory;
@@ -48,24 +50,17 @@ public class GameScreen extends BomberManScreen {
         labyrinthModel = new LabyrinthModel();
         world.initialize(labyrinthModel, getStageBuilder().getResolutionHelper(), getStageBuilder().getAssets());
         labyrinthWidget = new LabyrinthWidget(labyrinthModel, getStageBuilder().getResolutionHelper(), getStageBuilder().getAssets());
-        stage.addActor(labyrinthWidget);
+        stage.getRoot().addActorAt(0, labyrinthWidget);
     }
 
     public void initializeGameOnServer() {
         GameFactory.GameModel gameModel = GameFactory.getGameModel(gameScreenMediator.getLevel());
 
         labyrinthModel.generateBricks(gameModel.numBricks);
-
-        PlayerModel playerModel = new PlayerModel();
-        playerModel.setPlayerName(UserSession.getInstance().getUsername());
-        playerModel.setPosition(labyrinthWidget.getPlayerInitialPosition(1));
-        playerModel.setWidth(world.getGridWidth());
-        playerModel.setHeight(world.getGridHeight());
-        world.addPlayerModel(playerModel);
+        PlayerModel playerModel = addPlayerModelToWorld(UserSession.getInstance().getUsername(), 1);
         // TODO: user join notification
 
-        BombermanWidget bombermanWidget = new BombermanWidget(getStageBuilder().getAssets().getTextureAtlas("Common.atlas"), 1, playerModel);
-        stage.addActor(bombermanWidget);
+
 
         for (int i=0; i<gameModel.numGhosts; i++) {
             final GhostModel ghostModel = GhostModel.createGhostModel();
@@ -85,6 +80,19 @@ public class GameScreen extends BomberManScreen {
         }
     }
 
+    private PlayerModel addPlayerModelToWorld(String username, int gameIndex) {
+        PlayerModel playerModel = new PlayerModel();
+        playerModel.setPlayerName(username);
+        playerModel.setPosition(labyrinthWidget.getPlayerInitialPosition(gameIndex));
+        playerModel.setWidth(world.getGridWidth());
+        playerModel.setHeight(world.getGridHeight());
+        playerModel.setGameIndex(gameIndex);
+        world.addPlayerModel(playerModel);
+        BombermanWidget bombermanWidget = new BombermanWidget(getStageBuilder().getAssets().getTextureAtlas("Common.atlas"), gameIndex, playerModel);
+        stage.addActor(bombermanWidget);
+        return playerModel;
+    }
+
     @Override
     public void show() {
         super.show();
@@ -102,6 +110,30 @@ public class GameScreen extends BomberManScreen {
         prepareGamePad();
 
         prepareBombButton();
+
+        initializeBeforeGamePanel();
+    }
+
+    private void initializeBeforeGamePanel() {
+        Group panel = (Group) findActor("beforeGamePanel");
+        panel.remove();
+        getRoot().addActor(panel);
+        ((Label)panel.findActor("roomName")).setText(UserSession.getInstance().getRoom().getName());
+        if (UserSession.getInstance().isServer()) {
+            setBeforeGamePanelTitle("Waiting for players...");
+            Label label = (Label)panel.findActor("roomOwner");
+            label.setText("Player 1 (Room Owner) : " + UserSession.getInstance().getUsername());
+            label.setVisible(true);
+        } else {
+            setBeforeGamePanelTitle("Waiting for room owner to start the game...");
+        }
+
+    }
+
+    private void setBeforeGamePanelTitle(String title) {
+        Group panel = (Group) findActor("beforeGamePanel");
+        Label label = (Label)panel.findActor("title");
+        label.setText(title);
     }
 
     private void prepareBombButton() {
@@ -110,8 +142,10 @@ public class GameScreen extends BomberManScreen {
         stage.addActor(bombButton);
         bombButton.setWidth(bombButton.getWidth() * 2f);
         bombButton.setHeight(bombButton.getHeight() * 2f);
+        /*
         Color color = bombButton.getColor();
         color.a = 0.5f;
+        */
         bombButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -189,18 +223,6 @@ public class GameScreen extends BomberManScreen {
                 onMoveEnd(BomberManGame.username, Direction.LEFT);
             }
         });
-
-        findButton("startGameButton").addListener(new InputListener() {
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                gameServer.createGame();
-            }
-        });
     }
 
     public void onMoveStart(String username, Direction direction) {
@@ -218,6 +240,7 @@ public class GameScreen extends BomberManScreen {
     }
 
     public void onCreateGame(LabyrinthModel labyrinthModel, List<GhostModel> ghostModels) {
+        findActor("beforeGamePanel").remove();
         world.initialize(labyrinthModel, getStageBuilder().getResolutionHelper(), getStageBuilder().getAssets());
 
         LabyrinthWidget labyrinthWidget = new LabyrinthWidget(world.getLabyrinthModel(), getStageBuilder().getResolutionHelper(), getStageBuilder().getAssets());
@@ -252,6 +275,33 @@ public class GameScreen extends BomberManScreen {
 
         for (Vector2 cell : cellIndexes) {
             labyrinthModel.getGrid()[(int)cell.x][(int)cell.y] = LabyrinthModel.EMPTY;
+        }
+    }
+
+    public void onPlayerJoinedRoom(String playerName) {
+        int gameIndex = world.getNextGameIndex();
+        addPlayerModelToWorld(playerName, gameIndex);
+        final Group panel = (Group) findActor("beforeGamePanel");
+        if (gameIndex == 1) {
+            Label label = (Label)panel.findActor("roomOwner");
+            label.setText("Player 1 (Room Owner) : " + playerName);
+            label.setVisible(true);
+        } else {
+            Label playerJoinedLabel = (Label)panel.findActor("player" + gameIndex+ "joined");
+            playerJoinedLabel.setText("Player " + gameIndex + " joined room. " + playerName);
+            playerJoinedLabel.setVisible(true);
+        }
+        if (UserSession.getInstance().isServer()) {
+            Button startButton = (Button)panel.findActor("startGameButton");
+            startButton.setVisible(true);
+            startButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    panel.remove();
+                    gameServer.createGame();
+                }
+            });
+
         }
     }
 
@@ -293,7 +343,7 @@ public class GameScreen extends BomberManScreen {
         RoomModel roomModel = UserSession.getInstance().getRoom();
         if (roomModel != null) {
             game.getClient().leaveRoom(roomModel.getId());
-            game.getClient().deleteRoom(roomModel.getId());
+            //game.getClient().deleteRoom(roomModel.getId());
         }
         else {
             Log.e("Room Model is NULL. Cannot delete room from Server");

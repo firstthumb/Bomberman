@@ -119,6 +119,17 @@ public class AppWarpClient implements NetworkInterface {
                     }
                 }
             }
+
+            @Override
+            public void onGetLiveRoomInfoDone(LiveRoomInfoEvent liveRoomInfoEvent) {
+                if (liveRoomInfoEvent.getResult() == WarpResponseResultCode.SUCCESS) {
+                    for (NetworkListener listener : networkListeners) {
+                        listener.onRoomInfoReceived(liveRoomInfoEvent.getJoinedUsers(), liveRoomInfoEvent.getCustomData());
+                    }
+                } else {
+                    log("getLiveRoomInfo failed.");
+                }
+            }
         });
     }
 
@@ -248,6 +259,11 @@ public class AppWarpClient implements NetworkInterface {
     @Override
     public void startGame(String roomId) {
         warpClient.updateRoomProperties(roomId, roomFilterForStartedGames, new String[0]);
+    }
+
+    @Override
+    public void getRoomInfo(String roomId) {
+        warpClient.getLiveRoomInfo(roomId);
     }
 
     private RoomModel createRoomModelFromRoomData(RoomData roomData) {

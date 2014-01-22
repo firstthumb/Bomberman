@@ -9,6 +9,16 @@
         <button name="gamePadLeftButton" x="0" y="50" atlas="Common.atlas" frameUp="gamePadLeft" frameDown="gamePadLeftH"/>
     </group>
 
-    <button name="startGameButton" x="200" y="350" atlas="Common.atlas" frameUp="gamePadLeft" frameDown="gamePadLeftH"/>
     <button name="bombButton" x="750" y="50" atlas="Common.atlas" frameUp="bomb1" frameDown="bomb6"/>
+
+    <group name="beforeGamePanel" visible="true" x="200" y="120" width="400" height="240">
+        <image name="panelBackground" atlas="Common.atlas" frame="panelBackground"  x="0" y="0" width="400" height="240" ninepatch="true" ninepatchOffset="6"/>
+        <label name="title" text="" x="0" y="200" width="400" align="center" fontName="large.fnt" fontColor="000000" wrap="true"/>
+        <label name="roomOwner" text="" x="0" y="160" width="400" align="center" fontName="normal.fnt" fontColor="000000" visible="false"/>
+        <label name="player2joined" text="" x="0" y="140" width="400" align="center" fontName="normal.fnt" fontColor="000000" visible="false"/>
+        <label name="player3joined" text="" x="0" y="120" width="400" align="center" fontName="normal.fnt" fontColor="000000" visible="false"/>
+        <label name="player4joined" text="" x="0" y="100"  width="400" align="center" fontName="normal.fnt" fontColor="000000" visible="false"/>
+        <textButton name="startGameButton" atlas="Common.atlas" text="START GAME" x="104" y="20" frameUp="btnEmpty" frameDown="btnEmpty_H" fontName="normal.fnt" fontColor="000000" visible="false"/>
+        <label name="roomName" text="" x="0" y="10" width="400" align="center" fontName="small.fnt" fontColor="000000" visible="true"/>
+    </group>
 </group>

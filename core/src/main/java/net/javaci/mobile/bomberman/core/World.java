@@ -573,4 +573,18 @@ public class World implements BombModel.BombListener {
     private int clamp(int min, int value, int max) {
         return Math.max(min, Math.min(max, value));
     }
+
+    public void removePlayer(String playerName) {
+        this.playerModels.remove(playerName);
+    }
+
+    public int getNextGameIndex() {
+        int max = 0;
+        for (PlayerModel player : playerModels.values()) {
+            if (player.getGameIndex() > max) {
+                max = player.getGameIndex();
+            }
+        }
+        return max + 1;
+    }
 }

@@ -64,13 +64,13 @@ public class LabyrinthWidget extends Actor {
                 position.set(gameAreaPosition.x + width, gameAreaPosition.y + height);
                 break;
             case 2:
-                //TODO position.set(gameAreaPosition.x + width, gameAreaPosition.y + height);
+                position.set(gameAreaPosition.x + width * (numCols - 2), gameAreaPosition.y + height);
                 break;
             case 3:
-                //TODO position.set(gameAreaPosition.x + width, gameAreaPosition.y + height);
+                position.set(gameAreaPosition.x + width * (numCols - 2), gameAreaPosition.y + height * (numRows - 2));
                 break;
             case 4:
-                //TODO position.set(gameAreaPosition.x + width, gameAreaPosition.y + height);
+                position.set(gameAreaPosition.x + width, gameAreaPosition.y + height * (numRows - 2));
                 break;
         }
         return position;

@@ -36,6 +36,8 @@ public interface NetworkInterface {
         public void onPlayerJoinedRoom(RoomModel room, String playerName);
 
         public void onPlayerLeftRoom(RoomModel room, String playerName);
+
+        public void onRoomInfoReceived(String [] players, String data);
     }
 
     public void addNetworkListener(NetworkListener listener);
@@ -63,5 +65,7 @@ public interface NetworkInterface {
     public void sendMessageTo(String destination, String message);
 
     public void startGame(String roomId);
+
+    public void getRoomInfo(String roomId);
 
 }

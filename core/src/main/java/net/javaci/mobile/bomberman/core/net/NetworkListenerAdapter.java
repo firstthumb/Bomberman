@@ -75,4 +75,8 @@ public class NetworkListenerAdapter implements NetworkInterface.NetworkListener 
     public void onPlayerLeftRoom(RoomModel room, String playerName) {
 
     }
+
+    @Override
+    public void onRoomInfoReceived(String[] players, String data) {
+    }
 }

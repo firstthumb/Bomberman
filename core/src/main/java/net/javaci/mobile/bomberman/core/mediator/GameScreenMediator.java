@@ -2,7 +2,6 @@ package net.javaci.mobile.bomberman.core.mediator;
 
 import com.badlogic.gdx.Gdx;
 import net.javaci.mobile.bomberman.core.BomberManGame;
-import net.javaci.mobile.bomberman.core.GameFactory;
 import net.javaci.mobile.bomberman.core.models.BombModel;
 import net.javaci.mobile.bomberman.core.net.NetworkInterface;
 import net.javaci.mobile.bomberman.core.net.NetworkListenerAdapter;
@@ -70,7 +69,24 @@ public class GameScreenMediator extends BomberManMediator {
                     GameScreenMediator.this.onPlayerJoinedRoom(playerName);
                 }
             }
+
+            @Override
+            public void onRoomInfoReceived(String[] players, String data) {
+                if (players != null) {
+                    for (String player: players) {
+                        GameScreenMediator.this.onPlayerJoinedRoom(player);
+                    }
+                }
+            }
         });
+    }
+
+    @Override
+    protected void onScreenShow() {
+        super.onScreenShow();
+        if ( ! UserSession.getInstance().isServer()) {
+            networkInterface.getRoomInfo(UserSession.getInstance().getRoom().getId());
+        }
     }
 
     private void handleGameEndCommand(GameEndCommand command) {
@@ -163,7 +179,7 @@ public class GameScreenMediator extends BomberManMediator {
     }
 
     public void onPlayerJoinedRoom(String playerName) {
-
+        gameScreen.onPlayerJoinedRoom(playerName);
     }
 
     private void onGameOwnerLeft() {
@@ -188,4 +204,5 @@ public class GameScreenMediator extends BomberManMediator {
     public void setLevel(int level) {
         this.level = level;
     }
+
 }
