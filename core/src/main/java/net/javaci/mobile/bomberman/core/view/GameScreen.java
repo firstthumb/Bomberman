@@ -203,6 +203,17 @@ public class GameScreen extends BomberManScreen {
         });
     }
 
+    public void onOpponentDropBomb(int id, int gridX, int gridY, String owner) {
+        BombModel bombModel = world.dropBomb(id, gridX, gridY, owner);
+        bombModel.addBombListener(new BombModel.BombListener() {
+            @Override
+            public void onBombExploded(BombModel bombModel) {
+                renderBombExplosion(bombModel);
+            }
+        });
+        addBombToScreen(bombModel);
+    }
+
     public void onMoveStart(String username, Direction direction) {
         if (BomberManGame.username.equals(username)) {
             gameScreenMediator.move(direction);

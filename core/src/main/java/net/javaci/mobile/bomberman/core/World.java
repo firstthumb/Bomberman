@@ -15,6 +15,7 @@ import net.peakgames.libgdx.stagebuilder.core.assets.ResolutionHelper;
 import java.util.*;
 
 public class World implements BombModel.BombListener {
+    private Random rand = new Random();
     private Map<String, PlayerModel> playerModels = new HashMap<String, PlayerModel>();
     private LabyrinthModel labyrinthModel;
     private ResolutionHelper resolutionHelper;
@@ -23,6 +24,7 @@ public class World implements BombModel.BombListener {
     private AssetsInterface assetsInterface;
     private float gridWidth;
     private float gridHeight;
+
 
     public void initialize(LabyrinthModel labyrinthModel, ResolutionHelper resolutionHelper, AssetsInterface assets) {
         this.labyrinthModel = labyrinthModel;
@@ -283,7 +285,7 @@ public class World implements BombModel.BombListener {
             }
             case WALKING_DOWN: {
                 int gridX = getGridX(ghostModel.getOriginX());
-                int gridY = getGridY(ghostModel.getY() -  1);
+                int gridY = getGridY(ghostModel.getY() - 1);
                 return isGridPositionEmpty(grid, gridX, gridY);
             }
             case WALKING_RIGHT: {
@@ -478,10 +480,23 @@ public class World implements BombModel.BombListener {
         return labyrinthModel;
     }
 
-    public BombModel  playerDroppedBomb(String username) {
+    public BombModel dropBomb(int id, int gridX, int gridY, String owner) {
+        BombModel bombModel = new BombModel(id);
+        bombModel.setX(getX(gridX));
+        bombModel.setY(getY(gridY));
+        bombModel.setGridX(gridX);
+        bombModel.setGridY(gridY);
+        bombModel.setOwner(owner);
 
+        bombModel.addBombListener(this);
+        bombList.add(bombModel);
+
+        return bombModel;
+    }
+
+    public BombModel  playerDroppedBomb(String username) {
         PlayerModel playerModel = playerModels.get(username);
-        BombModel bombModel = new BombModel();
+        BombModel bombModel = new BombModel(rand.nextInt());
         bombModel.setWidth(this.gridWidth);
         bombModel.setHeight(this.gridHeight);
         bombModel.setOwner(username);
@@ -500,6 +515,8 @@ public class World implements BombModel.BombListener {
         float yOffSet = (unitHeight - bombTexture.getRegionHeight()) * 0.5f;
         bombModel.setX(bombModel.getX() + xOffSet);
         bombModel.setY(bombModel.getY() + yOffSet);
+        bombModel.setGridX(getGridX(bombModel.getOriginX()));
+        bombModel.setGridY(getGridY(bombModel.getOriginY()));
 
         bombModel.addBombListener(this);
         bombList.add(bombModel);
@@ -510,6 +527,10 @@ public class World implements BombModel.BombListener {
     public void onBombExploded(BombModel bombModel) {
         this.bombList.remove(bombModel);
         System.out.println("There are " + bombList.size() + " bombs on screen.");
+    }
+
+    public List<BombModel> getBombList() {
+        return bombList;
     }
 
     public List<Vector2> calculateBombExplosionCells(BombModel bombModel) {

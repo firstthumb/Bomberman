@@ -49,6 +49,13 @@ public class GameScreenMediator extends BomberManMediator {
                         break;
                     case Command.GAME_END:
                         handleGameEndCommand((GameEndCommand) command);
+                        break;
+                    case Command.DROP_BOMB:
+                        handleDropBombCommand((DropBombCommand) command);
+                        break;
+                    case Command.EXPLODE_BOMB:
+                        handleExplodeBombCommand((ExplodeBombCommand) command);
+                        break;
 
                     default:
                         break;
@@ -71,6 +78,32 @@ public class GameScreenMediator extends BomberManMediator {
                 }
             }
         });
+    }
+
+    private void handleExplodeBombCommand(ExplodeBombCommand command) {
+        if (command.getFromUser().equals(UserSession.getInstance().getUsername())) {
+            return;
+        }
+
+        BombModel found = null;
+        for (BombModel bombModel : gameScreen.getWorld().getBombList()) {
+            if (bombModel.getId() == command.getId()) {
+                found = bombModel;
+                break;
+            }
+        }
+
+        if (found != null) {
+            gameScreen.getWorld().getBombList().remove(found);
+        }
+    }
+
+    private void handleDropBombCommand(DropBombCommand command) {
+        if (command.getFromUser().equals(UserSession.getInstance().getUsername())) {
+            return;
+        }
+
+        gameScreen.onOpponentDropBomb(command.getId(), command.getGridX(), command.getGridY(), command.getFromUser());
     }
 
     private void handleGameEndCommand(GameEndCommand command) {
@@ -147,9 +180,18 @@ public class GameScreenMediator extends BomberManMediator {
         bombModel.addBombListener(new BombModel.BombListener() {
             @Override
             public void onBombExploded(BombModel bombModel) {
+                if (UserSession.getInstance().isServer()) {
+                    gameServer.sendBombExplosion(bombModel);
+                }
                 gameScreen.renderBombExplosion(bombModel);
             }
         });
+        DropBombCommand dropBombCommand = new DropBombCommand();
+        dropBombCommand.setFromUser(UserSession.getInstance().getUsername());
+        dropBombCommand.setId(bombModel.getId());
+        dropBombCommand.setGridX(bombModel.getGridX());
+        dropBombCommand.setGridY(bombModel.getGridY());
+        game.getClient().sendMessage(dropBombCommand.serialize());
         gameScreen.addBombToScreen(bombModel);
     }
 

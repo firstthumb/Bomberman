@@ -3,6 +3,7 @@ package net.javaci.mobile.bomberman.core.server;
 import net.javaci.mobile.bomberman.core.GameFactory;
 import net.javaci.mobile.bomberman.core.World;
 import net.javaci.mobile.bomberman.core.mediator.GameScreenMediator;
+import net.javaci.mobile.bomberman.core.models.BombModel;
 import net.javaci.mobile.bomberman.core.models.GhostModel;
 import net.javaci.mobile.bomberman.core.models.GhostMovement;
 import net.javaci.mobile.bomberman.core.net.NetworkInterface;
@@ -135,5 +136,14 @@ public class GameServer {
 
     private GhostMovement getGhostMovement() {
         return ghostMovements.get(rand.nextInt(ghostMovements.size()));
+    }
+
+    public void sendBombExplosion(BombModel bombModel) {
+        ExplodeBombCommand explodeBombCommand = new ExplodeBombCommand();
+        explodeBombCommand.setFromUser(UserSession.getInstance().getUsername());
+        explodeBombCommand.setId(bombModel.getId());
+        explodeBombCommand.setGridX(bombModel.getGridX());
+        explodeBombCommand.setGridY(bombModel.getGridY());
+        networkInterface.sendMessage(explodeBombCommand.serialize());
     }
 }
