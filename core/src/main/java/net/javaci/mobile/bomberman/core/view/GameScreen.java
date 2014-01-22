@@ -289,6 +289,10 @@ public class GameScreen extends BomberManScreen {
         RoomModel roomModel = UserSession.getInstance().getRoom();
         if (roomModel != null) {
             game.getClient().leaveRoom(roomModel.getId());
+            game.getClient().deleteRoom(roomModel.getId());
+        }
+        else {
+            Log.e("Room Model is NULL. Cannot delete room from Server");
         }
     }
 }

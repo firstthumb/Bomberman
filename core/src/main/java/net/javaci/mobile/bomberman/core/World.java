@@ -12,9 +12,7 @@ import net.javaci.mobile.bomberman.core.view.GameScreen;
 import net.peakgames.libgdx.stagebuilder.core.assets.AssetsInterface;
 import net.peakgames.libgdx.stagebuilder.core.assets.ResolutionHelper;
 
-import java.awt.*;
 import java.util.*;
-import java.util.List;
 
 public class World implements BombModel.BombListener {
     private Map<String, PlayerModel> playerModels = new HashMap<String, PlayerModel>();
@@ -82,10 +80,14 @@ public class World implements BombModel.BombListener {
             ghostModel.setGridY(gridY);
             if (ghostModel.getTargetGridX() == gridX && ghostModel.getTargetGridY() == gridY) {
                 stopGhost(ghostModel.getId());
+                ghostModel.setTargetGridX(0);
+                ghostModel.setTargetGridY(0);
+                ghostModel.setX(getX(gridX));
+                ghostModel.setY(getY(gridY));
             }
         }
         else {
-            stopGhost(ghostModel.getId());
+            stopGhost(ghostModel.getId());;
         }
     }
 

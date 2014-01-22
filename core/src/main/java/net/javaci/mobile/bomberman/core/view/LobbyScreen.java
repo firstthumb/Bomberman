@@ -21,11 +21,13 @@ import net.peakgames.libgdx.stagebuilder.core.AbstractGame;
 import java.util.List;
 
 public class LobbyScreen extends BomberManScreen {
+    private static float PERIODIC_REQUEST_INTERVAL = 10;
 
     private Table gameTable;
     private GameListWidgetConfig config;
     private NetworkListenerAdapter networkListenerAdapter;
     private LobbyScreenMediator lobbyScreenMediator;
+    private float periodicRequestTimeCounter = 0;
 
     public LobbyScreen(AbstractGame game, BomberManMediator mediator) {
         super(game, mediator);
@@ -98,6 +100,20 @@ public class LobbyScreen extends BomberManScreen {
                 removeLoadingWidget();
             }
         };
+    }
+
+    @Override
+    public void render(float delta) {
+        super.render(delta);
+        sendPeriodicRequestsIfRequired(delta);
+    }
+
+    private void sendPeriodicRequestsIfRequired(float delta) {
+        periodicRequestTimeCounter += delta;
+        if(periodicRequestTimeCounter >= PERIODIC_REQUEST_INTERVAL) {
+            game.getClient().listRooms();
+            periodicRequestTimeCounter = 0;
+        }
     }
 
     @Override

@@ -77,6 +77,7 @@ public class GameScreenMediator extends BomberManMediator {
         networkInterface.leaveRoom(room.getId());
 
         if (command.getReason() == GameEndCommand.GameEndReason.OWNER_LEFT) {
+            game.getClient().deleteRoom(room.getId());
             Gdx.app.postRunnable(new Runnable() {
                 @Override
                 public void run() {
