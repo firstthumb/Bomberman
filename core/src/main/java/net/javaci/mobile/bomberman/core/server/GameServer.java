@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class GameServer {
@@ -28,17 +27,21 @@ public class GameServer {
     private static Map<Integer, GhostMovement> ghostMovements = new HashMap<Integer, GhostMovement>();
 
     static {
-        ghostMovements.put(0, new GhostMovement(GameScreen.Direction.RIGHT, 8));
-        ghostMovements.put(1, new GhostMovement(GameScreen.Direction.LEFT, 5));
+        ghostMovements.put(0, new GhostMovement(GameScreen.Direction.DOWN, 8));
+        ghostMovements.put(1, new GhostMovement(GameScreen.Direction.LEFT, 6));
         ghostMovements.put(2, new GhostMovement(GameScreen.Direction.UP, 2));
         ghostMovements.put(3, new GhostMovement(GameScreen.Direction.LEFT, 7));
         ghostMovements.put(4, new GhostMovement(GameScreen.Direction.RIGHT, 3));
         ghostMovements.put(5, new GhostMovement(GameScreen.Direction.UP, 10));
         ghostMovements.put(6, new GhostMovement(GameScreen.Direction.RIGHT, 11));
-        ghostMovements.put(7, new GhostMovement(GameScreen.Direction.LEFT, 3));
+        ghostMovements.put(7, new GhostMovement(GameScreen.Direction.LEFT, 5));
         ghostMovements.put(8, new GhostMovement(GameScreen.Direction.UP, 4));
-        ghostMovements.put(9, new GhostMovement(GameScreen.Direction.DOWN, 6));
-        ghostMovements.put(10, new GhostMovement(GameScreen.Direction.RIGHT, 8));
+        ghostMovements.put(9, new GhostMovement(GameScreen.Direction.DOWN, 7));
+        ghostMovements.put(10, new GhostMovement(GameScreen.Direction.LEFT, 8));
+        ghostMovements.put(11, new GhostMovement(GameScreen.Direction.RIGHT, 8));
+        ghostMovements.put(12, new GhostMovement(GameScreen.Direction.DOWN, 8));
+        ghostMovements.put(13, new GhostMovement(GameScreen.Direction.RIGHT, 6));
+        ghostMovements.put(14, new GhostMovement(GameScreen.Direction.DOWN, 4));
     }
 
     private Random rand = new Random();
@@ -118,8 +121,6 @@ public class GameServer {
                     numTry--;
                 } while (numTry > 0 && movement != null && !movement.movable(ghostModel, world.getLabyrinthModel().getGrid()));
 
-                Log.e("Movable  : " + movement.movable(ghostModel, world.getLabyrinthModel().getGrid()));
-
                 MoveGhostCommand command = new MoveGhostCommand();
                 command.setFromUser(UserSession.getInstance().getUsername());
                 command.setId(ghostId);
@@ -129,7 +130,7 @@ public class GameServer {
                 command.setDistance(movement.getDistance());
                 networkInterface.sendMessage(command.serialize());
             }
-        }, WAIT_MOVE_GHOST_IN_SECOND, TimeUnit.SECONDS);
+        }, rand.nextInt(WAIT_MOVE_GHOST_IN_SECOND), TimeUnit.SECONDS);
     }
 
     private GhostMovement getGhostMovement() {

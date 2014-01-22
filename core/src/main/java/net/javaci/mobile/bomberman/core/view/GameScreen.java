@@ -68,7 +68,7 @@ public class GameScreen extends BomberManScreen {
         stage.addActor(bombermanWidget);
 
         for (int i=0; i<gameModel.numGhosts; i++) {
-            final GhostModel ghostModel = GhostModel.createGhostModel();
+            final GhostModel ghostModel = GhostModel.createGhostModel(Math.random() > 0.5f ? GhostModel.Type.BALLOOM : GhostModel.Type.MINVO);
             ghostModel.setWidth(world.getGridWidth());
             ghostModel.setHeight(world.getGridHeight());
             ghostModel.setListener(new GhostModel.GhostListener() {

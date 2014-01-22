@@ -11,15 +11,21 @@ public class GhostModel extends GameObjectModel {
 
     // http://strategywiki.org/wiki/Bomberman/How_to_play
     public static enum Type {
-        BALLOOM(1), MINVO(2), KONDORIA(3);
+        BALLOOM(1, 100), MINVO(2, 60);
 
         int value;
-        Type(int value) {
+        int speed;
+        Type(int value, int speed) {
             this.value = value;
+            this.speed = speed;
         }
 
         public int getValue() {
             return value;
+        }
+
+        public int getSpeed() {
+            return speed;
         }
     }
 
@@ -27,8 +33,10 @@ public class GhostModel extends GameObjectModel {
         STANDING_UP, STANDING_DOWN, STANDING_RIGHT, STANDING_LEFT, WALKING_UP, WALKING_DOWN, WALKING_RIGHT, WALKING_LEFT, DEAD
     }
 
-    public static GhostModel createGhostModel() {
-        return new GhostModel(ID++);
+    public static GhostModel createGhostModel(Type type) {
+        GhostModel ghostModel = new GhostModel(ID++);
+        ghostModel.setType(type);
+        return ghostModel;
     }
 
     private int id;
@@ -66,6 +74,7 @@ public class GhostModel extends GameObjectModel {
 
     public void setType(Type type) {
         this.type = type;
+        this.speed = type.getSpeed();
     }
 
     public State getState() {
