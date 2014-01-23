@@ -112,6 +112,7 @@ public class SplashScreen implements Screen {
         assets.addAssetConfiguration(assetsKey, "large.fnt", BitmapFont.class);
         assets.addAssetConfiguration(assetsKey, "normal.fnt", BitmapFont.class);
         assets.addAssetConfiguration(assetsKey, "small.fnt", BitmapFont.class);
+        assets.addAssetConfiguration(assetsKey, "pixelfont_26.fnt", BitmapFont.class);
     }
 
     private void loadLogo() {

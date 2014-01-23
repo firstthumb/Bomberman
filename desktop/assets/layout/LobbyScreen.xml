@@ -15,6 +15,6 @@
             rowHeight="64"
             rowWidth="360"/>
 
-    <textButton name="createButton" atlas="Common.atlas" text="Create Game" width="150" x="320" y="25" frameUp="greenButton" frameDown="greenButtonH" fontName="26pt.fnt" fontColor="000000"/>
+    <textButton name="createButton" atlas="Common.atlas" text="Create Game"  x="320" y="25" frameUp="btnEmpty" frameDown="btnEmpty_H" fontName="pixelfont_26.fnt" fontColor="ffffff"/>
 
 </group>
