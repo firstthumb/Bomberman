@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <group>
+
+    <group name="labyrinth"></group>
+    <group name="gameObjectsGroup"></group>
+
     <group name="gamePad" x="0" y="0">
         <button name="gamePadUpButton" x="50" y="85" atlas="Common.atlas" frameUp="gamePadUp" frameDown="gamePadUpH"/>
         <button name="gamePadDownButton" x="50" y="0" atlas="Common.atlas" frameUp="gamePadDown" frameDown="gamePadDownH"/>

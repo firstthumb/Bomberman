@@ -59,7 +59,8 @@ public class GameScreen extends BomberManScreen {
         labyrinthModel = new LabyrinthModel();
         world.initialize(labyrinthModel, getStageBuilder().getResolutionHelper(), getStageBuilder().getAssets());
         labyrinthWidget = new LabyrinthWidget(labyrinthModel, getStageBuilder().getResolutionHelper(), getStageBuilder().getAssets());
-        stage.getRoot().addActorAt(0, labyrinthWidget);
+        Group group = (Group) findActor("labyrinth");
+        group.addActor(labyrinthWidget);
     }
 
     public void initializeGameOnServer() {
@@ -90,7 +91,7 @@ public class GameScreen extends BomberManScreen {
             world.addGhostModel(ghostModel);
 
             GhostWidget ghostWidget = new GhostWidget(getStageBuilder().getAssets().getTextureAtlas("Common.atlas"), ghostModel);
-            stage.addActor(ghostWidget);
+            getGameObjectsGroup().addActor(ghostWidget);
         }
     }
 
@@ -103,7 +104,9 @@ public class GameScreen extends BomberManScreen {
         playerModel.setGameIndex(gameIndex);
         world.addPlayerModel(playerModel);
         BombermanWidget bombermanWidget = new BombermanWidget(getStageBuilder().getAssets().getTextureAtlas("Common.atlas"), gameIndex, playerModel);
-        stage.addActor(bombermanWidget);
+        //stage.addActor(bombermanWidget);
+        Group group = (Group) findActor("gameObjectsGroup");
+        group.addActor(bombermanWidget);
         return playerModel;
     }
 
@@ -118,9 +121,10 @@ public class GameScreen extends BomberManScreen {
             gameServer.initialize(game.getClient(), gameScreenMediator);
             gameScreenMediator.setGameServer(gameServer);
         }
-        else {
-            // TODO : wait server response to create game screen
-        }
+
+        Vector2 gameAreaPos = getStageBuilder().getResolutionHelper().getGameAreaPosition();
+        getLabyrinthGroup().setPosition(-gameAreaPos.x, -gameAreaPos.y);
+        getGameObjectsGroup().setPosition(-gameAreaPos.x, -gameAreaPos.y);
 
         prepareGamePad();
 
@@ -131,6 +135,14 @@ public class GameScreen extends BomberManScreen {
         initializeBeforeGamePanel();
 
         prepareInputProcessor();
+    }
+
+    private Group getGameObjectsGroup() {
+        return (Group) findActor("gameObjectsGroup");
+    }
+
+    private Group getLabyrinthGroup() {
+        return (Group) findActor("labyrinth");
     }
 
     private void prepareSettingsButton() {
@@ -277,8 +289,6 @@ public class GameScreen extends BomberManScreen {
 
     private void prepareGamePad() {
         Actor gamePad = findActor("gamePad");
-        gamePad.remove();
-        stage.addActor(gamePad);
         gamePad.setVisible(isPreferedControlGamePad);
 
         findButton("gamePadUpButton").addListener(new InputListener() {
@@ -362,7 +372,7 @@ public class GameScreen extends BomberManScreen {
         world.initialize(labyrinthModel, getStageBuilder().getResolutionHelper(), getStageBuilder().getAssets());
 
         LabyrinthWidget labyrinthWidget = new LabyrinthWidget(world.getLabyrinthModel(), getStageBuilder().getResolutionHelper(), getStageBuilder().getAssets());
-        stage.addActor(labyrinthWidget);
+        getLabyrinthGroup().addActor(labyrinthWidget);
 
         world.addGhostModels(ghostModels);
 
@@ -370,14 +380,14 @@ public class GameScreen extends BomberManScreen {
             ghostModel.setWidth(world.getGridWidth());
             ghostModel.setHeight(world.getGridHeight());
             GhostWidget ghostWidget = new GhostWidget(getStageBuilder().getAssets().getTextureAtlas("Common.atlas"), ghostModel);
-            stage.addActor(ghostWidget);
+            getGameObjectsGroup().addActor(ghostWidget);
         }
     }
 
 
     public void addBombToScreen(BombModel bombModel) {
         BombWidget bombWidget = new BombWidget(getStageBuilder().getAssets().getTextureAtlas("Common.atlas"), bombModel);
-        stage.addActor(bombWidget);
+        getGameObjectsGroup().addActor(bombWidget);
     }
 
     public void renderBombExplosion(BombModel bombModel) {
