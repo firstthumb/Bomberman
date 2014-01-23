@@ -21,6 +21,7 @@ public class GameScreenMediator extends BomberManMediator {
 
     private GameServer gameServer;
     private NetworkInterface networkInterface;
+    private NetworkListenerAdapter networkListenerAdapter;
     private CommandFactory commandFactory = new CommandFactory();
     private GameScreen gameScreen;
     private RoomModel room;
@@ -29,7 +30,7 @@ public class GameScreenMediator extends BomberManMediator {
     public GameScreenMediator(BomberManGame game, NetworkInterface networkInterface) {
         super(game);
         this.networkInterface = networkInterface;
-        networkInterface.addNetworkListener(new NetworkListenerAdapter() {
+        this.networkListenerAdapter = new NetworkListenerAdapter() {
             @Override
             public void onMessageReceived(String from, String message) {
                 Command command = commandFactory.createCommand(message);
@@ -73,6 +74,7 @@ public class GameScreenMediator extends BomberManMediator {
             @Override
             public void onPlayerLeftRoom(RoomModel room, String playerName) {
                 super.onPlayerLeftRoom(room, playerName);
+                Log.d("Player : " + playerName + " left Room : " + room.getId());
                 if (GameScreenMediator.this.room.equals(room) && !playerName.equals(UserSession.getInstance().getUsername())) {
                     GameScreenMediator.this.onPlayerLeftRoom(playerName);
                 }
@@ -94,7 +96,14 @@ public class GameScreenMediator extends BomberManMediator {
                     }
                 }
             }
-        });
+
+
+        };
+        networkInterface.addNetworkListener(networkListenerAdapter);
+    }
+
+    public NetworkListenerAdapter getNetworkListenerAdapter() {
+        return networkListenerAdapter;
     }
 
     private void handleStartGameCommand(StartGameCommand command) {

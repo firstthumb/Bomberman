@@ -17,6 +17,7 @@ import net.javaci.mobile.bomberman.core.session.UserSession;
 import net.javaci.mobile.bomberman.core.util.Log;
 import net.javaci.mobile.bomberman.core.view.widget.GameListWidgetConfig;
 import net.peakgames.libgdx.stagebuilder.core.AbstractGame;
+import sun.util.resources.LocaleNames_da;
 
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class LobbyScreen extends BomberManScreen {
     private NetworkListenerAdapter networkListenerAdapter;
     private LobbyScreenMediator lobbyScreenMediator;
     private float periodicRequestTimeCounter = 0;
+    private boolean processingJoinRoom = false;
 
     public LobbyScreen(AbstractGame game, BomberManMediator mediator) {
         super(game, mediator);
@@ -98,12 +100,17 @@ public class LobbyScreen extends BomberManScreen {
             public void onJoinRoomSuccess(String roomId) {
                 Log.d("Joined room successfully");
                 removeLoadingWidget();
-                game.switchScreen(BomberManGame.ScreenType.PLAY, null);
+                if (processingJoinRoom) {
+                    game.switchScreen(BomberManGame.ScreenType.PLAY, null);
+                    processingJoinRoom = false;
+                    game.getClient().removeNetworkListener(networkListenerAdapter);
+                }
             }
 
             @Override
             public void onJoinRoomFailed() {
                 Log.d("Failed to join room");
+                processingJoinRoom = false;
                 UserSession.getInstance().setRoom(null);
                 removeLoadingWidget();
                 LobbyScreen.this.onJoinRoomFailed();
@@ -112,16 +119,42 @@ public class LobbyScreen extends BomberManScreen {
             @Override
             public void onRoomCreated(RoomModel room) {
                 Log.d("Created room successfully. Room : " + room.getName());
-                UserSession.getInstance().setRoom(room);
-                game.getClient().joinRoom(room.getId());
+                if (processingJoinRoom) {
+                    UserSession.getInstance().setRoom(room);
+                    game.getClient().joinRoom(room.getId());
+                }
             }
 
             @Override
             public void onCreateRoomFailed() {
                 Log.d("Create room failed");
                 removeLoadingWidget();
+                processingJoinRoom = false;
+            }
+
+            @Override
+            public void onRoomInfoReceived(String[] players, String data) {
+                boolean exists = false;
+                if (players != null) {
+                    for (String player : players) {
+                        if (player.equals(UserSession.getInstance().getUsername())) {
+                            exists = true;
+                            break;
+                        }
+                    }
+                }
+                if (!exists) {
+                    game.getClient().joinRoom(UserSession.getInstance().getRoom().getId());
+                }
+                else {
+                    Log.d("Player exist in Room, just switching to Game Screen");
+                    onJoinRoomSuccess(UserSession.getInstance().getRoom().getId());
+                }
             }
         };
+
+        displayLoadingWidget();
+        game.getClient().connect();
     }
 
     @Override
@@ -132,7 +165,7 @@ public class LobbyScreen extends BomberManScreen {
 
     private void sendPeriodicRequestsIfRequired(float delta) {
         periodicRequestTimeCounter += delta;
-        if(periodicRequestTimeCounter >= PERIODIC_REQUEST_INTERVAL) {
+        if(!processingJoinRoom && periodicRequestTimeCounter >= PERIODIC_REQUEST_INTERVAL) {
             game.getClient().listRooms();
             periodicRequestTimeCounter = 0;
         }
@@ -142,8 +175,6 @@ public class LobbyScreen extends BomberManScreen {
     public void show() {
         super.show();
         game.getAudioManager().playMainTheme();
-        displayLoadingWidget();
-        game.getClient().connect();
         game.getClient().addNetworkListener(networkListenerAdapter);
     }
 
@@ -162,13 +193,15 @@ public class LobbyScreen extends BomberManScreen {
     private void createNewGame() {
         displayLoadingWidget();
         // TODO : create random room name using player name
+        processingJoinRoom = true;
         game.getClient().createRoom(UserSession.getInstance().getUsername() + "_Room");
     }
 
     private void joinGame(RoomModel model) {
+        processingJoinRoom = true;
         displayLoadingWidget();
         UserSession.getInstance().setRoom(model);
-        game.getClient().joinRoom(model.getId());
+        game.getClient().getRoomInfo(model.getId());
     }
 
     private void reloadGameListPanel(List<RoomModel> rooms) {

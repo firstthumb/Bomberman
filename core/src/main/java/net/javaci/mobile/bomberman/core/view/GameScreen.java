@@ -2,6 +2,7 @@ package net.javaci.mobile.bomberman.core.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -30,6 +31,7 @@ import net.javaci.mobile.bomberman.core.util.Log;
 import net.javaci.mobile.bomberman.core.view.widget.*;
 import net.peakgames.libgdx.stagebuilder.core.AbstractGame;
 
+import java.util.EmptyStackException;
 import java.util.List;
 
 
@@ -93,6 +95,10 @@ public class GameScreen extends BomberManScreen {
             GhostWidget ghostWidget = new GhostWidget(getStageBuilder().getAssets().getTextureAtlas("Common.atlas"), ghostModel);
             getGameObjectsGroup().addActor(ghostWidget);
         }
+    }
+
+    public boolean existPlayerOnWorld(String playerName) {
+        return world.getPlayerModel(playerName) != null;
     }
 
     private PlayerModel addPlayerModelToWorld(String username, int gameIndex) {
@@ -462,30 +468,34 @@ public class GameScreen extends BomberManScreen {
     }
 
     public void onPlayerJoinedRoom(String playerName) {
-        int gameIndex = world.getNextGameIndex();
-        addPlayerModelToWorld(playerName, gameIndex);
-        final Group panel = (Group) findActor("beforeGamePanel");
-        if (gameIndex == 1) {
-            Label label = (Label)panel.findActor("roomOwner");
-            label.setText("Player 1 (Room Owner) : " + playerName);
-            label.setVisible(true);
-        } else {
-            Label playerJoinedLabel = (Label)panel.findActor("player" + gameIndex+ "joined");
-            playerJoinedLabel.setText("Player " + gameIndex + " joined room. " + playerName);
-            playerJoinedLabel.setVisible(true);
-        }
-        if (UserSession.getInstance().isServer()) {
-            Button startButton = (Button)panel.findActor("startGameButton");
-            startButton.setVisible(true);
-            startButton.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    panel.remove();
-                    gameServer.createGame();
-                    game.getAudioManager().playStartGame();
-                }
-            });
+        if (!existPlayerOnWorld(playerName)) {
+            int gameIndex = world.getNextGameIndex();
+            addPlayerModelToWorld(playerName, gameIndex);
+            final Group panel = (Group) findActor("beforeGamePanel");
+            if (gameIndex == 1) {
+                Label label = (Label) panel.findActor("roomOwner");
+                label.setText("Player 1 (Room Owner) : " + playerName);
+                label.setVisible(true);
+            } else {
+                Label playerJoinedLabel = (Label) panel.findActor("player" + gameIndex + "joined");
+                playerJoinedLabel.setText("Player " + gameIndex + " joined room. " + playerName);
+                playerJoinedLabel.setVisible(true);
+            }
+            if (UserSession.getInstance().isServer()) {
+                Button startButton = (Button) panel.findActor("startGameButton");
+                startButton.setVisible(true);
+                startButton.addListener(new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        panel.remove();
+                        gameServer.createGame();
+                        game.getAudioManager().playStartGame();
+                    }
+                });
 
+            }
+        } else {
+            Log.e("Player already in room");
         }
     }
 
@@ -524,10 +534,15 @@ public class GameScreen extends BomberManScreen {
     @Override
     public void dispose() {
         super.dispose();
+        if (gameScreenMediator.getNetworkListenerAdapter() != null) {
+            game.getClient().removeNetworkListener(gameScreenMediator.getNetworkListenerAdapter());
+        }
         RoomModel roomModel = UserSession.getInstance().getRoom();
         if (roomModel != null) {
             game.getClient().leaveRoom(roomModel.getId());
-            //game.getClient().deleteRoom(roomModel.getId());
+            if (UserSession.getInstance().isOwnerRoom()) {
+                game.getClient().deleteRoom(roomModel.getId());
+            }
         }
         else {
             Log.e("Room Model is NULL. Cannot delete room from Server");
