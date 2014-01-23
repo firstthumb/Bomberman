@@ -122,6 +122,9 @@ public class BombermanWidget extends WidgetGroup {
             case STANDING_LEFT:
                 currentFrame = leftStand;
                 break;
+            case DEAD:
+                this.remove();
+                break;
             default:
                 break;
         }

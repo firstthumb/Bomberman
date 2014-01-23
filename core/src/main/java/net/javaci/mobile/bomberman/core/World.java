@@ -57,7 +57,9 @@ public class World implements BombModel.BombListener {
 
     private void updatePlayerModels(float deltaTime) {
         for (PlayerModel playerModel : playerModels.values()) {
-            updatePlayerModel(playerModel, deltaTime);
+            if (playerModel.getState() != PlayerModel.State.DEAD) {
+                updatePlayerModel(playerModel, deltaTime);
+            }
         }
     }
 
@@ -654,11 +656,18 @@ public class World implements BombModel.BombListener {
         return result;
     }
 
+    public void killPlayer(String playerName) {
+        playerModels.get(playerName).setState(PlayerModel.State.DEAD);
+    }
+
     public void killGhost(int ghostId) {
         killGhost(ghostModels.get(ghostId));
     }
 
     private void killGhost(GhostModel ghostModel) {
+        if (ghostModel == null) {
+            return;
+        }
         ghostModel.setState(GhostModel.State.DEAD);
         // TODO: removing immediately result in by pass DEAD animation of ghost
         ghostModels.remove(ghostModel.getId());
@@ -743,6 +752,7 @@ public class World implements BombModel.BombListener {
 
     public void removePlayer(String playerName) {
         this.playerModels.remove(playerName);
+
     }
 
     public int getNextGameIndex() {
@@ -753,6 +763,21 @@ public class World implements BombModel.BombListener {
             }
         }
         return max + 1;
+    }
+
+    public boolean isGameEnd() {
+        int playingUser = 0;
+        for (PlayerModel playerModel : playerModels.values()) {
+            if (canRespawn(playerModel.getPlayerName())) {
+                playingUser++;
+            }
+        }
+        return playingUser <= 1;
+    }
+
+    public boolean canRespawn(String playerName) {
+        PlayerModel playerModel = playerModels.get(playerName);
+        return playerModel.getLifeCount() > 1;
     }
 
     public void respawnPlayerAndDecrementLife(String playerName, Vector2 playerInitialPosition) {

@@ -525,6 +525,12 @@ public class GameScreen extends BomberManScreen {
         }
     }
 
+    public void onCurrentPlayerDead() {
+        isPreferedControlGamePad = true;
+        findActor("gamePad").setVisible(false);
+        findActor("bombButton").setVisible(false);
+    }
+
     public static enum Direction {
         UP, DOWN, RIGHT, LEFT
     }

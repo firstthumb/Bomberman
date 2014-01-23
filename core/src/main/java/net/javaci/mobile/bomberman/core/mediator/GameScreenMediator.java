@@ -125,9 +125,25 @@ public class GameScreenMediator extends BomberManMediator {
         List<String> caughtPlayers = command.getCaughtPlayers();
         if (caughtPlayers != null) {
             for (String  caughtPlayer : caughtPlayers) {
-                PlayerModel playerModel = gameScreen.getWorld().getPlayerModel(caughtPlayer);
-                Vector2 playerInitialPosition = gameScreen.getLabyrinthWidget().getPlayerInitialPosition(playerModel.getGameIndex());
-                gameScreen.getWorld().respawnPlayerAndDecrementLife(caughtPlayer, playerInitialPosition);
+                if (gameScreen.getWorld().canRespawn(caughtPlayer)) {
+                    PlayerModel playerModel = gameScreen.getWorld().getPlayerModel(caughtPlayer);
+                    Vector2 playerInitialPosition = gameScreen.getLabyrinthWidget().getPlayerInitialPosition(playerModel.getGameIndex());
+                    gameScreen.getWorld().respawnPlayerAndDecrementLife(caughtPlayer, playerInitialPosition);
+                }
+                else {
+                    if (UserSession.getInstance().isServer() && gameScreen.getWorld().isGameEnd()) {
+                        // TODO: Send Game End Command
+                        GameEndCommand gameEndCommand = new GameEndCommand();
+                        gameEndCommand.setFromUser(UserSession.getInstance().getUsername());
+                        gameEndCommand.setReason(GameEndCommand.GameEndReason.GAME_END);
+                        networkInterface.sendMessage(gameEndCommand.serialize());
+                    }
+
+                    gameScreen.getWorld().killPlayer(caughtPlayer);
+                    if (caughtPlayer.equals(UserSession.getInstance().getUsername())) {
+                        gameScreen.onCurrentPlayerDead();
+                    }
+                }
                 gameScreen.updateStats();
                 gameScreen.resetPreviousFlingDirection();
                 if (caughtPlayer.equals(UserSession.getInstance().getUsername())) {
@@ -152,9 +168,25 @@ public class GameScreenMediator extends BomberManMediator {
         List<String> explodedPlayers = command.getExplodedPlayers();
         if (explodedPlayers != null) {
             for (String explodedPlayer : explodedPlayers) {
-                PlayerModel playerModel = gameScreen.getWorld().getPlayerModel(explodedPlayer);
-                Vector2 playerInitialPosition = gameScreen.getLabyrinthWidget().getPlayerInitialPosition(playerModel.getGameIndex());
-                gameScreen.getWorld().respawnPlayerAndDecrementLife(explodedPlayer, playerInitialPosition);
+                if (gameScreen.getWorld().canRespawn(explodedPlayer)) {
+                    PlayerModel playerModel = gameScreen.getWorld().getPlayerModel(explodedPlayer);
+                    Vector2 playerInitialPosition = gameScreen.getLabyrinthWidget().getPlayerInitialPosition(playerModel.getGameIndex());
+                    gameScreen.getWorld().respawnPlayerAndDecrementLife(explodedPlayer, playerInitialPosition);
+                }
+                else {
+                    if (UserSession.getInstance().isServer() && gameScreen.getWorld().isGameEnd()) {
+                        // TODO: Send Game End Command
+                        GameEndCommand gameEndCommand = new GameEndCommand();
+                        gameEndCommand.setFromUser(UserSession.getInstance().getUsername());
+                        gameEndCommand.setReason(GameEndCommand.GameEndReason.GAME_END);
+                        networkInterface.sendMessage(gameEndCommand.serialize());
+                    }
+
+                    gameScreen.getWorld().killPlayer(explodedPlayer);
+                    if (explodedPlayer.equals(UserSession.getInstance().getUsername())) {
+                        gameScreen.onCurrentPlayerDead();
+                    }
+                }
                 gameScreen.updateStats();
                 gameScreen.resetPreviousFlingDirection();
                 if (explodedPlayer.equals(UserSession.getInstance().getUsername())) {
@@ -204,7 +236,7 @@ public class GameScreenMediator extends BomberManMediator {
                 }
             });
         }
-        else {
+        else if (command.getReason() == GameEndCommand.GameEndReason.GAME_END) {
             gameScreen.onGameFinished();
         }
     }
