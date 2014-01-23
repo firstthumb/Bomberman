@@ -178,7 +178,7 @@ public class LobbyScreen extends BomberManScreen {
         Group group = getStageBuilder().buildGroup("GameListItem.xml");
 
         final Label label = ((Label)group.findActor("roomName"));
-        label.setText("Room : " + model.getName());
+        label.setText(model.getName());
         final TextButton button = ((TextButton)group.findActor("joinGameButton"));
         button.addListener(new ClickListener() {
             @Override
