@@ -11,6 +11,11 @@ public class PlayerModel extends GameObjectModel {
     //oyunu kuran 1, oyuna ilk katilan oyuncu 2, ikinci katilan 3, son katilan 4 degerini alir.
     private int gameIndex;
     private int lifeCount = 3;
+    private StateChangeListener stateChangeListener;
+
+    public void setStateChangeListener(StateChangeListener stateChangeListener) {
+        this.stateChangeListener = stateChangeListener;
+    }
 
     public int getGameIndex() {
         return gameIndex;
@@ -50,6 +55,9 @@ public class PlayerModel extends GameObjectModel {
 
     public void setState(State state) {
         this.state = state;
+        if (this.stateChangeListener != null) {
+            this.stateChangeListener.onStateChange(this.state);
+        }
     }
 
     public String getPlayerName() {
@@ -96,5 +104,9 @@ public class PlayerModel extends GameObjectModel {
                 ", lifeCount=" + lifeCount +
                 ", gameIndex=" + gameIndex +
                 '}';
+    }
+
+    public static interface StateChangeListener {
+        public void onStateChange(State newState);
     }
 }

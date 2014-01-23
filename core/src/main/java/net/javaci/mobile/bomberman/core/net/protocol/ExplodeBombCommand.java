@@ -65,7 +65,11 @@ public class ExplodeBombCommand extends Command {
         json.put("gridX", gridX);
         json.put("gridY", gridY);
         json.put("id", id);
-        json.put("explodedPlayers", this.explodedPlayers);
+        JSONArray array = new JSONArray();
+        for (String player : this.explodedPlayers) {
+            array.put(player);;
+        }
+        json.put("explodedPlayers", array);
     }
 
     @Override

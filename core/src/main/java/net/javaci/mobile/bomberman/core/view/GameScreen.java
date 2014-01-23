@@ -1,8 +1,11 @@
 package net.javaci.mobile.bomberman.core.view;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -42,6 +45,7 @@ public class GameScreen extends BomberManScreen {
     }
 
     private LabyrinthWidget labyrinthWidget;
+    private Direction previousFlingDirection;
 
     public GameScreen(AbstractGame game, BomberManMediator mediator) {
         super(game, mediator);
@@ -117,6 +121,62 @@ public class GameScreen extends BomberManScreen {
         prepareBombButton();
 
         initializeBeforeGamePanel();
+
+        prepareInputProcessor();
+    }
+
+    private void prepareInputProcessor() {
+        GestureDetector swipeGestureDetector = new GestureDetector(new GestureDetector.GestureAdapter() {
+            @Override
+            public boolean fling(final float velocityX, final float velocityY, int button) {
+                final String username = UserSession.getInstance().getUsername();
+                final PlayerModel playerModel = world.getPlayerModel(username);
+                final Direction flingDirection = getDirection(velocityX, velocityY);
+                if (previousFlingDirection != null) {
+                    onMoveEnd(username, previousFlingDirection);
+                    playerModel.setStateChangeListener(new PlayerModel.StateChangeListener() {
+                        @Override
+                        public void onStateChange(PlayerModel.State newState) {
+                            if (newState == PlayerModel.State.STANDING_DOWN
+                                    || newState == PlayerModel.State.STANDING_UP
+                                    || newState == PlayerModel.State.STANDING_LEFT
+                                    || newState == PlayerModel.State.STANDING_RIGHT ) {
+                                System.out.println("STATE CHANGED : " + newState);
+                                if (previousFlingDirection != null) {
+                                    System.out.println("STATE CHANGED sending move start: " + flingDirection);
+                                    onMoveStart(username, flingDirection);
+                                    playerModel.setStateChangeListener(null);
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    onMoveStart(username, flingDirection);
+                }
+                previousFlingDirection = flingDirection;
+                return true;
+            }
+
+            private Direction getDirection(float velocityX, float velocityY) {
+                if (Math.abs(velocityX) > Math.abs(velocityY)) {
+                    //horizontal
+                    if (velocityX > 0) {
+                        return  Direction.RIGHT;
+                    } else {
+                        return Direction.LEFT;
+                    }
+                } else {
+                    //vertical
+                    if (velocityY > 0) {
+                        return Direction.DOWN;
+                    } else {
+                        return Direction.UP;
+                    }
+                }
+            }
+        });
+        InputMultiplexer inputMultiplexer = new InputMultiplexer(stage, swipeGestureDetector);
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     private void initializeBeforeGamePanel() {
@@ -181,6 +241,7 @@ public class GameScreen extends BomberManScreen {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 onMoveStart(UserSession.getInstance().getUsername(), Direction.UP);
+                previousFlingDirection = null;
                 return true;
             }
 
@@ -194,6 +255,7 @@ public class GameScreen extends BomberManScreen {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 onMoveStart(UserSession.getInstance().getUsername(), Direction.DOWN);
+                previousFlingDirection = null;
                 return true;
             }
 
@@ -207,6 +269,7 @@ public class GameScreen extends BomberManScreen {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 onMoveStart(UserSession.getInstance().getUsername(), Direction.RIGHT);
+                previousFlingDirection = null;
                 return true;
             }
 
@@ -220,6 +283,7 @@ public class GameScreen extends BomberManScreen {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 onMoveStart(UserSession.getInstance().getUsername(), Direction.LEFT);
+                previousFlingDirection = null;
                 return true;
             }
 
