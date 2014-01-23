@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <group>
-    <image name="background" atlas="Common.atlas" type="background" frame="background" />
+    <image name="background" atlas="Common.atlas" x="200" y="330" frame="background" />
 
-    <label name="usernameLabel" text="" x="320" y="450" align="left" fontName="40pt_title.fnt" fontColor="FFFFFF"/>
+    <label name="usernameLabel" text="" x="50" y="450" align="left" fontName="40pt_title.fnt" fontColor="FFFFFF"/>
+    <label name="onlineUserLabel" text="5 online" x="50" y="50" align="left" fontName="40pt_title.fnt" fontColor="FFFFFF"/>
 
     <group name="gameList"></group>
 
