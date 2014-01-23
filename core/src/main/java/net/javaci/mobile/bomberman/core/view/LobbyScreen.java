@@ -17,13 +17,12 @@ import net.javaci.mobile.bomberman.core.session.UserSession;
 import net.javaci.mobile.bomberman.core.util.Log;
 import net.javaci.mobile.bomberman.core.view.widget.GameListWidgetConfig;
 import net.peakgames.libgdx.stagebuilder.core.AbstractGame;
-import sun.util.resources.LocaleNames_da;
 
 import java.util.List;
 import java.util.Random;
 
 public class LobbyScreen extends BomberManScreen {
-    private static float PERIODIC_REQUEST_INTERVAL = 10;
+    private static float PERIODIC_REQUEST_INTERVAL = 5;
 
     private Table gameTable;
     private GameListWidgetConfig config;

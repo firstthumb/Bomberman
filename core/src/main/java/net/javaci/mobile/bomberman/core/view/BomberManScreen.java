@@ -10,8 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import net.javaci.mobile.bomberman.core.BomberManGame;
 import net.javaci.mobile.bomberman.core.Constants;
 import net.javaci.mobile.bomberman.core.mediator.BomberManMediator;
-import net.javaci.mobile.bomberman.core.models.BombModel;
-import net.javaci.mobile.bomberman.core.session.UserSession;
 import net.peakgames.libgdx.stagebuilder.core.AbstractGame;
 import net.peakgames.libgdx.stagebuilder.core.AbstractScreen;
 import net.peakgames.libgdx.stagebuilder.core.widgets.LoadingWidget;

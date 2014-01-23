@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import net.javaci.mobile.bomberman.core.models.GhostModel;
-import net.javaci.mobile.bomberman.core.util.Log;
 
 public class GhostWidget extends Actor {
 

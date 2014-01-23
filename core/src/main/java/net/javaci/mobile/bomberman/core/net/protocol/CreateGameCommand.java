@@ -1,7 +1,6 @@
 package net.javaci.mobile.bomberman.core.net.protocol;
 
 import net.javaci.mobile.bomberman.core.models.GhostModel;
-import net.javaci.mobile.bomberman.core.models.LabyrinthModel;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

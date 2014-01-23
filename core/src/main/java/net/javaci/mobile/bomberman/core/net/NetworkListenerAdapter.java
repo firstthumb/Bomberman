@@ -1,6 +1,5 @@
 package net.javaci.mobile.bomberman.core.net;
 
-import net.javaci.mobile.bomberman.core.net.NetworkInterface;
 import net.javaci.mobile.bomberman.core.net.models.RoomModel;
 
 import java.util.List;
