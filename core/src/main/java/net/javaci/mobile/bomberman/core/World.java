@@ -756,8 +756,9 @@ public class World implements BombModel.BombListener {
         return vector;
     }
 
-    public void respawnPlayerAndDecrementLife(String explodedPlayer, Vector2 playerInitialPosition) {
-        PlayerModel playerModel = playerModels.get(explodedPlayer);
+    public void respawnPlayerAndDecrementLife(String playerName, Vector2 playerInitialPosition) {
+        PlayerModel playerModel = playerModels.get(playerName);
+        playerModel.setCaught(false);
         playerModel.decrementLifeCount();
         playerModel.setPosition(playerInitialPosition);
 
@@ -765,5 +766,14 @@ public class World implements BombModel.BombListener {
 
     public PlayerModel getPlayerModel(String playerName) {
         return this.playerModels.get(playerName);
+    }
+
+    public PlayerModel getPlayerModelAtIndex(int index) {
+        for (PlayerModel player: this.playerModels.values()) {
+            if (player.getGameIndex() == index) {
+                return player;
+            }
+        }
+        return null;
     }
 }

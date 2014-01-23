@@ -133,8 +133,52 @@ public class GameScreen extends BomberManScreen {
         prepareSettingsButton();
 
         initializeBeforeGamePanel();
+        
+        prepareStatsWidgets();
 
         prepareInputProcessor();
+    }
+
+    private void prepareStatsWidgets() {
+        Group player = (Group) findActor("player1stats");
+        Vector2 pos = labyrinthWidget.getWallPosition(3, 12);
+        player.findActor("name").setPosition(pos.x, pos.y);
+        pos = labyrinthWidget.getWallPosition(4, 12);
+        player.findActor("life").setPosition(pos.x, pos.y);
+
+        player = (Group) findActor("player2stats");
+        pos = labyrinthWidget.getWallPosition(7, 12);
+        player.findActor("name").setPosition(pos.x, pos.y);
+        pos = labyrinthWidget.getWallPosition(8, 12);
+        player.findActor("life").setPosition(pos.x, pos.y);
+
+        player = (Group) findActor("player3stats");
+        pos = labyrinthWidget.getWallPosition(11, 12);
+        player.findActor("name").setPosition(pos.x, pos.y);
+        pos = labyrinthWidget.getWallPosition(12, 12);
+        player.findActor("life").setPosition(pos.x, pos.y);
+
+        player = (Group) findActor("player4stats");
+        pos = labyrinthWidget.getWallPosition(15, 12);
+        player.findActor("name").setPosition(pos.x, pos.y);
+        pos = labyrinthWidget.getWallPosition(16, 12);
+        player.findActor("life").setPosition(pos.x, pos.y);
+
+    }
+
+    public void updateStats() {
+        updateStats(1);
+        updateStats(2);
+        updateStats(3);
+        updateStats(4);
+    }
+
+    public void updateStats(int playerIndex) {
+        Group playerGroup = (Group) findActor("player" + playerIndex + "stats");
+        PlayerModel playerModel = world.getPlayerModelAtIndex(playerIndex);
+        if (playerModel != null) {
+            ((Label)playerGroup.findActor("life")).setText(playerModel.getLifeCount() + "");
+        }
     }
 
     private Group getGameObjectsGroup() {

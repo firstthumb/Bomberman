@@ -102,6 +102,7 @@ public class GameScreenMediator extends BomberManMediator {
                 PlayerModel playerModel = gameScreen.getWorld().getPlayerModel(caughtPlayer);
                 Vector2 playerInitialPosition = gameScreen.getLabyrinthWidget().getPlayerInitialPosition(playerModel.getGameIndex());
                 gameScreen.getWorld().respawnPlayerAndDecrementLife(caughtPlayer, playerInitialPosition);
+                gameScreen.updateStats();
             }
         }
     }
@@ -122,6 +123,7 @@ public class GameScreenMediator extends BomberManMediator {
                 PlayerModel playerModel = gameScreen.getWorld().getPlayerModel(explodedPlayer);
                 Vector2 playerInitialPosition = gameScreen.getLabyrinthWidget().getPlayerInitialPosition(playerModel.getGameIndex());
                 gameScreen.getWorld().respawnPlayerAndDecrementLife(explodedPlayer, playerInitialPosition);
+                gameScreen.updateStats();
             }
         }
 
