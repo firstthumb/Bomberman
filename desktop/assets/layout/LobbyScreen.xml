@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <group>
+    <group name="gameList"></group>
+
     <image name="background" atlas="Common.atlas" x="200" y="330" frame="background" />
 
-    <label name="usernameLabel" text="" x="50" y="450" align="left" fontName="40pt_title.fnt" fontColor="FFFFFF"/>
-    <label name="onlineUserLabel" text="5 online" x="50" y="50" align="left" fontName="40pt_title.fnt" fontColor="FFFFFF"/>
-
-    <group name="gameList"></group>
+    <label name="usernameLabel" text="" x="50" y="450" align="left" fontName="pixelfont_26.fnt" fontColor="FFFFFF"/>
+    <label name="onlineUserLabel" text="5 online" x="50" y="50" align="left" fontName="pixelfont_26.fnt" fontColor="FFFFFF"/>
 
     <net.javaci.mobile.bomberman.core.view.widget.GameListWidgetConfig
             name="gameListPanelWidgetConfiguration"
-            x="250"
-            y="100"
-            width="360"
-            height="260"
-            rowHeight="64"
-            rowWidth="360"/>
+            x="100"
+            y="80"
+            width="460"
+            height="240"
+            rowHeight="30"
+            rowWidth="460"/>
 
-    <textButton name="createButton" atlas="Common.atlas" text="Create Game"  x="320" y="25" frameUp="btnEmpty" frameDown="btnEmpty_H" fontName="pixelfont_26.fnt" fontColor="ffffff"/>
+    <textButton name="createButton" atlas="Common.atlas" text="Create Game"  x="280" y="25" frameUp="btnEmpty" frameDown="btnEmpty_H" fontName="pixelfont_26.fnt" fontColor="ffffff"/>
 
 </group>
