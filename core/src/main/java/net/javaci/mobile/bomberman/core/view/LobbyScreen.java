@@ -46,6 +46,18 @@ public class LobbyScreen extends BomberManScreen {
                 createNewGame();
             }
         });
+        (((Group)findActor("connectionErrorPopup")).findActor("reconnectButton")).addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                displayLoadingWidget();
+                game.getClient().connect();
+//                game.getClient().addNetworkListener(networkListenerAdapter);
+                Group popup = (Group) findActor("connectionErrorPopup");
+                if (popup != null) {
+                    popup.setVisible(false);
+                }
+            }
+        });
         initializeGameList();
         networkListenerAdapter = new NetworkListenerAdapter() {
             @Override
@@ -57,8 +69,8 @@ public class LobbyScreen extends BomberManScreen {
 
             @Override
             public void onDisconnected() {
-                Log.d("Disconnected");
                 removeLoadingWidget();
+                onConnectionError();
             }
 
             @Override
@@ -194,5 +206,12 @@ public class LobbyScreen extends BomberManScreen {
 
     public void updateUserInfo() {
         ((Label)findActor("usernameLabel")).setText(UserSession.getInstance().getUsername());
+    }
+
+    public void onConnectionError() {
+        Group popup = (Group) findActor("connectionErrorPopup");
+        if (popup != null) {
+            popup.setVisible(true);
+        }
     }
 }

@@ -16,6 +16,12 @@
             rowHeight="30"
             rowWidth="460"/>
 
-    <textButton name="createButton" atlas="Common.atlas" text="Create Game"  x="280" y="25" frameUp="btnEmpty" frameDown="btnEmpty_H" fontName="pixelfont_26.fnt" fontColor="ffffff"/>
+    <textButton name="createButton" atlas="Common.atlas" text="Create Game"  x="280" y="25" frameUp="btnEmpty" frameDown="btnEmpty_H" fontName="pixelfont_26.fnt" fontColor="FFFFFF"/>
 
+
+    <group name="connectionErrorPopup" visible="false" x="200" y="120" width="400" height="260">
+        <image name="panelBackground" atlas="Common.atlas" frame="panelBackground"  x="0" y="0" width="400" height="260" ninepatch="true" ninepatchOffset="6"/>
+        <label name="title" text="Connection Error" x="0" y="200" width="400" align="center" fontName="pixelfont_26.fnt" fontColor="000000" wrap="true"/>
+        <textButton name="reconnectButton" atlas="Common.atlas" text="RECONNECT" x="104" y="20" frameUp="btnEmpty" frameDown="btnEmpty_H" fontName="pixelfont_26.fnt" fontColor="FFFFFF"/>
+    </group>
 </group>
