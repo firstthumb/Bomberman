@@ -638,9 +638,10 @@ public class World implements BombModel.BombListener {
     public List<Integer> getExplodedGhosts(BombModel bombModel) {
         List<Integer> result = new ArrayList<Integer>();
         List<Vector2> explodedCells = calculateBombExplosionCells(bombModel);
+        GhostModel[] ghostArray = ghostModels.values().toArray(new GhostModel[0]);
         if (explodedCells != null) {
             for (Vector2 cell : explodedCells) {
-                for (GhostModel ghostModel : ghostModels.values()) {
+                for (GhostModel ghostModel : ghostArray) {
                     int ghostGridX = getGridX(ghostModel.getOriginX());
                     int ghostGridY = getGridY(ghostModel.getOriginY());
                     if ((int)cell.x == ghostGridX && (int)cell.y == ghostGridY) {

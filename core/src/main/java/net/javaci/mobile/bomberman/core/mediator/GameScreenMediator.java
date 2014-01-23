@@ -32,43 +32,48 @@ public class GameScreenMediator extends BomberManMediator {
         this.networkInterface = networkInterface;
         this.networkListenerAdapter = new NetworkListenerAdapter() {
             @Override
-            public void onMessageReceived(String from, String message) {
-                Command command = commandFactory.createCommand(message);
-                if (command == null) {
-                    Log.d("Waiting split message");
-                    return;
-                }
-                switch (command.getCommand()) {
-                    case Command.CREATE_GAME:
-                        handleCreateGameCommand((CreateGameCommand)command);
-                        break;
-                    case Command.MOVE_START:
-                        handleMoveStartCommand((MoveCommand) command);
-                        break;
-                    case Command.MOVE_END:
-                        handleMoveEndCommand((MoveEndCommand) command);
-                        break;
-                    case Command.MOVE_GHOST:
-                        handleMoveGhostCommand((MoveGhostCommand) command);
-                        break;
-                    case Command.GAME_END:
-                        handleGameEndCommand((GameEndCommand) command);
-                        break;
-                    case Command.DROP_BOMB:
-                        handleDropBombCommand((DropBombCommand) command);
-                        break;
-                    case Command.EXPLODE_BOMB:
-                        handleExplodeBombCommand((ExplodeBombCommand) command);
-                        break;
-                    case Command.CAUGHT_GHOST:
-                        handleGhostCaughtCommand((GhostCaughtCommand) command);
-                        break;
-                    case Command.START_GAME:
-                        handleStartGameCommand((StartGameCommand) command);
-                        break;
-                    default:
-                        break;
-                }
+            public void onMessageReceived(String from, final String message) {
+                Gdx.app.postRunnable( new Runnable() {
+                    @Override
+                    public void run() {
+                        Command command = commandFactory.createCommand(message);
+                        if (command == null) {
+                            Log.d("Waiting split message");
+                            return;
+                        }
+                        switch (command.getCommand()) {
+                            case Command.CREATE_GAME:
+                                handleCreateGameCommand((CreateGameCommand)command);
+                                break;
+                            case Command.MOVE_START:
+                                handleMoveStartCommand((MoveCommand) command);
+                                break;
+                            case Command.MOVE_END:
+                                handleMoveEndCommand((MoveEndCommand) command);
+                                break;
+                            case Command.MOVE_GHOST:
+                                handleMoveGhostCommand((MoveGhostCommand) command);
+                                break;
+                            case Command.GAME_END:
+                                handleGameEndCommand((GameEndCommand) command);
+                                break;
+                            case Command.DROP_BOMB:
+                                handleDropBombCommand((DropBombCommand) command);
+                                break;
+                            case Command.EXPLODE_BOMB:
+                                handleExplodeBombCommand((ExplodeBombCommand) command);
+                                break;
+                            case Command.CAUGHT_GHOST:
+                                handleGhostCaughtCommand((GhostCaughtCommand) command);
+                                break;
+                            case Command.START_GAME:
+                                handleStartGameCommand((StartGameCommand) command);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                });
             }
 
             @Override
