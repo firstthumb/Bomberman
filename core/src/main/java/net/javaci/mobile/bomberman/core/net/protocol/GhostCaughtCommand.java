@@ -52,14 +52,12 @@ public class GhostCaughtCommand extends Command {
     @Override
     protected void serializeCustomFields(JSONObject json) throws JSONException {
         json.put("id", id);
-        json.put("caughtPlayers", this.caughtPlayers);
-        {
-            JSONArray jsonArray = new JSONArray();
-            for (String playerName : caughtPlayers) {
-                jsonArray.put(playerName);
-            }
-            json.put("caughtPlayers", jsonArray);
+        JSONArray jsonArray = new JSONArray();
+        for (String playerName : caughtPlayers) {
+            jsonArray.put(playerName);
         }
+        json.put("caughtPlayers", jsonArray);
+
     }
 
     @Override
