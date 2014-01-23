@@ -4,17 +4,6 @@
     <group name="labyrinth"></group>
     <group name="gameObjectsGroup"></group>
 
-    <group name="beforeGamePanel" visible="true" x="200" y="120" width="400" height="240">
-        <image name="panelBackground" atlas="Common.atlas" frame="panelBackground"  x="0" y="0" width="400" height="240" ninepatch="true" ninepatchOffset="6"/>
-        <label name="title" text="" x="0" y="200" width="400" align="center" fontName="large.fnt" fontColor="000000" wrap="true"/>
-        <label name="roomOwner" text="" x="0" y="160" width="400" align="center" fontName="normal.fnt" fontColor="000000" visible="false"/>
-        <label name="player2joined" text="" x="0" y="140" width="400" align="center" fontName="normal.fnt" fontColor="000000" visible="false"/>
-        <label name="player3joined" text="" x="0" y="120" width="400" align="center" fontName="normal.fnt" fontColor="000000" visible="false"/>
-        <label name="player4joined" text="" x="0" y="100"  width="400" align="center" fontName="normal.fnt" fontColor="000000" visible="false"/>
-        <textButton name="startGameButton" atlas="Common.atlas" text="START GAME" x="104" y="20" frameUp="btnEmpty" frameDown="btnEmpty_H" fontName="normal.fnt" fontColor="000000" visible="false"/>
-        <label name="roomName" text="" x="0" y="10" width="400" align="center" fontName="small.fnt" fontColor="000000" visible="true"/>
-    </group>
-
     <button name="settingsButton" atlas="Common.atlas" x="0" y="0"  frameUp="settingIcon" frameDown="settingIconH" visible="false"/>
 
 
@@ -50,5 +39,29 @@
     </group>
 
     <button name="bombButton" x="690" y="10" atlas="Common.atlas" frameUp="bombButton" frameDown="bombButton"/>
+
+    <group name="beforeGamePanel" visible="true" x="200" y="120" width="400" height="240">
+        <image name="panelBackground" atlas="Common.atlas" frame="panelBackground"  x="0" y="0" width="400" height="240" ninepatch="true" ninepatchOffset="6"/>
+        <label name="title" text="" x="0" y="200" width="400" align="center" fontName="large.fnt" fontColor="000000" wrap="true"/>
+        <label name="roomOwner" text="" x="0" y="160" width="400" align="center" fontName="normal.fnt" fontColor="000000" visible="false"/>
+        <label name="player2joined" text="" x="0" y="140" width="400" align="center" fontName="normal.fnt" fontColor="000000" visible="false"/>
+        <label name="player3joined" text="" x="0" y="120" width="400" align="center" fontName="normal.fnt" fontColor="000000" visible="false"/>
+        <label name="player4joined" text="" x="0" y="100"  width="400" align="center" fontName="normal.fnt" fontColor="000000" visible="false"/>
+        <textButton name="startGameButton" atlas="Common.atlas" text="START GAME" x="104" y="20" frameUp="btnEmpty" frameDown="btnEmpty_H" fontName="normal.fnt" fontColor="000000" visible="false"/>
+        <label name="roomName" text="" x="0" y="10" width="400" align="center" fontName="small.fnt" fontColor="000000" visible="true"/>
+    </group>
+
+    <group name="disconnectPopup" visible="false" x="200" y="120" width="400" height="240">
+        <image name="panelBackground" atlas="Common.atlas" frame="panelBackground"  x="0" y="0" width="400" height="240" ninepatch="true" ninepatchOffset="6"/>
+        <label name="title" text="DISCONNECTED" x="0" y="200" width="400" align="center" fontName="large.fnt" fontColor="000000" wrap="true"/>
+        <textButton name="backToLobbyButton" atlas="Common.atlas" text="BACK TO LOBBY" x="104" y="50" frameUp="btnEmpty" frameDown="btnEmpty_H" fontName="normal.fnt" fontColor="ffffff"/>
+    </group>
+
+
+    <group name="ownerLeftPopup" visible="false" x="200" y="120" width="400" height="240">
+        <image name="panelBackground" atlas="Common.atlas" frame="panelBackground"  x="0" y="0" width="400" height="240" ninepatch="true" ninepatchOffset="6"/>
+        <label name="title" text="OWNER LEFT ROOM" x="0" y="200" width="400" align="center" fontName="large.fnt" fontColor="000000" wrap="true"/>
+        <textButton name="backToLobbyButton" atlas="Common.atlas" text="BACK TO LOBBY" x="104" y="50" frameUp="btnEmpty" frameDown="btnEmpty_H" fontName="normal.fnt" fontColor="ffffff"/>
+    </group>
 
 </group>

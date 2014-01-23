@@ -2,7 +2,6 @@ package net.javaci.mobile.bomberman.core.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -31,7 +30,6 @@ import net.javaci.mobile.bomberman.core.util.Log;
 import net.javaci.mobile.bomberman.core.view.widget.*;
 import net.peakgames.libgdx.stagebuilder.core.AbstractGame;
 
-import java.util.EmptyStackException;
 import java.util.List;
 
 
@@ -143,6 +141,36 @@ public class GameScreen extends BomberManScreen {
         prepareStatsWidgets();
 
         prepareInputProcessor();
+        
+        prepareDisconnectPopup();
+
+        prepareRoomOwnerLeftPopup();
+    }
+
+    private void prepareDisconnectPopup() {
+        Group group = (Group)findActor("disconnectPopup");
+        Button button = (Button) group.findActor("backToLobbyButton");
+        button.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                backToLobby();
+            }
+        });
+    }
+
+    private void prepareRoomOwnerLeftPopup() {
+        Group group = (Group)findActor("ownerLeftPopup");
+        Button button = (Button) group.findActor("backToLobbyButton");
+        button.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                backToLobby();
+            }
+        });
+    }
+
+    public void backToLobby() {
+        game.backToPreviousScreen();
     }
 
     private void prepareStatsWidgets() {
@@ -300,8 +328,6 @@ public class GameScreen extends BomberManScreen {
 
     private void initializeBeforeGamePanel() {
         Group panel = (Group) findActor("beforeGamePanel");
-        panel.remove();
-        getRoot().addActor(panel);
         ((Label)panel.findActor("roomName")).setText(UserSession.getInstance().getRoom().getName());
         if (UserSession.getInstance().isServer()) {
             setBeforeGamePanelTitle("Waiting for players...");
@@ -521,10 +547,11 @@ public class GameScreen extends BomberManScreen {
     }
 
     public void onOwnerLeft() {
-        game.backToPreviousScreen();
-        // TODO : Show popup information
+        findActor("ownerLeftPopup").setVisible(true);
+    }
 
-        displayInfoPopup("Game Owner left");
+    public void onDisconnected()  {
+        findActor("disconnectPopup").setVisible(true);
     }
 
     public void onGameFinished() {

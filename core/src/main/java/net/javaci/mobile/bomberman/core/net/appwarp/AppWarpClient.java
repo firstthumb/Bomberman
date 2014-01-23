@@ -1,5 +1,6 @@
 package net.javaci.mobile.bomberman.core.net.appwarp;
 
+import com.shephertz.app42.gaming.multiplayer.client.ConnectionState;
 import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 import com.shephertz.app42.gaming.multiplayer.client.command.WarpResponseResultCode;
 import com.shephertz.app42.gaming.multiplayer.client.events.*;
@@ -274,6 +275,11 @@ public class AppWarpClient implements NetworkInterface {
     @Override
     public void getRoomInfo(String roomId) {
         warpClient.getLiveRoomInfo(roomId);
+    }
+
+    @Override
+    public boolean isConnected() {
+        return warpClient.getConnectionState() == ConnectionState.CONNECTED;
     }
 
     private RoomModel createRoomModelFromRoomData(RoomData roomData) {

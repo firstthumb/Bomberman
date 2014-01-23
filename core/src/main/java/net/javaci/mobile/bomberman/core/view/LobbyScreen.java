@@ -94,6 +94,9 @@ public class LobbyScreen extends BomberManScreen {
             public void onRoomListRequestFailed() {
                 Log.d("Room list failed");
                 removeLoadingWidget();
+                if ( ! game.getClient().isConnected()) {
+                    onDisconnected();
+                }
             }
 
             @Override

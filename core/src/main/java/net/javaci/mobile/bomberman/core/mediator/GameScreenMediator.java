@@ -102,7 +102,10 @@ public class GameScreenMediator extends BomberManMediator {
                 }
             }
 
-
+            @Override
+            public void onDisconnected() {
+                gameScreen.onDisconnected();
+            }
         };
         networkInterface.addNetworkListener(networkListenerAdapter);
     }

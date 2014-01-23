@@ -68,4 +68,6 @@ public interface NetworkInterface {
 
     public void getRoomInfo(String roomId);
 
+    public boolean isConnected();
+
 }
