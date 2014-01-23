@@ -46,6 +46,7 @@ public class GameScreen extends BomberManScreen {
 
     private LabyrinthWidget labyrinthWidget;
     private Direction previousFlingDirection;
+    private boolean isPreferedControlGamePad = true;
 
     public GameScreen(AbstractGame game, BomberManMediator mediator) {
         super(game, mediator);
@@ -119,16 +120,57 @@ public class GameScreen extends BomberManScreen {
         prepareGamePad();
 
         prepareBombButton();
+        
+        prepareSettingsButton();
 
         initializeBeforeGamePanel();
 
         prepareInputProcessor();
     }
 
+    private void prepareSettingsButton() {
+        Button settingsButton = findButton("settingsButton");
+        settingsButton.setVisible(true);
+        settingsButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                System.out.println("settings button clicked.");
+                final Group settingsPanel = (Group) findActor("settingsPanel");
+                settingsPanel.remove();
+                getRoot().addActor(settingsPanel);
+                settingsPanel.setVisible( ! settingsPanel.isVisible());
+                Button settingsGamePadButton = (Button) settingsPanel.findActor("settingsGamePad");
+                settingsGamePadButton.addListener(new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        isPreferedControlGamePad = true;
+                        findActor("gamePad").setVisible(isPreferedControlGamePad);
+                        settingsPanel.setVisible(false);
+                    }
+                });
+
+                Button settingsSwipeButton = (Button) settingsPanel.findActor("settingsSwipe");
+                settingsSwipeButton.addListener(new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        isPreferedControlGamePad = false;
+                        findActor("gamePad").setVisible(isPreferedControlGamePad);
+                        settingsPanel.setVisible(false);
+                    }
+                });
+            }
+        });
+        Vector2 pos = labyrinthWidget.getWallPosition(LabyrinthModel.NUM_COLS-1, LabyrinthModel.NUM_ROWS-1);
+        settingsButton.setPosition(pos.x, pos.y);
+    }
+
     private void prepareInputProcessor() {
         GestureDetector swipeGestureDetector = new GestureDetector(new GestureDetector.GestureAdapter() {
             @Override
             public boolean fling(final float velocityX, final float velocityY, int button) {
+                if (isPreferedControlGamePad) {
+                    return false;
+                }
                 final String username = UserSession.getInstance().getUsername();
                 final PlayerModel playerModel = world.getPlayerModel(username);
                 final Direction flingDirection = getDirection(velocityX, velocityY);
@@ -207,10 +249,6 @@ public class GameScreen extends BomberManScreen {
         stage.addActor(bombButton);
         bombButton.setWidth(bombButton.getWidth() * 2f);
         bombButton.setHeight(bombButton.getHeight() * 2f);
-        /*
-        Color color = bombButton.getColor();
-        color.a = 0.5f;
-        */
         bombButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -236,6 +274,7 @@ public class GameScreen extends BomberManScreen {
         Actor gamePad = findActor("gamePad");
         gamePad.remove();
         stage.addActor(gamePad);
+        gamePad.setVisible(isPreferedControlGamePad);
 
         findButton("gamePadUpButton").addListener(new InputListener() {
             @Override

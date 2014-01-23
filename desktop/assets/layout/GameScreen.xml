@@ -21,4 +21,14 @@
         <textButton name="startGameButton" atlas="Common.atlas" text="START GAME" x="104" y="20" frameUp="btnEmpty" frameDown="btnEmpty_H" fontName="normal.fnt" fontColor="000000" visible="false"/>
         <label name="roomName" text="" x="0" y="10" width="400" align="center" fontName="small.fnt" fontColor="000000" visible="true"/>
     </group>
+
+    <button name="settingsButton" atlas="Common.atlas" x="0" y="0"  frameUp="settingIcon" frameDown="settingIconH" visible="false"/>
+
+
+    <group name="settingsPanel" visible="false" x="200" y="120" width="400" height="240">
+        <image name="panelBackground" atlas="Common.atlas" frame="panelBackground"  x="0" y="0" width="400" height="240" ninepatch="true" ninepatchOffset="6"/>
+        <label name="title" text="SETTINGS" x="0" y="200" width="400" align="center" fontName="large.fnt" fontColor="000000" wrap="true"/>
+        <textButton name="settingsGamePad" atlas="Common.atlas" text="GAME PAD" x="104" y="100" frameUp="btnEmpty" frameDown="btnEmpty_H" fontName="normal.fnt" fontColor="ffffff"/>
+        <textButton name="settingsSwipe" atlas="Common.atlas" text="SWIPE" x="104" y="50" frameUp="btnEmpty" frameDown="btnEmpty_H" fontName="normal.fnt" fontColor="ffffff"/>
+    </group>
 </group>

@@ -55,6 +55,10 @@ public class LabyrinthWidget extends Actor {
         }
     }
 
+    public Vector2 getWallPosition(int x, int y) {
+        return new Vector2((gameAreaBounds.x / numCols) * x, (gameAreaBounds.y / numRows) * y);
+    }
+
     public Vector2 getPlayerInitialPosition(int playerIndex) {
         float width = gameAreaBounds.x / numCols;
         float height = gameAreaBounds.y / numRows;
