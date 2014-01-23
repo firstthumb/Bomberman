@@ -108,7 +108,7 @@ public class GameScreen extends BomberManScreen {
         playerModel.setGameIndex(gameIndex);
         world.addPlayerModel(playerModel);
         BombermanWidget bombermanWidget = new BombermanWidget(getStageBuilder().getAssets().getTextureAtlas("Common.atlas"), gameIndex, playerModel);
-        //stage.addActor(bombermanWidget);
+        bombermanWidget.setName(username);
         Group group = (Group) findActor("gameObjectsGroup");
         group.addActor(bombermanWidget);
         return playerModel;
@@ -145,6 +145,10 @@ public class GameScreen extends BomberManScreen {
         prepareDisconnectPopup();
 
         prepareRoomOwnerLeftPopup();
+
+        prepareLostGamePopup();
+
+        prepareWinGamePopup();
     }
 
     private void prepareDisconnectPopup() {
@@ -158,6 +162,7 @@ public class GameScreen extends BomberManScreen {
         });
     }
 
+
     private void prepareRoomOwnerLeftPopup() {
         Group group = (Group)findActor("ownerLeftPopup");
         Button button = (Button) group.findActor("backToLobbyButton");
@@ -168,6 +173,29 @@ public class GameScreen extends BomberManScreen {
             }
         });
     }
+
+    private void prepareLostGamePopup() {
+        Group group = (Group)findActor("lostGamePopup");
+        Button button = (Button) group.findActor("backToLobbyButton");
+        button.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                backToLobby();
+            }
+        });
+    }
+
+    private void prepareWinGamePopup() {
+        Group group = (Group)findActor("winGamePopup");
+        Button button = (Button) group.findActor("backToLobbyButton");
+        button.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                backToLobby();
+            }
+        });
+    }
+
 
     public void backToLobby() {
         game.backToPreviousScreen();
@@ -523,6 +551,15 @@ public class GameScreen extends BomberManScreen {
         } else {
             Log.e("Player already in room");
         }
+    }
+
+    public void removePlayer(String playerName) {
+        Actor bombermanWidget = stage.getRoot().findActor(playerName);
+        bombermanWidget.remove();
+        world.removePlayer(playerName);
+    }
+
+    public void displayLostGamePopup() {
     }
 
     public static enum Direction {

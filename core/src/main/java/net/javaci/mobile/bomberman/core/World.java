@@ -655,7 +655,10 @@ public class World implements BombModel.BombListener {
     }
 
     public void killGhost(int ghostId) {
-        killGhost(ghostModels.get(ghostId));
+        GhostModel model = ghostModels.get(ghostId);
+        if (model != null) {
+            killGhost(model);
+        }
     }
 
     private void killGhost(GhostModel ghostModel) {

@@ -64,4 +64,19 @@
         <textButton name="backToLobbyButton" atlas="Common.atlas" text="BACK TO LOBBY" x="104" y="50" frameUp="btnEmpty" frameDown="btnEmpty_H" fontName="normal.fnt" fontColor="ffffff"/>
     </group>
 
+
+    <group name="lostGamePopup" visible="false" x="200" y="120" width="400" height="240">
+        <image name="panelBackground" atlas="Common.atlas" frame="panelBackground"  x="0" y="0" width="400" height="240" ninepatch="true" ninepatchOffset="6"/>
+        <label name="title" text="YOU LOST!" x="0" y="200" width="400" align="center" fontName="large.fnt" fontColor="000000" wrap="true"/>
+        <image name="lostImage" atlas="Common.atlas" frame="bomberman_lost"  x="130" y="40"/>
+        <textButton name="backToLobbyButton" atlas="Common.atlas" text="BACK TO LOBBY" x="104" y="20" frameUp="btnEmpty" frameDown="btnEmpty_H" fontName="normal.fnt" fontColor="ffffff"/>
+    </group>
+
+    <group name="winGamePopup" visible="false" x="200" y="120" width="400" height="240">
+        <image name="panelBackground" atlas="Common.atlas" frame="panelBackground"  x="0" y="0" width="400" height="240" ninepatch="true" ninepatchOffset="6"/>
+        <label name="title" text="YOU WIN!" x="0" y="210" width="400" align="center" fontName="large.fnt" fontColor="000000" wrap="true"/>
+        <image name="lostImage" atlas="Common.atlas" frame="bomberman_win"  x="100" y="45"/>
+        <textButton name="backToLobbyButton" atlas="Common.atlas" text="BACK TO LOBBY" x="104" y="10" frameUp="btnEmpty" frameDown="btnEmpty_H" fontName="normal.fnt" fontColor="ffffff"/>
+    </group>
+
 </group>

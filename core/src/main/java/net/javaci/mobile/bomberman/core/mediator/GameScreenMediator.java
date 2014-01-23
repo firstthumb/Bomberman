@@ -159,7 +159,10 @@ public class GameScreenMediator extends BomberManMediator {
                 } else {
                     game.getAudioManager().playOpponentDying();
                 }
-
+                if (playerModel.getLifeCount() == 0 && playerModel.getPlayerName().equals(UserSession.getInstance().getUsername())) {
+                    //kaybettim.
+                    gameScreen.displayLostGamePopup();
+                }
             }
         }
 
@@ -290,7 +293,7 @@ public class GameScreenMediator extends BomberManMediator {
             onGameOwnerLeft();
         }
         else {
-            // TODO : remove player character from stage
+            gameScreen.removePlayer(playerName);
         }
     }
 

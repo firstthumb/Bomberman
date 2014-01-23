@@ -9,12 +9,16 @@ public class GameEndCommand extends Command {
     }
 
     private GameEndReason reason;
+    private String winner;
 
     public static Command build(JSONObject json) {
         GameEndCommand command = new GameEndCommand();
         try {
             command.parseCommonFields(json);
             command.reason = GameEndReason.valueOf(json.getString("reason"));
+            if (json.has("winner")) {
+                command.winner = json.getString("winner");
+            }
         } catch (JSONException e) {
             e.printStackTrace();
             return new UndefinedCommand(json.toString());
@@ -34,10 +38,13 @@ public class GameEndCommand extends Command {
     @Override
     protected void serializeCustomFields(JSONObject json) throws JSONException {
         json.put("reason", reason);
+        if (this.winner != null) {
+            json.put("winner", this.winner);
+        }
     }
 
     @Override
     public int getCommand() {
-        return GAME_END;
+        return Command.GAME_END;
     }
 }
