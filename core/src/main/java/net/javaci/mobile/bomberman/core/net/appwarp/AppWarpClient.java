@@ -191,7 +191,9 @@ public class AppWarpClient implements NetworkInterface {
         warpClient.addConnectionRequestListener(new ConnectionRequestListener() {
             @Override
             public void onConnectDone(ConnectEvent connectEvent) {
-                if (connectEvent.getResult() == WarpResponseResultCode.SUCCESS) {
+                if (connectEvent.getResult() == WarpResponseResultCode.SUCCESS ||
+                        connectEvent.getResult() == WarpResponseResultCode.BAD_REQUEST ||
+                        connectEvent.getResult() == WarpResponseResultCode.SUCCESS_RECOVERED) {
                     for (NetworkListener listener : networkListeners) {
                         listener.onConnected();
                     }
@@ -201,7 +203,7 @@ public class AppWarpClient implements NetworkInterface {
                     for (NetworkListener listener : networkListeners) {
                         listener.onDisconnected();
                     }
-                    log("Disconnected.");
+                    log("Disconnected REASON : " + connectEvent.getResult());
                 }
             }
 

@@ -51,8 +51,17 @@ public class LobbyScreen extends BomberManScreen {
             public void clicked(InputEvent event, float x, float y) {
                 displayLoadingWidget();
                 game.getClient().connect();
-//                game.getClient().addNetworkListener(networkListenerAdapter);
                 Group popup = (Group) findActor("connectionErrorPopup");
+                if (popup != null) {
+                    popup.setVisible(false);
+                }
+            }
+        });
+        (((Group)findActor("joinRoomFailedPopup")).findActor("okButton")).addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                displayLoadingWidget();
+                Group popup = (Group) findActor("joinRoomFailedPopup");
                 if (popup != null) {
                     popup.setVisible(false);
                 }
@@ -97,6 +106,7 @@ public class LobbyScreen extends BomberManScreen {
                 Log.d("Failed to join room");
                 UserSession.getInstance().setRoom(null);
                 removeLoadingWidget();
+                LobbyScreen.this.onJoinRoomFailed();
             }
 
             @Override
@@ -210,6 +220,13 @@ public class LobbyScreen extends BomberManScreen {
 
     public void onConnectionError() {
         Group popup = (Group) findActor("connectionErrorPopup");
+        if (popup != null) {
+            popup.setVisible(true);
+        }
+    }
+
+    public void onJoinRoomFailed() {
+        Group popup = (Group) findActor("joinRoomFailedPopup");
         if (popup != null) {
             popup.setVisible(true);
         }
