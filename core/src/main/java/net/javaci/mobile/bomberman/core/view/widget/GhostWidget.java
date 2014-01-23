@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import net.javaci.mobile.bomberman.core.models.GhostModel;
+import net.javaci.mobile.bomberman.core.util.Log;
 
 public class GhostWidget extends Actor {
 
@@ -77,7 +78,7 @@ public class GhostWidget extends Actor {
 
         batch.draw(
                 currentFrame,
-                ghostModel.getX() + (ghostModel.getWidth() - currentFrame.getRegionWidth()) * 0.5f,
-                ghostModel.getY() + (ghostModel.getHeight() - currentFrame.getRegionHeight()) * 0.5f, ghostModel.getWidth(), ghostModel.getHeight());
+                ghostModel.getX() + Math.max((ghostModel.getWidth() - currentFrame.getRegionWidth()) * 0.5f, 0),
+                ghostModel.getY() + Math.max((ghostModel.getHeight() - currentFrame.getRegionHeight()) * 0.5f, 0), ghostModel.getWidth(), ghostModel.getHeight());
     }
 }

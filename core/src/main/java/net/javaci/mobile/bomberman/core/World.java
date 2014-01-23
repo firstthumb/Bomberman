@@ -592,7 +592,7 @@ public class World implements BombModel.BombListener {
 
     public BombModel  playerDroppedBomb(String username) {
         PlayerModel playerModel = playerModels.get(username);
-        BombModel bombModel = new BombModel(rand.nextInt());
+        BombModel bombModel = new BombModel(rand.nextInt(Integer.MAX_VALUE));
         bombModel.setWidth(this.gridWidth);
         bombModel.setHeight(this.gridHeight);
         bombModel.setOwner(username);
