@@ -5,14 +5,22 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class CommandFactory {
+    private static Set<String> receivedCommands = new HashSet<String>();
 
     private Map<Integer, Map<Integer, String>> messsages = new HashMap<Integer, Map<Integer, String>>();
 
     public Command createCommand(String jsonString) {
+        if (receivedCommands.contains(jsonString)) {
+            Log.e("************************ Duplicate Message Received : " + jsonString);
+            return null;
+        }
         Log.d("Received : " + jsonString);
+        receivedCommands.add(jsonString);
         if (jsonString.startsWith("split")) {
             String arr[] = jsonString.split("#");
             int messageId = Integer.parseInt(arr[1]);
