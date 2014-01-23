@@ -6,6 +6,7 @@ import net.javaci.mobile.bomberman.core.mediator.GameScreenMediator;
 import net.javaci.mobile.bomberman.core.models.BombModel;
 import net.javaci.mobile.bomberman.core.models.GhostModel;
 import net.javaci.mobile.bomberman.core.models.GhostMovement;
+import net.javaci.mobile.bomberman.core.models.PlayerModel;
 import net.javaci.mobile.bomberman.core.net.NetworkInterface;
 import net.javaci.mobile.bomberman.core.net.NetworkListenerAdapter;
 import net.javaci.mobile.bomberman.core.net.protocol.*;
@@ -143,6 +144,16 @@ public class GameServer {
         explodeBombCommand.setGridY(bombModel.getGridY());
         List<String> explodedPlayers = world.getExplodedPlayerNames(bombModel);
         explodeBombCommand.setExplodedPlayers(explodedPlayers);
+        List<Integer> explodedGhosts = world.getExplodedGhosts(bombModel);
+        explodeBombCommand.setExplodedGhosts(explodedGhosts);
         networkInterface.sendMessage(explodeBombCommand.serialize());
+    }
+
+    public void caughtPlayer(int ghostId, List<String> players) {
+        GhostCaughtCommand ghostCaughtCommand = new GhostCaughtCommand();
+        ghostCaughtCommand.setFromUser(UserSession.getInstance().getUsername());
+        ghostCaughtCommand.setId(ghostId);
+        ghostCaughtCommand.setCaughtPlayers(players);
+        networkInterface.sendMessage(ghostCaughtCommand.serialize());
     }
 }

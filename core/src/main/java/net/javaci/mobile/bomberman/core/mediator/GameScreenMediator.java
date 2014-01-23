@@ -59,6 +59,9 @@ public class GameScreenMediator extends BomberManMediator {
                     case Command.EXPLODE_BOMB:
                         handleExplodeBombCommand((ExplodeBombCommand) command);
                         break;
+                    case Command.CAUGHT_GHOST:
+                        handleGhostCaughtCommand((GhostCaughtCommand) command);
+                        break;
 
                     default:
                         break;
@@ -92,6 +95,17 @@ public class GameScreenMediator extends BomberManMediator {
         });
     }
 
+    private void handleGhostCaughtCommand(GhostCaughtCommand command) {
+        List<String> caughtPlayers = command.getCaughtPlayers();
+        if (caughtPlayers != null) {
+            for (String  caughtPlayer : caughtPlayers) {
+                PlayerModel playerModel = gameScreen.getWorld().getPlayerModel(caughtPlayer);
+                Vector2 playerInitialPosition = gameScreen.getLabyrinthWidget().getPlayerInitialPosition(playerModel.getGameIndex());
+                gameScreen.getWorld().respawnPlayerAndDecrementLife(caughtPlayer, playerInitialPosition);
+            }
+        }
+    }
+
 
     @Override
     protected void onScreenShow() {
@@ -108,6 +122,13 @@ public class GameScreenMediator extends BomberManMediator {
                 PlayerModel playerModel = gameScreen.getWorld().getPlayerModel(explodedPlayer);
                 Vector2 playerInitialPosition = gameScreen.getLabyrinthWidget().getPlayerInitialPosition(playerModel.getGameIndex());
                 gameScreen.getWorld().respawnPlayerAndDecrementLife(explodedPlayer, playerInitialPosition);
+            }
+        }
+
+        List<Integer> explodedGhosts = command.getExplodedGhosts();
+        if (explodedGhosts != null) {
+            for (Integer ghostId : explodedGhosts) {
+                gameScreen.getWorld().killGhost(ghostId);
             }
         }
     }

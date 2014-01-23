@@ -10,6 +10,7 @@ public class PlayerModel extends GameObjectModel {
     private int targetGridY = -1;
     //oyunu kuran 1, oyuna ilk katilan oyuncu 2, ikinci katilan 3, son katilan 4 degerini alir.
     private int gameIndex;
+    private boolean caught;
     private int lifeCount = 3;
     private StateChangeListener stateChangeListener;
 
@@ -79,6 +80,14 @@ public class PlayerModel extends GameObjectModel {
 
     public float getOriginY() {
         return this.y + this.height * 0.5f;
+    }
+
+    public boolean isCaught() {
+        return caught;
+    }
+
+    public void setCaught(boolean caught) {
+        this.caught = caught;
     }
 
     public void decrementLifeCount() {
