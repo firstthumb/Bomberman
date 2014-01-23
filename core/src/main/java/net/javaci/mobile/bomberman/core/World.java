@@ -659,6 +659,8 @@ public class World implements BombModel.BombListener {
 
     private void killGhost(GhostModel ghostModel) {
         ghostModel.setState(GhostModel.State.DEAD);
+        // TODO: removing immediately result in by pass DEAD animation of ghost
+        ghostModels.remove(ghostModel.getId());
     }
 
     public List<Vector2> calculateBombExplosionCells(BombModel bombModel) {
