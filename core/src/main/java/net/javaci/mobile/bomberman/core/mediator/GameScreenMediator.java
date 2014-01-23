@@ -62,7 +62,9 @@ public class GameScreenMediator extends BomberManMediator {
                     case Command.CAUGHT_GHOST:
                         handleGhostCaughtCommand((GhostCaughtCommand) command);
                         break;
-
+                    case Command.START_GAME:
+                        handleStartGameCommand((StartGameCommand) command);
+                        break;
                     default:
                         break;
                 }
@@ -95,6 +97,10 @@ public class GameScreenMediator extends BomberManMediator {
         });
     }
 
+    private void handleStartGameCommand(StartGameCommand command) {
+        gameScreen.startGame();
+    }
+
     private void handleGhostCaughtCommand(GhostCaughtCommand command) {
         List<String> caughtPlayers = command.getCaughtPlayers();
         if (caughtPlayers != null) {
@@ -103,6 +109,12 @@ public class GameScreenMediator extends BomberManMediator {
                 Vector2 playerInitialPosition = gameScreen.getLabyrinthWidget().getPlayerInitialPosition(playerModel.getGameIndex());
                 gameScreen.getWorld().respawnPlayerAndDecrementLife(caughtPlayer, playerInitialPosition);
                 gameScreen.updateStats();
+                gameScreen.resetPreviousFlingDirection();
+                if (caughtPlayer.equals(UserSession.getInstance().getUsername())) {
+                    game.getAudioManager().playJustDied();
+                } else {
+                    game.getAudioManager().playOpponentDying();
+                }
             }
         }
     }
@@ -124,6 +136,13 @@ public class GameScreenMediator extends BomberManMediator {
                 Vector2 playerInitialPosition = gameScreen.getLabyrinthWidget().getPlayerInitialPosition(playerModel.getGameIndex());
                 gameScreen.getWorld().respawnPlayerAndDecrementLife(explodedPlayer, playerInitialPosition);
                 gameScreen.updateStats();
+                gameScreen.resetPreviousFlingDirection();
+                if (explodedPlayer.equals(UserSession.getInstance().getUsername())) {
+                    game.getAudioManager().playJustDied();
+                } else {
+                    game.getAudioManager().playOpponentDying();
+                }
+
             }
         }
 
@@ -149,6 +168,7 @@ public class GameScreenMediator extends BomberManMediator {
                 gameScreen.renderBombExplosion(bombModel);
             }
         });
+        game.getAudioManager().dropBomb();
         gameScreen.onOpponentDropBomb(bombModel);
     }
 

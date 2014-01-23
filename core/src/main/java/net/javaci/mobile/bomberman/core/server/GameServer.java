@@ -6,12 +6,10 @@ import net.javaci.mobile.bomberman.core.mediator.GameScreenMediator;
 import net.javaci.mobile.bomberman.core.models.BombModel;
 import net.javaci.mobile.bomberman.core.models.GhostModel;
 import net.javaci.mobile.bomberman.core.models.GhostMovement;
-import net.javaci.mobile.bomberman.core.models.PlayerModel;
 import net.javaci.mobile.bomberman.core.net.NetworkInterface;
 import net.javaci.mobile.bomberman.core.net.NetworkListenerAdapter;
 import net.javaci.mobile.bomberman.core.net.protocol.*;
 import net.javaci.mobile.bomberman.core.session.UserSession;
-import net.javaci.mobile.bomberman.core.util.Log;
 import net.javaci.mobile.bomberman.core.view.GameScreen;
 
 import java.util.*;
@@ -84,6 +82,7 @@ public class GameServer {
 
     public void startGame() {
         StartGameCommand startGameCommand = new StartGameCommand();
+        startGameCommand.setFromUser(UserSession.getInstance().getUsername());
         networkInterface.sendMessage(startGameCommand.serialize());
 
         for (GhostModel ghostModel : world.getGhostModels().values()) {
@@ -118,7 +117,8 @@ public class GameServer {
                 do {
                     movement = getGhostMovement();
                     numTry--;
-                } while (numTry > 0 && movement != null && !movement.movable(ghostModel, world.getLabyrinthModel().getGrid()));
+                }
+                while (numTry > 0 && movement != null && !movement.movable(ghostModel, world.getLabyrinthModel().getGrid()));
 
                 MoveGhostCommand command = new MoveGhostCommand();
                 command.setFromUser(UserSession.getInstance().getUsername());

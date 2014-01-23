@@ -8,6 +8,7 @@ import net.javaci.mobile.bomberman.core.mediator.GameScreenMediator;
 import net.javaci.mobile.bomberman.core.net.NetworkInterface;
 import net.javaci.mobile.bomberman.core.net.appwarp.AppWarpClient;
 import net.javaci.mobile.bomberman.core.session.UserSession;
+import net.javaci.mobile.bomberman.core.util.AudioManager;
 import net.javaci.mobile.bomberman.core.view.SplashScreen;
 import net.peakgames.libgdx.stagebuilder.core.AbstractGame;
 import net.peakgames.libgdx.stagebuilder.core.assets.AssetsInterface;
@@ -20,6 +21,7 @@ import java.util.Map;
 public class BomberManGame extends AbstractGame {
 
     public NetworkInterface client = new AppWarpClient(UserSession.getInstance().getUsername());
+    private AudioManager audioManager = new AudioManager();
 
     public static enum ScreenType {
         SPLASH, PLAY, LOBBY
@@ -55,6 +57,7 @@ public class BomberManGame extends AbstractGame {
         setScreen(splashScreen);
         Gdx.input.setCatchBackKey(true);
         configureAssetLoader();
+        audioManager.initialize();
     }
 
 
@@ -102,4 +105,9 @@ public class BomberManGame extends AbstractGame {
     public NetworkInterface getClient() {
         return client;
     }
+
+    public AudioManager getAudioManager() {
+        return this.audioManager;
+    }
+
 }

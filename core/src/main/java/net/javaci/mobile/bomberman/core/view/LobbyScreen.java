@@ -141,10 +141,16 @@ public class LobbyScreen extends BomberManScreen {
     @Override
     public void show() {
         super.show();
-
+        game.getAudioManager().playMainTheme();
         displayLoadingWidget();
         game.getClient().connect();
         game.getClient().addNetworkListener(networkListenerAdapter);
+    }
+
+    @Override
+    public void hide() {
+        super.hide();
+        game.getAudioManager().stopMainTheme();
     }
 
     @Override

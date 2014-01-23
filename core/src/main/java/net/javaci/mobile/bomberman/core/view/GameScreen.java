@@ -260,6 +260,16 @@ public class GameScreen extends BomberManScreen {
                 return true;
             }
 
+            @Override
+            public boolean tap(float x, float y, int count, int button) {
+                if (previousFlingDirection != null) {
+                    onMoveEnd(UserSession.getInstance().getUsername(), previousFlingDirection);
+                    previousFlingDirection = null;
+                    return true;
+                }
+                return false;
+            }
+
             private Direction getDirection(float velocityX, float velocityY) {
                 if (Math.abs(velocityX) > Math.abs(velocityY)) {
                     //horizontal
@@ -306,14 +316,14 @@ public class GameScreen extends BomberManScreen {
 
     private void prepareBombButton() {
         Button bombButton = findButton("bombButton");
-        bombButton.remove();
-        stage.addActor(bombButton);
+        bombButton.setVisible(false);
         bombButton.setWidth(bombButton.getWidth() * 2f);
         bombButton.setHeight(bombButton.getHeight() * 2f);
         bombButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 gameScreenMediator.onBombButtonClicked();
+                game.getAudioManager().dropBomb();
             }
         });
     }
@@ -333,7 +343,7 @@ public class GameScreen extends BomberManScreen {
 
     private void prepareGamePad() {
         Actor gamePad = findActor("gamePad");
-        gamePad.setVisible(isPreferedControlGamePad);
+        gamePad.setVisible(false);
 
         findButton("gamePadUpButton").addListener(new InputListener() {
             @Override
@@ -435,6 +445,7 @@ public class GameScreen extends BomberManScreen {
     }
 
     public void renderBombExplosion(BombModel bombModel) {
+        game.getAudioManager().boom();
         List<Vector2> cellIndexes = world.calculateBombExplosionCells(bombModel);
         List<Vector2> coords = world.convertCellIndexToScreenCoordinates(cellIndexes);
 
@@ -471,6 +482,7 @@ public class GameScreen extends BomberManScreen {
                 public void clicked(InputEvent event, float x, float y) {
                     panel.remove();
                     gameServer.createGame();
+                    game.getAudioManager().playStartGame();
                 }
             });
 
@@ -520,5 +532,20 @@ public class GameScreen extends BomberManScreen {
         else {
             Log.e("Room Model is NULL. Cannot delete room from Server");
         }
+    }
+
+    public void resetPreviousFlingDirection() {
+        this.previousFlingDirection = null;
+    }
+
+    public void startGame() {
+        Actor gamePad = findActor("gamePad");
+        gamePad.setVisible(isPreferedControlGamePad);
+
+        Button bombButton = findButton("bombButton");
+        bombButton.setVisible(true);
+
+        game.getAudioManager().playStartGame();
+
     }
 }

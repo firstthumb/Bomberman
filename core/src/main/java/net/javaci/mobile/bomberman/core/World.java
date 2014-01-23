@@ -761,7 +761,7 @@ public class World implements BombModel.BombListener {
         playerModel.setCaught(false);
         playerModel.decrementLifeCount();
         playerModel.setPosition(playerInitialPosition);
-
+        playerModel.setState(PlayerModel.State.STANDING_DOWN);
     }
 
     public PlayerModel getPlayerModel(String playerName) {

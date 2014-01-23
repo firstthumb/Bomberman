@@ -64,6 +64,8 @@ public class CommandFactory {
                     return ExplodeBombCommand.build(json);
                 case Command.CAUGHT_GHOST:
                     return GhostCaughtCommand.build(json);
+                case Command.START_GAME:
+                    return StartGameCommand.build(json);
             }
         } catch (JSONException e) {
             e.printStackTrace();
