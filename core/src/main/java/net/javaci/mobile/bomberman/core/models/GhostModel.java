@@ -1,8 +1,11 @@
 package net.javaci.mobile.bomberman.core.models;
 
+import java.util.List;
+
 public class GhostModel extends GameObjectModel {
     public interface GhostListener {
         public void onStop();
+        public void onCaught(List<String> players);
     }
 
     private GhostListener listener;

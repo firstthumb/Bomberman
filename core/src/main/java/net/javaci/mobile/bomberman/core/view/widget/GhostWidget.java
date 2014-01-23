@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import net.javaci.mobile.bomberman.core.models.GhostModel;
+import net.javaci.mobile.bomberman.core.util.Log;
 
 public class GhostWidget extends Actor {
 
@@ -28,7 +29,7 @@ public class GhostWidget extends Actor {
         frames[0] = atlas.findRegion(generateDeadImageName(ghostModel.getType().getValue(), 1));
         frames[1] = atlas.findRegion(generateDeadImageName(ghostModel.getType().getValue(), 2));
         frames[2] = atlas.findRegion(generateDeadImageName(ghostModel.getType().getValue(), 3));
-        deadAnimation = new Animation(0.15f, frames);
+        deadAnimation = new Animation(0.65f, frames);
     }
 
     private void prepareWalkAnimation(TextureAtlas atlas) {
@@ -66,7 +67,10 @@ public class GhostWidget extends Actor {
                 currentFrame = walkAnimation.getKeyFrame(elapsedTime, true);
                 break;
             case DEAD:
-                currentFrame = deadAnimation.getKeyFrame(elapsedTime, true);
+                currentFrame = deadAnimation.getKeyFrame(elapsedTime, false);
+                if (deadAnimation.isAnimationFinished(elapsedTime)) {
+                    this.remove();
+                }
                 break;
             default:
                 break;
@@ -74,7 +78,7 @@ public class GhostWidget extends Actor {
 
         batch.draw(
                 currentFrame,
-                ghostModel.getX() + (ghostModel.getWidth() - currentFrame.getRegionWidth()) * 0.5f,
-                ghostModel.getY() + (ghostModel.getHeight() - currentFrame.getRegionHeight()) * 0.5f);
+                ghostModel.getX() + Math.max((ghostModel.getWidth() - currentFrame.getRegionWidth()) * 0.5f, 0),
+                ghostModel.getY() + Math.max((ghostModel.getHeight() - currentFrame.getRegionHeight()) * 0.5f, 0), ghostModel.getWidth(), ghostModel.getHeight());
     }
 }

@@ -15,6 +15,7 @@ public abstract class Command {
     public static final int GAME_END = 8;
     public static final int DROP_BOMB = 9;
     public static final int EXPLODE_BOMB = 10;
+    public static final int CAUGHT_GHOST= 11;
     protected long timestamp;
     protected String fromUser;
     protected int command;

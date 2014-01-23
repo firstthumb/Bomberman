@@ -125,6 +125,23 @@ public class World implements BombModel.BombListener {
         else {
             stopGhost(ghostModel.getId());;
         }
+
+        if (ghostModel.getListener() != null) {
+            List<String> caughtPlayers = new ArrayList<String>();
+            for (PlayerModel playerModel : playerModels.values()) {
+                if (!playerModel.isCaught()) {
+                    Vector2 playerPosition = getPlayerGridPosition(playerModel.getPlayerName());
+                    if (playerPosition.x == ghostModel.getGridX() && playerPosition.y == ghostModel.getGridY()) {
+                        playerModel.setCaught(true);
+                        caughtPlayers.add(playerModel.getPlayerName());
+                    }
+                }
+            }
+
+            if (!caughtPlayers.isEmpty()) {
+                ghostModel.getListener().onCaught(caughtPlayers);
+            }
+        }
     }
 
     private void updatePlayerModel(PlayerModel playerModel, float deltaTime) {
@@ -336,6 +353,15 @@ public class World implements BombModel.BombListener {
         return true;
     }
 
+    private boolean existBombOnGrid(int gridX, int gridY) {
+        for (BombModel bombModel : bombList) {
+            if (bombModel.getGridX() == gridX && bombModel.getGridY() == gridY) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private boolean checkGhostCanMove(GhostModel ghostModel) {
         byte[][] grid = labyrinthModel.getGrid();
 
@@ -343,22 +369,22 @@ public class World implements BombModel.BombListener {
             case WALKING_UP: {
                 int gridX = getGridX(ghostModel.getOriginX());
                 int gridY = getGridY(ghostModel.getY() + ghostModel.getHeight() + 1);
-                return isGridPositionEmpty(grid, gridX, gridY);
+                return !existBombOnGrid(gridX, gridY) && isGridPositionEmpty(grid, gridX, gridY);
             }
             case WALKING_DOWN: {
                 int gridX = getGridX(ghostModel.getOriginX());
                 int gridY = getGridY(ghostModel.getY() - 1);
-                return isGridPositionEmpty(grid, gridX, gridY);
+                return !existBombOnGrid(gridX, gridY) && isGridPositionEmpty(grid, gridX, gridY);
             }
             case WALKING_RIGHT: {
                 int gridX = getGridX(ghostModel.getX() + ghostModel.getWidth() + 1);
                 int gridY = getGridY(ghostModel.getOriginY());
-                return isGridPositionEmpty(grid, gridX, gridY);
+                return !existBombOnGrid(gridX, gridY) && isGridPositionEmpty(grid, gridX, gridY);
             }
             case WALKING_LEFT:{
                 int gridX = getGridX(ghostModel.getX() - 1);
                 int gridY = getGridY(ghostModel.getOriginY());
-                return isGridPositionEmpty(grid, gridX, gridY);
+                return !existBombOnGrid(gridX, gridY) && isGridPositionEmpty(grid, gridX, gridY);
             }
         }
         return true;
@@ -440,6 +466,14 @@ public class World implements BombModel.BombListener {
         if (UserSession.getInstance().isServer()) {
             if (ghostModel.getListener() != null) {
                 ghostModel.getListener().onStop();
+            }
+        }
+    }
+
+    private void callGhostCaughtListener(GhostModel ghostModel, List<String> players) {
+        if (UserSession.getInstance().isServer()) {
+            if (ghostModel.getListener() != null) {
+                ghostModel.getListener().onCaught(players);
             }
         }
     }
@@ -558,7 +592,7 @@ public class World implements BombModel.BombListener {
 
     public BombModel  playerDroppedBomb(String username) {
         PlayerModel playerModel = playerModels.get(username);
-        BombModel bombModel = new BombModel(rand.nextInt());
+        BombModel bombModel = new BombModel(rand.nextInt(Integer.MAX_VALUE));
         bombModel.setWidth(this.gridWidth);
         bombModel.setHeight(this.gridHeight);
         bombModel.setOwner(username);
@@ -601,8 +635,30 @@ public class World implements BombModel.BombListener {
         return result;
     }
 
-    public List<BombModel> getBombList() {
-        return bombList;
+    public List<Integer> getExplodedGhosts(BombModel bombModel) {
+        List<Integer> result = new ArrayList<Integer>();
+        List<Vector2> explodedCells = calculateBombExplosionCells(bombModel);
+        if (explodedCells != null) {
+            for (Vector2 cell : explodedCells) {
+                for (GhostModel ghostModel : ghostModels.values()) {
+                    int ghostGridX = getGridX(ghostModel.getOriginX());
+                    int ghostGridY = getGridY(ghostModel.getOriginY());
+                    if ((int)cell.x == ghostGridX && (int)cell.y == ghostGridY) {
+                        result.add(ghostModel.getId());
+                        killGhost(ghostModel);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    public void killGhost(int ghostId) {
+        killGhost(ghostModels.get(ghostId));
+    }
+
+    private void killGhost(GhostModel ghostModel) {
+        ghostModel.setState(GhostModel.State.DEAD);
     }
 
     public List<Vector2> calculateBombExplosionCells(BombModel bombModel) {

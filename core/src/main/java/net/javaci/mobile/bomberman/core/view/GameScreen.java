@@ -80,6 +80,11 @@ public class GameScreen extends BomberManScreen {
                 public void onStop() {
                     gameServer.moveGhost(ghostModel.getId());
                 }
+
+                @Override
+                public void onCaught(List<String> players) {
+                    gameServer.caughtPlayer(ghostModel.getId(), players);
+                }
             });
             world.putGhostEmptyPlace(ghostModel);
             world.addGhostModel(ghostModel);
