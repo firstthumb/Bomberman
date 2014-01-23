@@ -20,6 +20,7 @@ import net.peakgames.libgdx.stagebuilder.core.AbstractGame;
 import sun.util.resources.LocaleNames_da;
 
 import java.util.List;
+import java.util.Random;
 
 public class LobbyScreen extends BomberManScreen {
     private static float PERIODIC_REQUEST_INTERVAL = 10;
@@ -195,9 +196,10 @@ public class LobbyScreen extends BomberManScreen {
 
     private void createNewGame() {
         displayLoadingWidget();
+        Random random = new Random(System.currentTimeMillis());
         // TODO : create random room name using player name
         processingJoinRoom = true;
-        game.getClient().createRoom(UserSession.getInstance().getUsername() + "_Room");
+        game.getClient().createRoom(UserSession.getInstance().getUsername() + "_Room_" + random.nextInt(1000));
     }
 
     private void joinGame(RoomModel model) {

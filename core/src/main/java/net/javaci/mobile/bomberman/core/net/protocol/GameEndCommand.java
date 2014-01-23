@@ -9,6 +9,11 @@ public class GameEndCommand extends Command {
     }
 
     private GameEndReason reason;
+
+    public String getWinner() {
+        return winner;
+    }
+
     private String winner;
 
     public static Command build(JSONObject json) {
@@ -41,6 +46,10 @@ public class GameEndCommand extends Command {
         if (this.winner != null) {
             json.put("winner", this.winner);
         }
+    }
+
+    public void setWinner(String winner) {
+        this.winner = winner;
     }
 
     @Override

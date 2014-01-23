@@ -555,11 +555,24 @@ public class GameScreen extends BomberManScreen {
 
     public void removePlayer(String playerName) {
         Actor bombermanWidget = stage.getRoot().findActor(playerName);
-        bombermanWidget.remove();
+        if (bombermanWidget != null) {
+            bombermanWidget.remove();
+        }
         world.removePlayer(playerName);
     }
 
     public void displayLostGamePopup() {
+        findActor("lostGamePopup").setVisible(true);
+    }
+
+    public void displayWinGamePopup() {
+        findActor("winGamePopup").setVisible(true);
+    }
+
+    public void onCurrentPlayerDead() {
+        isPreferedControlGamePad = true;
+        findActor("gamePad").setVisible(false);
+        findActor("bombButton").setVisible(false);
     }
 
     public static enum Direction {
@@ -589,10 +602,6 @@ public class GameScreen extends BomberManScreen {
 
     public void onDisconnected()  {
         findActor("disconnectPopup").setVisible(true);
-    }
-
-    public void onGameFinished() {
-        Log.d("Game finished");
     }
 
     @Override

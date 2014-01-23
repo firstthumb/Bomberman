@@ -20,25 +20,37 @@ import java.util.concurrent.TimeUnit;
 public class GameServer {
     private ScheduledExecutorService executorService;
 
-    private static int WAIT_MOVE_GHOST_IN_SECOND = 5;
+    private static int WAIT_MOVE_GHOST_IN_SECOND = 3;
     private static Map<Integer, GhostMovement> ghostMovements = new HashMap<Integer, GhostMovement>();
 
     static {
-        ghostMovements.put(0, new GhostMovement(GameScreen.Direction.DOWN, 8));
-        ghostMovements.put(1, new GhostMovement(GameScreen.Direction.LEFT, 6));
-        ghostMovements.put(2, new GhostMovement(GameScreen.Direction.UP, 2));
-        ghostMovements.put(3, new GhostMovement(GameScreen.Direction.LEFT, 7));
-        ghostMovements.put(4, new GhostMovement(GameScreen.Direction.RIGHT, 3));
-        ghostMovements.put(5, new GhostMovement(GameScreen.Direction.UP, 10));
-        ghostMovements.put(6, new GhostMovement(GameScreen.Direction.RIGHT, 11));
-        ghostMovements.put(7, new GhostMovement(GameScreen.Direction.LEFT, 5));
-        ghostMovements.put(8, new GhostMovement(GameScreen.Direction.UP, 4));
-        ghostMovements.put(9, new GhostMovement(GameScreen.Direction.DOWN, 7));
-        ghostMovements.put(10, new GhostMovement(GameScreen.Direction.LEFT, 8));
-        ghostMovements.put(11, new GhostMovement(GameScreen.Direction.RIGHT, 8));
-        ghostMovements.put(12, new GhostMovement(GameScreen.Direction.DOWN, 8));
-        ghostMovements.put(13, new GhostMovement(GameScreen.Direction.RIGHT, 6));
-        ghostMovements.put(14, new GhostMovement(GameScreen.Direction.DOWN, 4));
+        int count = 0;
+        for (int i=0; i<4; i++) {
+            switch (i) {
+                case 0:
+                    for (int j=1; j<10; j++) {
+                        ghostMovements.put(count++, new GhostMovement(GameScreen.Direction.UP, j));
+                    }
+                    break;
+                case 1:
+                    for (int j=1; j<10; j++) {
+                        ghostMovements.put(count++, new GhostMovement(GameScreen.Direction.DOWN, j));
+                    }
+                    break;
+                case 2:
+                    for (int j=1; j<10; j++) {
+                        ghostMovements.put(count++, new GhostMovement(GameScreen.Direction.RIGHT, j));
+                    }
+                    break;
+                case 3:
+                    for (int j=1; j<10; j++) {
+                        ghostMovements.put(count++, new GhostMovement(GameScreen.Direction.LEFT, j));
+                    }
+                    break;
+
+            }
+
+        }
     }
 
     private Random rand = new Random();
@@ -112,7 +124,7 @@ public class GameServer {
                     return;
                 }
 
-                int numTry = 3;
+                int numTry = 5;
                 GhostMovement movement;
                 do {
                     movement = getGhostMovement();

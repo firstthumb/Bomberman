@@ -122,12 +122,24 @@ public class BombermanWidget extends WidgetGroup {
             case STANDING_LEFT:
                 currentFrame = leftStand;
                 break;
+            case DEAD:
+                this.remove();
+                break;
             default:
                 break;
         }
+        /*
         batch.draw(
                 currentFrame,
                 playerModel.getX() + (playerModel.getWidth() - currentFrame.getRegionWidth()) * 0.5f,
                 playerModel.getY() + (playerModel.getHeight() - currentFrame.getRegionHeight()) * 0.5f);
+        */
+        batch.draw(
+                currentFrame,
+                playerModel.getX(),
+                playerModel.getY(),
+                playerModel.getWidth(),
+                playerModel.getHeight());
+
     }
 }

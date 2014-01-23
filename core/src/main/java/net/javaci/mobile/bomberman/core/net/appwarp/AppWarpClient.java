@@ -75,28 +75,28 @@ public class AppWarpClient implements NetworkInterface {
         warpClient.addNotificationListener(new NotifyListenerAdapter() {
             @Override
             public void onChatReceived(ChatEvent chatEvent) {
-                for (NetworkListener listener : networkListeners) {
+                for (NetworkListener listener : networkListeners.toArray(new NetworkListener[0])) {
                     listener.onMessageReceived(chatEvent.getSender(), chatEvent.getMessage());
                 }
             }
 
             @Override
             public void onUserJoinedRoom(RoomData roomData, String user) {
-                for (NetworkListener listener : networkListeners) {
+                for (NetworkListener listener : networkListeners.toArray(new NetworkListener[0])) {
                     listener.onPlayerJoinedRoom(createRoomModelFromRoomData(roomData), user);
                 }
             }
 
             @Override
             public void onUserLeftRoom(RoomData roomData, String user) {
-                for (NetworkListener listener : networkListeners) {
+                for (NetworkListener listener : networkListeners.toArray(new NetworkListener[0])) {
                     listener.onPlayerLeftRoom(createRoomModelFromRoomData(roomData), user);
                 }
             }
 
             @Override
             public void onPrivateChatReceived(String from, String message) {
-                for (NetworkListener listener : networkListeners) {
+                for (NetworkListener listener : networkListeners.toArray(new NetworkListener[0])) {
                     listener.onMessageReceived(from, message);
                 }
             }
@@ -110,12 +110,12 @@ public class AppWarpClient implements NetworkInterface {
                 if (roomEvent.getResult() == WarpResponseResultCode.SUCCESS) {
                     warpClient.subscribeRoom(roomEvent.getData().getId());
                     log("Successfuly joined room " + roomEvent.getData().getId());
-                    for (NetworkListener listener : networkListeners) {
+                    for (NetworkListener listener : networkListeners.toArray(new NetworkListener[0])) {
                         listener.onJoinRoomSuccess(roomEvent.getData().getId());
                     }
                 } else {
                     log("Failed to join room.");
-                    for (NetworkListener listener : networkListeners) {
+                    for (NetworkListener listener : networkListeners.toArray(new NetworkListener[0])) {
                         listener.onJoinRoomFailed();
                     }
                 }
@@ -124,7 +124,7 @@ public class AppWarpClient implements NetworkInterface {
             @Override
             public void onGetLiveRoomInfoDone(LiveRoomInfoEvent liveRoomInfoEvent) {
                 if (liveRoomInfoEvent.getResult() == WarpResponseResultCode.SUCCESS) {
-                    for (NetworkListener listener : networkListeners) {
+                    for (NetworkListener listener : networkListeners.toArray(new NetworkListener[0])) {
                         listener.onRoomInfoReceived(liveRoomInfoEvent.getJoinedUsers(), liveRoomInfoEvent.getCustomData());
                     }
                 } else {
@@ -147,11 +147,11 @@ public class AppWarpClient implements NetworkInterface {
                             rooms.add(room);
                         }
                     }
-                    for (NetworkListener listener : networkListeners) {
+                    for (NetworkListener listener : networkListeners.toArray(new NetworkListener[0])) {
                         listener.onRoomListReceived(rooms);
                     }
                 } else {
-                    for (NetworkListener listener : networkListeners) {
+                    for (NetworkListener listener : networkListeners.toArray(new NetworkListener[0])) {
                         listener.onRoomListRequestFailed();
                     }
                 }
@@ -162,11 +162,11 @@ public class AppWarpClient implements NetworkInterface {
                 if (roomEvent.getResult() == WarpResponseResultCode.SUCCESS) {
                     RoomModel roomModel = createRoomModelFromRoomData(roomEvent.getData());
                     log("Room created : " + roomModel);
-                    for (NetworkListener listener : networkListeners) {
+                    for (NetworkListener listener : networkListeners.toArray(new NetworkListener[0])) {
                         listener.onRoomCreated(roomModel);
                     }
                 } else {
-                    for (NetworkListener listener : networkListeners) {
+                    for (NetworkListener listener : networkListeners.toArray(new NetworkListener[0])) {
                         listener.onCreateRoomFailed();
                     }
                 }
@@ -175,11 +175,11 @@ public class AppWarpClient implements NetworkInterface {
             @Override
             public void onDeleteRoomDone(RoomEvent roomEvent) {
                 if (roomEvent.getResult() == WarpResponseResultCode.SUCCESS) {
-                    for (NetworkListener listener : networkListeners) {
+                    for (NetworkListener listener : networkListeners.toArray(new NetworkListener[0])) {
                         listener.onRoomDeleted(roomEvent.getData().getId());
                     }
                 } else {
-                    for (NetworkListener listener : networkListeners) {
+                    for (NetworkListener listener : networkListeners.toArray(new NetworkListener[0])) {
                         listener.onDeleteRoomFailed();
                     }
                 }
@@ -195,13 +195,13 @@ public class AppWarpClient implements NetworkInterface {
                 if (connectEvent.getResult() == WarpResponseResultCode.SUCCESS ||
                         connectEvent.getResult() == WarpResponseResultCode.BAD_REQUEST ||
                         connectEvent.getResult() == WarpResponseResultCode.SUCCESS_RECOVERED) {
-                    for (NetworkListener listener : networkListeners) {
+                    for (NetworkListener listener : networkListeners.toArray(new NetworkListener[0])) {
                         listener.onConnected();
                     }
                     log("Connection established.");
                 }
                 else {
-                    for (NetworkListener listener : networkListeners) {
+                    for (NetworkListener listener : networkListeners.toArray(new NetworkListener[0])) {
                         listener.onDisconnected();
                     }
                     log("Disconnected REASON : " + connectEvent.getResult());
@@ -210,7 +210,7 @@ public class AppWarpClient implements NetworkInterface {
 
             @Override
             public void onDisconnectDone(ConnectEvent connectEvent) {
-                for (NetworkListener listener : networkListeners) {
+                for (NetworkListener listener : networkListeners.toArray(new NetworkListener[0])) {
                     listener.onDisconnected();
                 }
                 log("Disconnected.");

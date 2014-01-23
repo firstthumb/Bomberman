@@ -57,7 +57,9 @@ public class World implements BombModel.BombListener {
 
     private void updatePlayerModels(float deltaTime) {
         for (PlayerModel playerModel : playerModels.values()) {
-            updatePlayerModel(playerModel, deltaTime);
+            if (playerModel.getState() != PlayerModel.State.DEAD) {
+                updatePlayerModel(playerModel, deltaTime);
+            }
         }
     }
 
@@ -329,25 +331,25 @@ public class World implements BombModel.BombListener {
             case STOPPING_UP:{
                 int gridX = getGridX(playerModel.getOriginX());
                 int gridY = getGridY(playerModel.getY() + playerModel.getHeight() + 1);
-                return isGridPositionEmpty(grid, gridX, gridY);
+                return !existBombOnGrid(gridX, gridY) && isGridPositionEmpty(grid, gridX, gridY);
             }
             case WALKING_DOWN:
             case STOPPING_DOWN:{
                 int gridX = getGridX(playerModel.getOriginX());
                 int gridY = getGridY(playerModel.getY() -  1);
-                return isGridPositionEmpty(grid, gridX, gridY);
+                return !existBombOnGrid(gridX, gridY) && isGridPositionEmpty(grid, gridX, gridY);
             }
             case WALKING_RIGHT:
             case STOPPING_RIGHT:{
                 int gridX = getGridX(playerModel.getX() + playerModel.getWidth() + 1);
                 int gridY = getGridY(playerModel.getOriginY());
-                return isGridPositionEmpty(grid, gridX, gridY);
+                return !existBombOnGrid(gridX, gridY) && isGridPositionEmpty(grid, gridX, gridY);
             }
             case WALKING_LEFT:
             case STOPPING_LEFT:{
                 int gridX = getGridX(playerModel.getX() - 1);
                 int gridY = getGridY(playerModel.getOriginY());
-                return isGridPositionEmpty(grid, gridX, gridY);
+                return !existBombOnGrid(gridX, gridY) && isGridPositionEmpty(grid, gridX, gridY);
             }
         }
         return true;
@@ -480,6 +482,14 @@ public class World implements BombModel.BombListener {
 
     public void movePlayer(String playerName, GameScreen.Direction direction) {
         PlayerModel player = playerModels.get(playerName);
+        if (playerName.equals(UserSession.getInstance().getUsername()) == false) {
+            if (player.getTargetGridX() >= 0 && player.getTargetGridY() >= 0) {
+                player.setX(getX(player.getTargetGridX()));
+                player.setY(getY(player.getTargetGridY()));
+                player.setTargetGridX(-1);
+                player.setTargetGridY(-1);
+            }
+        }
         if (playerName.equals(UserSession.getInstance().getUsername()) && isMoving(player)) {
             return;
         }
@@ -654,6 +664,11 @@ public class World implements BombModel.BombListener {
         return result;
     }
 
+    public void killPlayer(String playerName) {
+        playerModels.get(playerName).setState(PlayerModel.State.DEAD);
+        playerModels.get(playerName).setLifeCount(0);
+    }
+
     public void killGhost(int ghostId) {
         GhostModel model = ghostModels.get(ghostId);
         if (model != null) {
@@ -662,6 +677,9 @@ public class World implements BombModel.BombListener {
     }
 
     private void killGhost(GhostModel ghostModel) {
+        if (ghostModel == null) {
+            return;
+        }
         ghostModel.setState(GhostModel.State.DEAD);
         // TODO: removing immediately result in by pass DEAD animation of ghost
         ghostModels.remove(ghostModel.getId());
@@ -746,6 +764,7 @@ public class World implements BombModel.BombListener {
 
     public void removePlayer(String playerName) {
         this.playerModels.remove(playerName);
+
     }
 
     public int getNextGameIndex() {
@@ -758,8 +777,29 @@ public class World implements BombModel.BombListener {
         return max + 1;
     }
 
-    public Vector2 getVector() {
-        return vector;
+    public boolean isGameEnd() {
+        int playingUser = 0;
+        for (PlayerModel playerModel : playerModels.values()) {
+            if (playerModel.getState() != PlayerModel.State.DEAD) {
+                playingUser++;
+            }
+        }
+        return playingUser <= 1;
+    }
+
+    public String getWinnerName() {
+        for (PlayerModel playerModel : playerModels.values()) {
+            if (playerModel.getState() != PlayerModel.State.DEAD) {
+                return playerModel.getPlayerName();
+            }
+        }
+        return null;
+    }
+
+
+    public boolean canRespawn(String playerName) {
+        PlayerModel playerModel = playerModels.get(playerName);
+        return playerModel.getLifeCount() > 1;
     }
 
     public void respawnPlayerAndDecrementLife(String playerName, Vector2 playerInitialPosition) {
@@ -781,5 +821,16 @@ public class World implements BombModel.BombListener {
             }
         }
         return null;
+    }
+
+    public boolean canUserDropBomb(String username, int maxBomb) {
+        int bombCount = 0;
+        for (BombModel bombModel : bombList) {
+            if (bombModel.getOwner().equals(username)) {
+                bombCount++;
+            }
+        }
+
+        return bombCount<maxBomb;
     }
 }
