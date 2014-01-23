@@ -9,11 +9,11 @@
 
     <net.javaci.mobile.bomberman.core.view.widget.GameListWidgetConfig
             name="gameListPanelWidgetConfiguration"
-            x="100"
+            x="200"
             y="80"
             width="460"
             height="240"
-            rowHeight="30"
+            rowHeight="80"
             rowWidth="460"/>
 
     <textButton name="createButton" atlas="Common.atlas" text="Create Game"  x="280" y="25" frameUp="btnEmpty" frameDown="btnEmpty_H" fontName="pixelfont_26.fnt" fontColor="FFFFFF"/>

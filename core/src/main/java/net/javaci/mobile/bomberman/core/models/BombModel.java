@@ -21,6 +21,7 @@ public class BombModel extends GameObjectModel {
     private int id;
     private int gridX;
     private int gridY;
+    private boolean activated;
 
     public BombModel(int id) {
         this.id = id;
@@ -80,6 +81,14 @@ public class BombModel extends GameObjectModel {
 
     public int getId() {
         return id;
+    }
+
+    public boolean isActivated() {
+        return activated;
+    }
+
+    public void setActivated(boolean activated) {
+        this.activated = activated;
     }
 
     @Override

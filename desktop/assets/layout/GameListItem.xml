@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <group>
 
-    <label name="roomName" text="" x="80" y="23" align="left" fontName="pixelfont_26.fnt" fontColor="FFFFFF"/>
+    <label name="roomName" text="" x="150" y="40" align="left" fontName="pixelfont_26.fnt" fontColor="FFFFFF"/>
 
-    <textButton name="joinGameButton" atlas="Common.atlas" x="50" y="13" frameUp="join" frameDown="join" fontName="26pt.fnt" fontColor="000000"/>
+    <textButton name="joinGameButton" atlas="Common.atlas" text="JOIN" x="0" y="13" frameUp="blueButton" frameDown="blueButtonH" fontName="pixelfont_26.fnt" fontColor="000000"/>
 </group>

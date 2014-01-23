@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class CommandFactory {
-    private static Set<String> receivedCommands = new HashSet<String>();
+    private Set<String> receivedCommands = new HashSet<String>();
 
     private Map<Integer, Map<Integer, String>> messsages = new HashMap<Integer, Map<Integer, String>>();
 

@@ -383,7 +383,6 @@ public class GameScreen extends BomberManScreen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 gameScreenMediator.onBombButtonClicked();
-                game.getAudioManager().dropBomb();
             }
         });
     }
@@ -470,7 +469,11 @@ public class GameScreen extends BomberManScreen {
         if (UserSession.getInstance().getUsername().equals(username)) {
             gameScreenMediator.move(direction);
         }
-        world.movePlayer(username, direction);
+        world.movePlayer(username, direction, -1, -1);
+    }
+
+    public void onMoveStart(String username, Direction direction, int gridX, int gridY) {
+        world.movePlayer(username, direction, gridX, gridY);
     }
 
     public void onMoveEnd(String username, Direction direction) {

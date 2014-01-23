@@ -308,7 +308,6 @@ public class GameScreenMediator extends BomberManMediator {
     }
 
     public void onBombButtonClicked() {
-        //TODO check if player can drop bomb.
         if (gameScreen.getWorld().canUserDropBomb(UserSession.getInstance().getUsername(), gameModel.numBomb)) {
             BombModel bombModel = gameScreen.getWorld().playerDroppedBomb(UserSession.getInstance().getUsername());
             bombModel.addBombListener(new BombModel.BombListener() {
@@ -327,6 +326,7 @@ public class GameScreenMediator extends BomberManMediator {
             dropBombCommand.setGridY(bombModel.getGridY());
             game.getClient().sendMessage(dropBombCommand.serialize());
             gameScreen.addBombToScreen(bombModel);
+            game.getAudioManager().dropBomb();
         }
     }
 
