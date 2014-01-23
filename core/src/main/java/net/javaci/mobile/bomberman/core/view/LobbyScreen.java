@@ -46,6 +46,27 @@ public class LobbyScreen extends BomberManScreen {
                 createNewGame();
             }
         });
+        (((Group)findActor("connectionErrorPopup")).findActor("reconnectButton")).addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                displayLoadingWidget();
+                game.getClient().connect();
+                Group popup = (Group) findActor("connectionErrorPopup");
+                if (popup != null) {
+                    popup.setVisible(false);
+                }
+            }
+        });
+        (((Group)findActor("joinRoomFailedPopup")).findActor("okButton")).addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                displayLoadingWidget();
+                Group popup = (Group) findActor("joinRoomFailedPopup");
+                if (popup != null) {
+                    popup.setVisible(false);
+                }
+            }
+        });
         initializeGameList();
         networkListenerAdapter = new NetworkListenerAdapter() {
             @Override
@@ -57,8 +78,8 @@ public class LobbyScreen extends BomberManScreen {
 
             @Override
             public void onDisconnected() {
-                Log.d("Disconnected");
                 removeLoadingWidget();
+                onConnectionError();
             }
 
             @Override
@@ -85,6 +106,7 @@ public class LobbyScreen extends BomberManScreen {
                 Log.d("Failed to join room");
                 UserSession.getInstance().setRoom(null);
                 removeLoadingWidget();
+                LobbyScreen.this.onJoinRoomFailed();
             }
 
             @Override
@@ -194,5 +216,19 @@ public class LobbyScreen extends BomberManScreen {
 
     public void updateUserInfo() {
         ((Label)findActor("usernameLabel")).setText(UserSession.getInstance().getUsername());
+    }
+
+    public void onConnectionError() {
+        Group popup = (Group) findActor("connectionErrorPopup");
+        if (popup != null) {
+            popup.setVisible(true);
+        }
+    }
+
+    public void onJoinRoomFailed() {
+        Group popup = (Group) findActor("joinRoomFailedPopup");
+        if (popup != null) {
+            popup.setVisible(true);
+        }
     }
 }
