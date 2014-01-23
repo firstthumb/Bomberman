@@ -3,6 +3,7 @@ package net.javaci.mobile.bomberman.core.mediator;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import net.javaci.mobile.bomberman.core.BomberManGame;
+import net.javaci.mobile.bomberman.core.GameFactory;
 import net.javaci.mobile.bomberman.core.models.BombModel;
 import net.javaci.mobile.bomberman.core.models.PlayerModel;
 import net.javaci.mobile.bomberman.core.net.NetworkInterface;
@@ -24,11 +25,13 @@ public class GameScreenMediator extends BomberManMediator {
     private NetworkListenerAdapter networkListenerAdapter;
     private CommandFactory commandFactory = new CommandFactory();
     private GameScreen gameScreen;
+    private GameFactory.GameModel gameModel;
     private RoomModel room;
     private int level = 1;
 
     public GameScreenMediator(BomberManGame game, NetworkInterface networkInterface) {
         super(game);
+        this.gameModel = GameFactory.getGameModel(getLevel());
         this.networkInterface = networkInterface;
         this.networkListenerAdapter = new NetworkListenerAdapter() {
             @Override
@@ -266,23 +269,25 @@ public class GameScreenMediator extends BomberManMediator {
 
     public void onBombButtonClicked() {
         //TODO check if player can drop bomb.
-        BombModel bombModel = gameScreen.getWorld().playerDroppedBomb(UserSession.getInstance().getUsername());
-        bombModel.addBombListener(new BombModel.BombListener() {
-            @Override
-            public void onBombExploded(BombModel bombModel) {
-                if (UserSession.getInstance().isServer()) {
-                    gameServer.sendBombExplosion(bombModel, gameScreen.getWorld());
+        if (gameScreen.getWorld().canUserDropBomb(UserSession.getInstance().getUsername(), gameModel.numBomb)) {
+            BombModel bombModel = gameScreen.getWorld().playerDroppedBomb(UserSession.getInstance().getUsername());
+            bombModel.addBombListener(new BombModel.BombListener() {
+                @Override
+                public void onBombExploded(BombModel bombModel) {
+                    if (UserSession.getInstance().isServer()) {
+                        gameServer.sendBombExplosion(bombModel, gameScreen.getWorld());
+                    }
+                    gameScreen.renderBombExplosion(bombModel);
                 }
-                gameScreen.renderBombExplosion(bombModel);
-            }
-        });
-        DropBombCommand dropBombCommand = new DropBombCommand();
-        dropBombCommand.setFromUser(UserSession.getInstance().getUsername());
-        dropBombCommand.setId(bombModel.getId());
-        dropBombCommand.setGridX(bombModel.getGridX());
-        dropBombCommand.setGridY(bombModel.getGridY());
-        game.getClient().sendMessage(dropBombCommand.serialize());
-        gameScreen.addBombToScreen(bombModel);
+            });
+            DropBombCommand dropBombCommand = new DropBombCommand();
+            dropBombCommand.setFromUser(UserSession.getInstance().getUsername());
+            dropBombCommand.setId(bombModel.getId());
+            dropBombCommand.setGridX(bombModel.getGridX());
+            dropBombCommand.setGridY(bombModel.getGridY());
+            game.getClient().sendMessage(dropBombCommand.serialize());
+            gameScreen.addBombToScreen(bombModel);
+        }
     }
 
     public void onPlayerLeftRoom(String playerName) {

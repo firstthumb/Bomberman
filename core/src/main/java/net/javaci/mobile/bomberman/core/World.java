@@ -329,25 +329,25 @@ public class World implements BombModel.BombListener {
             case STOPPING_UP:{
                 int gridX = getGridX(playerModel.getOriginX());
                 int gridY = getGridY(playerModel.getY() + playerModel.getHeight() + 1);
-                return isGridPositionEmpty(grid, gridX, gridY);
+                return !existBombOnGrid(gridX, gridY) && isGridPositionEmpty(grid, gridX, gridY);
             }
             case WALKING_DOWN:
             case STOPPING_DOWN:{
                 int gridX = getGridX(playerModel.getOriginX());
                 int gridY = getGridY(playerModel.getY() -  1);
-                return isGridPositionEmpty(grid, gridX, gridY);
+                return !existBombOnGrid(gridX, gridY) && isGridPositionEmpty(grid, gridX, gridY);
             }
             case WALKING_RIGHT:
             case STOPPING_RIGHT:{
                 int gridX = getGridX(playerModel.getX() + playerModel.getWidth() + 1);
                 int gridY = getGridY(playerModel.getOriginY());
-                return isGridPositionEmpty(grid, gridX, gridY);
+                return !existBombOnGrid(gridX, gridY) && isGridPositionEmpty(grid, gridX, gridY);
             }
             case WALKING_LEFT:
             case STOPPING_LEFT:{
                 int gridX = getGridX(playerModel.getX() - 1);
                 int gridY = getGridY(playerModel.getOriginY());
-                return isGridPositionEmpty(grid, gridX, gridY);
+                return !existBombOnGrid(gridX, gridY) && isGridPositionEmpty(grid, gridX, gridY);
             }
         }
         return true;
@@ -755,10 +755,6 @@ public class World implements BombModel.BombListener {
         return max + 1;
     }
 
-    public Vector2 getVector() {
-        return vector;
-    }
-
     public void respawnPlayerAndDecrementLife(String playerName, Vector2 playerInitialPosition) {
         PlayerModel playerModel = playerModels.get(playerName);
         playerModel.setCaught(false);
@@ -778,5 +774,16 @@ public class World implements BombModel.BombListener {
             }
         }
         return null;
+    }
+
+    public boolean canUserDropBomb(String username, int maxBomb) {
+        int bombCount = 0;
+        for (BombModel bombModel : bombList) {
+            if (bombModel.getOwner().equals(username)) {
+                bombCount++;
+            }
+        }
+
+        return bombCount<maxBomb;
     }
 }

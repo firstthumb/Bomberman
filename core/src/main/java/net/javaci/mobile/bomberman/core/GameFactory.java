@@ -7,6 +7,7 @@ public class GameFactory {
     public static class GameModel {
         public int numGhosts;
         public int numBricks;
+        public int numBomb;
     }
 
     private static Map<Integer, GameModel> gameModels = new HashMap<Integer, GameModel>();
@@ -15,6 +16,7 @@ public class GameFactory {
         GameModel level1 = new GameModel();
         level1.numGhosts = 3;
         level1.numBricks = 50;
+        level1.numBomb = 2;
         gameModels.put(1, level1);
     }
 
