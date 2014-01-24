@@ -30,6 +30,7 @@ public class LobbyScreen extends BomberManScreen {
     private LobbyScreenMediator lobbyScreenMediator;
     private float periodicRequestTimeCounter = 0;
     private boolean processingJoinRoom = false;
+    private int numOnline = 38904;
 
     public LobbyScreen(AbstractGame game, BomberManMediator mediator) {
         super(game, mediator);
@@ -171,6 +172,12 @@ public class LobbyScreen extends BomberManScreen {
         if(!processingJoinRoom && periodicRequestTimeCounter >= PERIODIC_REQUEST_INTERVAL) {
             game.getClient().listRooms();
             periodicRequestTimeCounter = 0;
+
+            Random random = new Random(System.currentTimeMillis());
+
+            Label label = findLabel("onlineUserLabel");
+            this.numOnline += random.nextInt(10);
+            label.setText(numOnline + " online");
         }
     }
 

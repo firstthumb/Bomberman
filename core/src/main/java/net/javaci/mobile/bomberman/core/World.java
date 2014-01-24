@@ -184,8 +184,10 @@ public class World implements BombModel.BombListener {
                     int ghostGridX = getGridX(ghostModel.getOriginX());
                     int ghostGridY = getGridY(ghostModel.getOriginY());
                     if (gridX == ghostGridX && gridY == ghostGridY) {
-                        playerModel.setCaught(true);
-                        caughtPlayers.add(playerModel.getPlayerName());
+                        if (playerModel.isImmortal() == false) {
+                            playerModel.setCaught(true);
+                            caughtPlayers.add(playerModel.getPlayerName());
+                        }
                     }
                 }
             }
@@ -197,6 +199,9 @@ public class World implements BombModel.BombListener {
     }
 
     private void updatePlayerModel(PlayerModel playerModel, float deltaTime) {
+        if (playerModel.isImmortal()) {
+            playerModel.decrementImmortalDuration(deltaTime);
+        }
         float x = playerModel.getX();
         float y = playerModel.getY();
         float speed = playerModel.getSpeed() * resolutionHelper.getSizeMultiplier();
@@ -713,6 +718,9 @@ public class World implements BombModel.BombListener {
         if (explodedCells != null) {
             for (Vector2 cell : explodedCells) {
                 for (PlayerModel playerModel : playerModels.values()) {
+                    if (playerModel.isImmortal()) {
+                        continue;
+                    }
                     int playerGridX = getGridX(playerModel.getOriginX());
                     int playerGridY = getGridY(playerModel.getOriginY());
                     if ((int)cell.x == playerGridX && (int)cell.y == playerGridY) {
@@ -884,6 +892,7 @@ public class World implements BombModel.BombListener {
     public void respawnPlayerAndDecrementLife(String playerName, Vector2 playerInitialPosition) {
         PlayerModel playerModel = playerModels.get(playerName);
         playerModel.setCaught(false);
+        playerModel.resetImmortalDuration();
         playerModel.decrementLifeCount();
         playerModel.setPosition(playerInitialPosition);
         playerModel.setState(PlayerModel.State.STANDING_DOWN);

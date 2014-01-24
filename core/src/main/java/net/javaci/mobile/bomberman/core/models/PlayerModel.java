@@ -13,6 +13,7 @@ public class PlayerModel extends GameObjectModel {
     private boolean caught;
     private int lifeCount = 3;
     private StateChangeListener stateChangeListener;
+    private float immortalDuration = 5;
 
     public void setStateChangeListener(StateChangeListener stateChangeListener) {
         this.stateChangeListener = stateChangeListener;
@@ -120,5 +121,17 @@ public class PlayerModel extends GameObjectModel {
 
     public static interface StateChangeListener {
         public void onStateChange(State newState);
+    }
+
+    public void decrementImmortalDuration(float d) {
+        this.immortalDuration -= d;
+    }
+
+    public void resetImmortalDuration() {
+        this.immortalDuration = 5;
+    }
+
+    public boolean isImmortal() {
+        return this.immortalDuration > 0;
     }
 }

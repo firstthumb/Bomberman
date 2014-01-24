@@ -5,7 +5,7 @@
     <image name="background" atlas="Common.atlas" x="200" y="330" frame="background" />
 
     <label name="usernameLabel" text="" x="50" y="450" align="left" fontName="pixelfont_26.fnt" fontColor="FFFFFF"/>
-    <label name="onlineUserLabel" text="5 online" x="50" y="50" align="left" fontName="pixelfont_26.fnt" fontColor="FFFFFF"/>
+    <label name="onlineUserLabel" text="39801 online" x="50" y="50" align="left" fontName="pixelfont_26.fnt" fontColor="FFFFFF"/>
 
     <net.javaci.mobile.bomberman.core.view.widget.GameListWidgetConfig
             name="gameListPanelWidgetConfiguration"
@@ -28,12 +28,5 @@
         <image name="panelBackground" atlas="Common.atlas" frame="panelBackground"  x="0" y="0" width="400" height="260" ninepatch="true" ninepatchOffset="6"/>
         <label name="title" text="Join Room Failed" x="0" y="200" width="400" align="center" fontName="pixelfont_26.fnt" fontColor="000000" wrap="true"/>
         <textButton name="okButton" atlas="Common.atlas" text="OK" x="104" y="20" frameUp="btnEmpty" frameDown="btnEmpty_H" fontName="pixelfont_26.fnt" fontColor="FFFFFF"/>
-    </group>
-
-    <group name="gamePad" x="0" y="0">
-        <button name="gamePadUpButton" x="50" y="85" atlas="Common.atlas" frameUp="gamePadUp" frameDown="gamePadUpH"/>
-        <button name="gamePadDownButton" x="50" y="0" atlas="Common.atlas" frameUp="gamePadDown" frameDown="gamePadDownH"/>
-        <button name="gamePadRightButton" x="85" y="50" atlas="Common.atlas" frameUp="gamePadRight" frameDown="gamePadRightH"/>
-        <button name="gamePadLeftButton" x="0" y="50" atlas="Common.atlas" frameUp="gamePadLeft" frameDown="gamePadLeftH"/>
     </group>
 </group>
