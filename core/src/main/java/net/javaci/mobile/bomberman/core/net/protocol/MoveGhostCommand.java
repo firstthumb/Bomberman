@@ -6,6 +6,8 @@ import org.json.JSONObject;
 public class MoveGhostCommand extends Command {
     private String direction;
     private int id;
+    private int startGridX;
+    private int startGridY;
     private int gridX;
     private int gridY;
     private int distance;
@@ -17,6 +19,8 @@ public class MoveGhostCommand extends Command {
             command.direction = json.getString("direction");
             command.gridX = json.getInt("gridX");
             command.gridY = json.getInt("gridY");
+            command.startGridX = json.getInt("startGridX");
+            command.startGridY = json.getInt("startGridY");
             command.distance = json.getInt("distance");
             command.id = json.getInt("id");
         } catch (JSONException e) {
@@ -67,11 +71,29 @@ public class MoveGhostCommand extends Command {
         this.id = id;
     }
 
+    public int getStartGridX() {
+        return startGridX;
+    }
+
+    public void setStartGridX(int startGridX) {
+        this.startGridX = startGridX;
+    }
+
+    public int getStartGridY() {
+        return startGridY;
+    }
+
+    public void setStartGridY(int startGridY) {
+        this.startGridY = startGridY;
+    }
+
     @Override
     protected void serializeCustomFields(JSONObject json) throws JSONException {
         json.put("id", id);
         json.put("gridX", gridX);
         json.put("gridY", gridY);
+        json.put("startGridX", startGridX);
+        json.put("startGridY", startGridY);
         json.put("direction", direction);
         json.put("distance", distance);
     }

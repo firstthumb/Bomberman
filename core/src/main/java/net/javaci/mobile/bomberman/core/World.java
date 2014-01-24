@@ -470,6 +470,17 @@ public class World implements BombModel.BombListener {
         return (int) ((y - resolutionHelper.getGameAreaPosition().y) / gridHeight);
     }
 
+    public void setPositionGhostOnGrid(int ghostId, int gridX, int gridY) {
+        GhostModel model = ghostModels.get(ghostId);
+        if (model == null) {
+            Log.e("Cannot find Ghost Model : " + ghostId);
+            return;
+        }
+
+        model.setX(getX(gridX));
+        model.setY(getY(gridY));
+    }
+
     public void moveGhost(int ghostId, int gridX, int gridY, GameScreen.Direction direction, int distance) {
         GhostModel model = ghostModels.get(ghostId);
         if (model == null) {

@@ -156,6 +156,8 @@ public class GameServer {
                 MoveGhostCommand command = new MoveGhostCommand();
                 command.setFromUser(UserSession.getInstance().getUsername());
                 command.setId(ghostId);
+                command.setStartGridX(world.getGridX(ghostModel.getOriginX()));
+                command.setStartGridY(world.getGridY(ghostModel.getOriginY()));
                 command.setGridX(ghostModel.getGridX());
                 command.setGridY(ghostModel.getGridY());
                 command.setDirection(movement.getDirection().toString());

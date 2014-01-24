@@ -250,6 +250,7 @@ public class GameScreenMediator extends BomberManMediator {
     }
 
     private void handleMoveGhostCommand(MoveGhostCommand command) {
+        gameScreen.getWorld().setPositionGhostOnGrid(command.getId(), command.getStartGridX(), command.getStartGridY());
         gameScreen.onMoveGhost(command.getId(), command.getGridX(), command.getGridY(), command.getDirection(), command.getDistance());
     }
 
