@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.sun.org.apache.xpath.internal.axes.IteratorPool;
 import net.javaci.mobile.bomberman.core.GameFactory;
 import net.javaci.mobile.bomberman.core.World;
 import net.javaci.mobile.bomberman.core.mediator.BomberManMediator;
@@ -577,6 +579,21 @@ public class GameScreen extends BomberManScreen {
         isPreferedControlGamePad = true;
         findActor("gamePad").setVisible(false);
         findActor("bombButton").setVisible(false);
+    }
+
+    public void displayRipImage(PlayerModel playerModel) {
+        Image rip = findImage("rip" + playerModel.getGameIndex());
+        rip.setVisible(true);
+        rip.setOrigin(rip.getWidth() * .5f, rip.getHeight() * .05f);
+        rip.setPosition(
+                playerModel.getX() - getStageBuilder().getResolutionHelper().getGameAreaPosition().x,
+                playerModel.getY()-getStageBuilder().getResolutionHelper().getGameAreaPosition().y);
+        rip.addAction(Actions.sequence(
+                Actions.delay(2),
+                Actions.scaleTo(0, 0, 1, Interpolation.elasticIn),
+                Actions.visible(false),
+                Actions.scaleTo(1, 1)
+        ));
     }
 
     public static enum Direction {
