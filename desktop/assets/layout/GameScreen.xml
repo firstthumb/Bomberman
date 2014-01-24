@@ -2,6 +2,7 @@
 <group>
 
     <group name="labyrinth"></group>
+    <image name="sunshine" atlas="Common.atlas" frame="sunshine"  x="0" y="0" visible="false" />
     <group name="gameObjectsGroup"></group>
 
     <button name="settingsButton" atlas="Common.atlas" x="0" y="0"  frameUp="settingIcon" frameDown="settingIconH" visible="false"/>

@@ -29,4 +29,11 @@
         <label name="title" text="Join Room Failed" x="0" y="200" width="400" align="center" fontName="pixelfont_26.fnt" fontColor="000000" wrap="true"/>
         <textButton name="okButton" atlas="Common.atlas" text="OK" x="104" y="20" frameUp="btnEmpty" frameDown="btnEmpty_H" fontName="pixelfont_26.fnt" fontColor="FFFFFF"/>
     </group>
+
+    <group name="gamePad" x="0" y="0">
+        <button name="gamePadUpButton" x="50" y="85" atlas="Common.atlas" frameUp="gamePadUp" frameDown="gamePadUpH"/>
+        <button name="gamePadDownButton" x="50" y="0" atlas="Common.atlas" frameUp="gamePadDown" frameDown="gamePadDownH"/>
+        <button name="gamePadRightButton" x="85" y="50" atlas="Common.atlas" frameUp="gamePadRight" frameDown="gamePadRightH"/>
+        <button name="gamePadLeftButton" x="0" y="50" atlas="Common.atlas" frameUp="gamePadLeft" frameDown="gamePadLeftH"/>
+    </group>
 </group>

@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -641,5 +642,34 @@ public class GameScreen extends BomberManScreen {
 
         game.getAudioManager().playStartGame();
 
+        displayMyPlayerIndicator();
+    }
+
+    private void displayMyPlayerIndicator() {
+        PlayerModel me = world.getPlayerModel(UserSession.getInstance().getUsername());
+        Vector2 playerPos = new Vector2();
+        switch (me.getGameIndex()) {
+            case 1:
+                playerPos = labyrinthWidget.getWallPosition(1, 1);
+                break;
+            case 2:
+                playerPos = labyrinthWidget.getWallPosition(19, 1);
+                break;
+            case 3:
+                playerPos = labyrinthWidget.getWallPosition(19, 11);
+                break;
+            case 4:
+                playerPos = labyrinthWidget.getWallPosition(1, 11);
+                break;
+        }
+        Image sunshine = findImage("sunshine");
+        playerPos.sub(sunshine.getWidth()*.5f - world.getGridWidth()*0.5f, sunshine.getHeight()*0.5f - world.getGridHeight() * 0.5f);
+        sunshine.setPosition(playerPos.x, playerPos.y);
+        sunshine.setVisible(true);
+        sunshine.setOrigin(sunshine.getWidth() * 0.5f, sunshine.getHeight() * 0.5f);
+        sunshine.addAction(Actions.parallel(
+                Actions.forever(Actions.rotateBy(120, 1)),
+                Actions.sequence(Actions.delay(5), Actions.removeActor())
+        ));
     }
 }
