@@ -10,6 +10,7 @@ import net.javaci.mobile.bomberman.core.net.NetworkInterface;
 import net.javaci.mobile.bomberman.core.net.NetworkListenerAdapter;
 import net.javaci.mobile.bomberman.core.net.protocol.*;
 import net.javaci.mobile.bomberman.core.session.UserSession;
+import net.javaci.mobile.bomberman.core.util.Log;
 import net.javaci.mobile.bomberman.core.view.GameScreen;
 
 import java.util.*;
@@ -19,6 +20,8 @@ import java.util.concurrent.TimeUnit;
 
 public class GameServer {
     private ScheduledExecutorService executorService;
+    private boolean isGameStarted = false;
+    private boolean isDisposed = false;
 
     private static int WAIT_MOVE_GHOST_IN_SECOND = 3;
     private static Map<Integer, GhostMovement> ghostMovements = new HashMap<Integer, GhostMovement>();
@@ -86,6 +89,22 @@ public class GameServer {
 
         GameFactory.GameModel gameModel = GameFactory.getGameModel(gameScreenMediator.getLevel());
         executorService = Executors.newScheduledThreadPool(gameModel.numGhosts);
+        executorService.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                if (!isDisposed && isGameStarted) {
+                    int waitingGhosts = 0;
+                    for (GhostModel ghostModel : GameServer.this.world.getGhostModels().values().toArray(new GhostModel[0])) {
+                        Log.d("Ghost State : " + ghostModel.getState());
+                        if (ghostModel.getState() == GhostModel.State.STANDING_DOWN || ghostModel.getState() == GhostModel.State.STANDING_UP || ghostModel.getState() == GhostModel.State.STANDING_LEFT || ghostModel.getState() == GhostModel.State.STANDING_RIGHT) {
+                            waitingGhosts++;
+                            moveGhost(ghostModel.getId());
+                        }
+                    }
+                    Log.d("Total Waiting Ghosts : " + waitingGhosts);
+                }
+            }
+        }, WAIT_MOVE_GHOST_IN_SECOND, WAIT_MOVE_GHOST_IN_SECOND, TimeUnit.SECONDS);
     }
 
     private void handleStartMoveCommand(MoveCommand command) {
@@ -100,6 +119,8 @@ public class GameServer {
         for (GhostModel ghostModel : world.getGhostModels().values()) {
             moveGhost(ghostModel.getId());
         }
+
+        isGameStarted = true;
     }
 
     public void createGame() {
@@ -124,7 +145,7 @@ public class GameServer {
                     return;
                 }
 
-                int numTry = 5;
+                int numTry = 3;
                 GhostMovement movement;
                 do {
                     movement = getGhostMovement();
@@ -167,5 +188,12 @@ public class GameServer {
         ghostCaughtCommand.setId(ghostId);
         ghostCaughtCommand.setCaughtPlayers(players);
         networkInterface.sendMessage(ghostCaughtCommand.serialize());
+    }
+
+    public void dispose() {
+        isDisposed = true;
+        if (executorService != null) {
+            executorService.shutdown();
+        }
     }
 }

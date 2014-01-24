@@ -302,9 +302,11 @@ public class GameScreenMediator extends BomberManMediator {
         moveEndCommand.setDirection(direction.toString());
         moveEndCommand.setFromUser(UserSession.getInstance().getUsername());
         Vector2 targetPosition = gameScreen.getWorld().getTargetGridPosition(UserSession.getInstance().getUsername());
-        moveEndCommand.setGridX((int)targetPosition.x);
-        moveEndCommand.setGridY((int)targetPosition.y);
-        networkInterface.sendMessage(moveEndCommand.serialize());
+        if (targetPosition != null) {
+            moveEndCommand.setGridX((int)targetPosition.x);
+            moveEndCommand.setGridY((int)targetPosition.y);
+            networkInterface.sendMessage(moveEndCommand.serialize());
+        }
     }
 
     public void onBombButtonClicked() {

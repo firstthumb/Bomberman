@@ -14,7 +14,7 @@ public class GameFactory {
 
     static {
         GameModel level1 = new GameModel();
-        level1.numGhosts = 3;
+        level1.numGhosts = 8;
         level1.numBricks = 50;
         level1.numBomb = 2;
         gameModels.put(1, level1);

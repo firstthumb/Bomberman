@@ -610,6 +610,7 @@ public class GameScreen extends BomberManScreen {
     @Override
     public void dispose() {
         super.dispose();
+        gameServer.dispose();
         if (gameScreenMediator.getNetworkListenerAdapter() != null) {
             game.getClient().removeNetworkListener(gameScreenMediator.getNetworkListenerAdapter());
         }

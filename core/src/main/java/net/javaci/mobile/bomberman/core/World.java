@@ -24,6 +24,7 @@ public class World implements BombModel.BombListener {
     private float gridWidth;
     private float gridHeight;
     private Vector2 vector = new Vector2(0, 0);
+    private static int BOMB_ACTIVATION_TIME = 1;
 
 
     public void initialize(LabyrinthModel labyrinthModel, ResolutionHelper resolutionHelper, AssetsInterface assets) {
@@ -50,6 +51,10 @@ public class World implements BombModel.BombListener {
                 if (playerModel != null) {
                     if (Math.abs(getGridX(playerModel.getOriginX()) - bomb.getGridX()) > 1 || Math.abs(getGridY(playerModel.getOriginY()) - bomb.getGridY()) > 1) {
                         Log.d("Bomb activated");
+                        bomb.setActivated(true);
+                    }
+                    bomb.setActivationTime(bomb.getActivationTime() + deltaTime);
+                    if (bomb.getActivationTime() > BOMB_ACTIVATION_TIME) {
                         bomb.setActivated(true);
                     }
                 }
@@ -118,6 +123,9 @@ public class World implements BombModel.BombListener {
                         }
                         ghostModel.setY(ghostModel.getY() + distance);
                     }
+                    else {
+                        stopGhost(ghostModel.getId());
+                    }
                     break;
                 case WALKING_DOWN:
                     if (ghostModel.getTargetGridY() >= 0) {
@@ -128,6 +136,9 @@ public class World implements BombModel.BombListener {
                             stopGhost(ghostModel.getId());
                         }
                         ghostModel.setY(ghostModel.getY() - distance);
+                    }
+                    else {
+                        stopGhost(ghostModel.getId());
                     }
                     break;
                 case WALKING_RIGHT:
@@ -140,6 +151,9 @@ public class World implements BombModel.BombListener {
                         }
                         ghostModel.setX(ghostModel.getX() + distance);
                     }
+                    else {
+                        stopGhost(ghostModel.getId());
+                    }
                     break;
                 case WALKING_LEFT:
                     if (ghostModel.getTargetGridX() >= 0) {
@@ -151,11 +165,14 @@ public class World implements BombModel.BombListener {
                         }
                         ghostModel.setX(ghostModel.getX() - distance);
                     }
+                    else {
+                        stopGhost(ghostModel.getId());
+                    }
                     break;
             }
         }
         else {
-            stopGhost(ghostModel.getId());;
+            stopGhost(ghostModel.getId());
         }
 
         if (ghostModel.getListener() != null) {

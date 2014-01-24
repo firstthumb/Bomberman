@@ -22,6 +22,7 @@ public class BombModel extends GameObjectModel {
     private int gridX;
     private int gridY;
     private boolean activated;
+    private float activationTime;
 
     public BombModel(int id) {
         this.id = id;
@@ -89,6 +90,14 @@ public class BombModel extends GameObjectModel {
 
     public void setActivated(boolean activated) {
         this.activated = activated;
+    }
+
+    public float getActivationTime() {
+        return activationTime;
+    }
+
+    public void setActivationTime(float activationTime) {
+        this.activationTime = activationTime;
     }
 
     @Override
