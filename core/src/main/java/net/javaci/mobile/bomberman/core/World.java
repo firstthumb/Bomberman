@@ -743,7 +743,7 @@ public class World implements BombModel.BombListener {
                     int ghostGridY = getGridY(ghostModel.getOriginY());
                     if ((int)cell.x == ghostGridX && (int)cell.y == ghostGridY) {
                         result.add(ghostModel.getId());
-                        killGhost(ghostModel);
+//                        killGhost(ghostModel);
                     }
                 }
             }

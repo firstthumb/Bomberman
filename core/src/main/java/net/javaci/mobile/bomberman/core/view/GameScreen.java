@@ -617,6 +617,11 @@ public class GameScreen extends BomberManScreen {
         world.moveGhost(ghostId, gridX, gridY, Direction.valueOf(direction), distance);
     }
 
+    public void addDeadGhost(float x, float y, int type) {
+        DeadGhostWidget deadGhostWidget = new DeadGhostWidget(getStageBuilder().getAssets().getTextureAtlas("Common.atlas"), x, y, type);
+        getGameObjectsGroup().addActor(deadGhostWidget);
+    }
+
     public void onOwnerLeft() {
         findActor("ownerLeftPopup").setVisible(true);
     }

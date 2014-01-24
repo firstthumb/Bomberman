@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import net.javaci.mobile.bomberman.core.BomberManGame;
 import net.javaci.mobile.bomberman.core.GameFactory;
 import net.javaci.mobile.bomberman.core.models.BombModel;
+import net.javaci.mobile.bomberman.core.models.GhostModel;
 import net.javaci.mobile.bomberman.core.models.PlayerModel;
 import net.javaci.mobile.bomberman.core.net.NetworkInterface;
 import net.javaci.mobile.bomberman.core.net.NetworkListenerAdapter;
@@ -15,6 +16,7 @@ import net.javaci.mobile.bomberman.core.session.UserSession;
 import net.javaci.mobile.bomberman.core.util.Log;
 import net.javaci.mobile.bomberman.core.view.BomberManScreen;
 import net.javaci.mobile.bomberman.core.view.GameScreen;
+import net.javaci.mobile.bomberman.core.view.widget.BombWidget;
 
 import java.util.List;
 
@@ -209,6 +211,13 @@ public class GameScreenMediator extends BomberManMediator {
         List<Integer> explodedGhosts = command.getExplodedGhosts();
         if (explodedGhosts != null) {
             for (Integer ghostId : explodedGhosts) {
+                GhostModel ghostModel = gameScreen.getWorld().getGhostModels().get(ghostId);
+                if (ghostModel != null) {
+                    gameScreen.addDeadGhost(ghostModel.getX(), ghostModel.getY(), ghostModel.getType().getValue());
+                }
+                else {
+                    Log.e("DEAD Ghost Model : " + ghostId + " cannot be found");
+                }
                 gameScreen.getWorld().killGhost(ghostId);
             }
         }
