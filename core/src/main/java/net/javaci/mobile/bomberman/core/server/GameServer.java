@@ -121,6 +121,7 @@ public class GameServer {
         }
 
         isGameStarted = true;
+        networkInterface.startGame(UserSession.getInstance().getRoom().getId());
     }
 
     public void createGame() {

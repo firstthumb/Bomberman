@@ -29,7 +29,7 @@ public class DeadGhostWidget extends Actor {
         frames[0] = atlas.findRegion(generateDeadImageName(type, 1));
         frames[1] = atlas.findRegion(generateDeadImageName(type, 2));
         frames[2] = atlas.findRegion(generateDeadImageName(type, 3));
-        deadAnimation = new Animation(0.65f, frames);
+        deadAnimation = new Animation(0.35f, frames);
     }
 
     private String generateDeadImageName(int type, int frameIndex) {
