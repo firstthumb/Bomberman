@@ -179,8 +179,11 @@ public class World implements BombModel.BombListener {
             List<String> caughtPlayers = new ArrayList<String>();
             for (PlayerModel playerModel : playerModels.values()) {
                 if (!playerModel.isCaught()) {
-                    Vector2 playerPosition = getPlayerGridPosition(playerModel.getPlayerName());
-                    if (playerPosition.x == ghostModel.getGridX() && playerPosition.y == ghostModel.getGridY()) {
+                    int gridX = getGridX(playerModel.getOriginX());
+                    int gridY = getGridY(playerModel.getOriginY());
+                    int ghostGridX = getGridX(ghostModel.getOriginX());
+                    int ghostGridY = getGridY(ghostModel.getOriginY());
+                    if (gridX == ghostGridX && gridY == ghostGridY) {
                         playerModel.setCaught(true);
                         caughtPlayers.add(playerModel.getPlayerName());
                     }
@@ -405,9 +408,11 @@ public class World implements BombModel.BombListener {
     private boolean existBombOnGrid(String playerName, int gridX, int gridY) {
         for (BombModel bombModel : bombList) {
             if (bombModel.getGridX() == gridX && bombModel.getGridY() == gridY) {
-                if (playerName != null && playerName.equals(bombModel.getOwner()) && bombModel.isActivated()) {
-                    return true;
+                if (playerName != null && playerName.equals(bombModel.getOwner()) && !bombModel.isActivated()) {
+                    return false;
                 }
+
+                return true;
             }
         }
         return false;
@@ -463,6 +468,17 @@ public class World implements BombModel.BombListener {
 
     public int getGridY(float y) {
         return (int) ((y - resolutionHelper.getGameAreaPosition().y) / gridHeight);
+    }
+
+    public void setPositionGhostOnGrid(int ghostId, int gridX, int gridY) {
+        GhostModel model = ghostModels.get(ghostId);
+        if (model == null) {
+            Log.e("Cannot find Ghost Model : " + ghostId);
+            return;
+        }
+
+        model.setX(getX(gridX));
+        model.setY(getY(gridY));
     }
 
     public void moveGhost(int ghostId, int gridX, int gridY, GameScreen.Direction direction, int distance) {
