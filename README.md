@@ -19,3 +19,8 @@ If you want to run on device, connect your device and run below command
 ```java
 mvn clean install -Pandroid
 ```
+
+![Lobby Screen](https://raw2.github.com/firstthumb/Bomberman/mvn_repo/screenshots/1.png "Lobby Screen")
+![Waiting Game Start](https://raw2.github.com/firstthumb/Bomberman/mvn_repo/screenshots/2.png "Waiting Game Start")
+![Game Screen](https://raw2.github.com/firstthumb/Bomberman/mvn_repo/screenshots/3.png "Game Screen")
+![Game Controller Selection](https://raw2.github.com/firstthumb/Bomberman/mvn_repo/screenshots/4.png "Game Controller Selection")
