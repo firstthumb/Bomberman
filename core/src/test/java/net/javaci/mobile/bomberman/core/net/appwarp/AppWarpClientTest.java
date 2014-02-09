@@ -18,7 +18,7 @@ public class AppWarpClientTest {
     private static String username = "ilkinulas";
     private static CountDownLatch connectLatch = new CountDownLatch(1);
     private static CountDownLatch disconnectLatch = new CountDownLatch(1);
-
+/*
     @BeforeClass
     public static void beforeClass() throws Exception {
 
@@ -126,7 +126,7 @@ public class AppWarpClientTest {
 
     }
 
-    /*
+
 
     @Test
     public void createRoom() throws Exception {

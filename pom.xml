@@ -9,7 +9,7 @@
 	<name>Test Parent</name>
 
 	<properties>
-		<gdx.version>1.0-20140109</gdx.version>
+		<gdx.version>1.0-SNAPSHOT</gdx.version>
 		<android.version>4.1.1.4</android.version>
 		<android.maven.version>3.8.2</android.maven.version>
 		<gwt.version>2.5.0</gwt.version>
@@ -17,10 +17,6 @@
 	</properties>
 
 	<repositories>
-        <repository>
-            <id>android_dev</id>
-            <url>https://archiva.peakgames.net/archiva/repository/android_dev/</url>
-        </repository>
 		<repository>
 			<id>gdx-nightlies</id>
 			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>

@@ -13,7 +13,7 @@
 	<name>Test desktop</name>
 
 	<properties>
-		<mainClass>net.javaci.mobile.bomberman.java.TestDesktop</mainClass>
+		<mainClass>net.javaci.mobile.bomberman.java.BombermanDesktop</mainClass>
 	</properties>
 
 	<dependencies>
