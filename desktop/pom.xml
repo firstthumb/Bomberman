@@ -10,7 +10,7 @@
 
 	<artifactId>bomberman-desktop</artifactId>
 	<packaging>jar</packaging>
-	<name>Test desktop</name>
+	<name>Desktop</name>
 
 	<properties>
 		<mainClass>net.javaci.mobile.bomberman.java.BombermanDesktop</mainClass>

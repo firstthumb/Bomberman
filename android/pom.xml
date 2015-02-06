@@ -10,7 +10,7 @@
 
 	<artifactId>bomberman-android</artifactId>
 	<packaging>apk</packaging>
-	<name>Test Android</name>
+	<name>Android</name>
 
 	<properties>
 		<keystore.path>game.keystore</keystore.path>

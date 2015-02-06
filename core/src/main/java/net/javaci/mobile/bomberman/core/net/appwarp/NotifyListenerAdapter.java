@@ -48,6 +48,11 @@ public class NotifyListenerAdapter implements NotifyListener {
     }
 
     @Override
+    public void onPrivateUpdateReceived(String s, byte[] bytes, boolean b) {
+
+    }
+
+    @Override
     public void onUpdatePeersReceived(UpdateEvent updateEvent) {
 
     }
@@ -79,6 +84,11 @@ public class NotifyListenerAdapter implements NotifyListener {
 
     @Override
     public void onUserResumed(String s, boolean b, String s2) {
+
+    }
+
+    @Override
+    public void onNextTurnRequest(String s) {
 
     }
 }

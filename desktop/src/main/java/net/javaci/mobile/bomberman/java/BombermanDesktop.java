@@ -9,7 +9,6 @@ public class BombermanDesktop {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.width = 800;
         config.height = 480;
-		config.useGL20 = true;
 
         BomberManGame game = new BomberManGame();
         game.initialize(config.width, config.height);
