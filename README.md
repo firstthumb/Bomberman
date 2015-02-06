@@ -8,10 +8,18 @@ We used [libGDX](http://libgdx.badlogicgames.com) for OpenGL ES on Android, [lib
 Running Project
 ------
 
+Download App Warp Java SDK from http://www.shephertz.com/downloads/appwarp-downloads.php and extract files.
+
 Add App Warp Client dependency to your local maven repository by running below command
 
 ```java
-mvn install:install-file -Dfile=multiplayer-client-1.5.2.jar -DgroupId=com.shephertz.app42.gaming -DartifactId=multiplayer-client -Dversion=1.5.2 -Dpackaging=jar
+mvn install:install-file -Dfile=App42MultiPlayerGamingSDK.jar -DgroupId=com.shephertz.app42.gaming -DartifactId=multiplayer-client -Dversion=1.5.2 -Dpackaging=jar
+```
+
+Then, clone https://github.com/peakgames/libgdx-stagebuilder project and run below command
+
+```java
+mvn install -Dmaven.test.skip
 ```
 
 After then, you can open the project by IntelliJ or Eclipse and run BombermanDesktop
